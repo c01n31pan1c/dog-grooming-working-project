@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Dryer"
+tool_type = 2
+guard_size = 0.0
+quality_tier = 0
+price = 0
+description = "A standard force dryer for blow-drying after a shampoo."
+effect_description = "Dries a wet zone. Required after shampooing before other tools can be used."

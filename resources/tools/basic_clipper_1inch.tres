@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Clipper (1-inch)"
+tool_type = 0
+guard_size = 1.0
+quality_tier = 0
+price = 0
+description = "Standard clipper with a 1-inch guard. Best for close, clean cuts on the body."
+effect_description = "Clips fur to 1 inch. Use on zones requiring a short, tight trim."

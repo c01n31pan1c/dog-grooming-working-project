@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Cologne"
+tool_type = 6
+guard_size = 0.0
+quality_tier = 0
+price = 150
+description = "A light finishing cologne to give the dog a fresh, show-ready scent."
+effect_description = "Finishing touch. Awards bonus style points when applied after grooming is complete."

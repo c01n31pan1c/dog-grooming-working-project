@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Clipper (6-inch)"
+tool_type = 0
+guard_size = 6.0
+quality_tier = 0
+price = 0
+description = "Standard clipper with a 6-inch guard. Leaves fur long — ideal for breeds with flowing coats."
+effect_description = "Clips fur to 6 inches. Use where the breed standard calls for longer fur."

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Shampoo"
+tool_type = 5
+guard_size = 0.0
+quality_tier = 0
+price = 100
+description = "A gentle all-purpose shampoo for washing and cleansing the coat."
+effect_description = "Washes a zone. First step in grooming for some breeds. Zone must be dried afterward."
