@@ -9,8 +9,9 @@
 
 **Filed:** 2026-06-24
 **Workstream:** WS-7 (UI & Menus)
-**Status:** Open
+**Status:** RESOLVED (2026-06-24)
 **Owner needed:** WS-1 owner or orchestrator
+**Resolution:** Added `SceneTransition="*res://scripts/ui/scene_transition.gd"` to project.godot [autoload] during Wave 2 merge.
 **Description:** `scripts/ui/scene_transition.gd` is designed as an autoload singleton but WS-7 cannot modify `project.godot`. Needs the following line added to `[autoload]` section:
 ```
 SceneTransition="*res://scripts/ui/scene_transition.gd"
@@ -21,6 +22,7 @@ SceneTransition="*res://scripts/ui/scene_transition.gd"
 
 **Filed:** 2026-06-24
 **Workstream:** WS-7 (UI & Menus)
-**Status:** Open (non-blocking, gracefully handled)
+**Status:** RESOLVED (2026-06-24)
 **Owner needed:** WS-1 owner
+**Resolution:** Added `"master_volume": 1.0` to SaveManager._default_data.settings during Wave 2 merge.
 **Description:** `SaveManager._default_data.settings` has `music_volume` and `sfx_volume` but no `master_volume`. Settings screen handles this with `.get("master_volume", 1.0)` fallback, but SaveManager should include it for schema completeness.

@@ -15,6 +15,7 @@ var _default_data: Dictionary = {
 	"current_tier": 0,
 	"competition_history": [],
 	"settings": {
+		"master_volume": 1.0,
 		"music_volume": 0.8,
 		"sfx_volume": 1.0,
 		"haptics_enabled": true,

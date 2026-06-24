@@ -16,6 +16,7 @@ EventBus="*res://scripts/core/event_bus.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 SceneManager="*res://scripts/core/scene_manager.gd"
 SaveManager="*res://scripts/data/save_manager.gd"
+SceneTransition="*res://scripts/ui/scene_transition.gd"
 
 [display]
 
