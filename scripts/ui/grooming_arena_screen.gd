@@ -238,7 +238,9 @@ var _hud_tool_label: Label
 var _hud_progress_bar: ProgressBar
 var _hud_zone_count_label: Label
 var _hud_coin_label: Label
-var _hud_warning_rect: ColorRect
+var _hud_done_button: Button
+var _hud_instruction_label: Label
+var _instruction_dismissed: bool = false
 
 func _setup_hud() -> void:
 	_hud = CanvasLayer.new()
@@ -246,46 +248,64 @@ func _setup_hud() -> void:
 	_hud.layer = 10
 	add_child(_hud)
 
-	var top_bar := HBoxContainer.new()
-	top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top_bar.offset_bottom = 50.0
-	top_bar.add_theme_constant_override("separation", 20)
-	_hud.add_child(top_bar)
+	# -- Top LEFT group: Timer + Tool indicator --
+	var top_left := HBoxContainer.new()
+	top_left.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	top_left.offset_left = 16.0
+	top_left.offset_top = 8.0
+	top_left.offset_right = 300.0
+	top_left.offset_bottom = 54.0
+	top_left.add_theme_constant_override("separation", 16)
+	_hud.add_child(top_left)
 
-	# Timer
 	_hud_timer_label = Label.new()
 	_hud_timer_label.text = "2:00"
-	_hud_timer_label.add_theme_font_size_override("font_size", 32)
-	_hud_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hud_timer_label.custom_minimum_size = Vector2(120, 0)
-	top_bar.add_child(_hud_timer_label)
-
-	_hud_warning_rect = ColorRect.new()
-	_hud_warning_rect.color = Color(1.0, 0.549, 0.486, 0.2)
-	_hud_warning_rect.custom_minimum_size = Vector2(120, 40)
-	_hud_warning_rect.visible = false
-	top_bar.add_child(_hud_warning_rect)
-
-	# Tool indicator
-	var tool_label_header := Label.new()
-	tool_label_header.text = "Tool: "
-	tool_label_header.add_theme_font_size_override("font_size", 20)
-	top_bar.add_child(tool_label_header)
+	_hud_timer_label.add_theme_font_size_override("font_size", 36)
+	_hud_timer_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
+	_hud_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_hud_timer_label.custom_minimum_size = Vector2(100, 0)
+	top_left.add_child(_hud_timer_label)
 
 	_hud_tool_label = Label.new()
-	_hud_tool_label.text = "None"
+	_hud_tool_label.text = "Tool: None"
 	_hud_tool_label.add_theme_font_size_override("font_size", 20)
-	_hud_tool_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top_bar.add_child(_hud_tool_label)
+	_hud_tool_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
+	_hud_tool_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	top_left.add_child(_hud_tool_label)
 
-	# Coins
+	# -- Top RIGHT group: Coins + Pause --
+	var top_right := HBoxContainer.new()
+	top_right.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	top_right.offset_left = -250.0
+	top_right.offset_top = 8.0
+	top_right.offset_right = -16.0
+	top_right.offset_bottom = 54.0
+	top_right.add_theme_constant_override("separation", 12)
+	top_right.alignment = BoxContainer.ALIGNMENT_END
+	_hud.add_child(top_right)
+
 	_hud_coin_label = Label.new()
 	_hud_coin_label.text = "%d coins" % SaveManager.data.get("currency", 0)
 	_hud_coin_label.add_theme_font_size_override("font_size", 20)
+	_hud_coin_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	_hud_coin_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	top_bar.add_child(_hud_coin_label)
+	_hud_coin_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	top_right.add_child(_hud_coin_label)
 
-	# Progress bar area (just above toolbar)
+	var pause_btn := Button.new()
+	pause_btn.text = "Pause"
+	pause_btn.custom_minimum_size = Vector2(80, 40)
+	pause_btn.pressed.connect(func() -> void:
+		get_tree().paused = not get_tree().paused
+		pause_btn.text = "Resume" if get_tree().paused else "Pause"
+		if get_tree().paused:
+			_timer_system.pause()
+		else:
+			_timer_system.resume()
+	)
+	top_right.add_child(pause_btn)
+
+	# -- Progress bar area (just above toolbar) --
 	var progress_container := HBoxContainer.new()
 	progress_container.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	progress_container.offset_top = -140.0
@@ -298,6 +318,7 @@ func _setup_hud() -> void:
 	var progress_label := Label.new()
 	progress_label.text = "Progress:"
 	progress_label.add_theme_font_size_override("font_size", 18)
+	progress_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	progress_container.add_child(progress_label)
 
 	_hud_progress_bar = ProgressBar.new()
@@ -310,41 +331,59 @@ func _setup_hud() -> void:
 	_hud_zone_count_label = Label.new()
 	_hud_zone_count_label.text = "0 / 0"
 	_hud_zone_count_label.add_theme_font_size_override("font_size", 18)
+	_hud_zone_count_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	progress_container.add_child(_hud_zone_count_label)
+
+	# -- "Done" button (hidden until at least 1 zone groomed) --
+	_hud_done_button = Button.new()
+	_hud_done_button.text = "Done"
+	_hud_done_button.custom_minimum_size = Vector2(90, 36)
+	_hud_done_button.visible = false
+	_hud_done_button.pressed.connect(_finish_grooming)
+	progress_container.add_child(_hud_done_button)
+
+	# -- Instruction label (center screen, semi-transparent) --
+	_hud_instruction_label = Label.new()
+	_hud_instruction_label.text = "Select a tool below, then tap the dog to groom!"
+	_hud_instruction_label.add_theme_font_size_override("font_size", 24)
+	_hud_instruction_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314, 0.85))
+	_hud_instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hud_instruction_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_hud_instruction_label.set_anchors_preset(Control.PRESET_CENTER)
+	_hud_instruction_label.offset_left = -250.0
+	_hud_instruction_label.offset_right = 250.0
+	_hud_instruction_label.offset_top = -20.0
+	_hud_instruction_label.offset_bottom = 20.0
+	_hud_instruction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hud.add_child(_hud_instruction_label)
+
+	# Auto-dismiss instruction after 5 seconds
+	get_tree().create_timer(5.0).timeout.connect(_dismiss_instruction)
 
 	# Connect EventBus signals for HUD updates
 	EventBus.tool_selected.connect(_on_hud_tool_selected)
 	EventBus.zone_groomed.connect(_on_hud_zone_groomed)
 	EventBus.currency_changed.connect(_on_hud_currency_changed)
 
-	# Pause button
-	var pause_btn := Button.new()
-	pause_btn.text = "Pause"
-	pause_btn.custom_minimum_size = Vector2(80, 40)
-	pause_btn.pressed.connect(func() -> void:
-		get_tree().paused = not get_tree().paused
-		pause_btn.text = "Resume" if get_tree().paused else "Pause"
-		if get_tree().paused:
-			_timer_system.pause()
-		else:
-			_timer_system.resume()
-	)
-	top_bar.add_child(pause_btn)
 
-	# Guide toggle in HUD
-	var guide_btn := Button.new()
-	guide_btn.text = "Guide"
-	guide_btn.custom_minimum_size = Vector2(80, 40)
-	guide_btn.pressed.connect(_on_guide_button_pressed)
-	top_bar.add_child(guide_btn)
+func _dismiss_instruction() -> void:
+	if _instruction_dismissed:
+		return
+	_instruction_dismissed = true
+	if _hud_instruction_label and _hud_instruction_label.is_inside_tree():
+		var tween := create_tween()
+		tween.tween_property(_hud_instruction_label, "modulate:a", 0.0, 0.5)
+		tween.tween_callback(_hud_instruction_label.queue_free)
 
 
 func _on_hud_tool_selected(tool_data: Resource) -> void:
 	if tool_data != null and tool_data is ToolData:
 		var td := tool_data as ToolData
-		_hud_tool_label.text = td.tool_name
+		_hud_tool_label.text = "Tool: %s" % td.tool_name
 	else:
-		_hud_tool_label.text = "None"
+		_hud_tool_label.text = "Tool: None"
+	# Dismiss instruction on first tool selection
+	_dismiss_instruction()
 
 
 func _on_hud_zone_groomed(_zone_id: String, _tool_data: Resource) -> void:
@@ -356,6 +395,9 @@ func _on_hud_zone_groomed(_zone_id: String, _tool_data: Resource) -> void:
 	var total: int = _breed_data.grooming_zones.size()
 	var done: int = int(progress * total)
 	_hud_zone_count_label.text = "%d / %d" % [done, total]
+	# Show Done button after at least 1 zone has been groomed
+	if done >= 1 and _hud_done_button and not _hud_done_button.visible:
+		_hud_done_button.visible = true
 
 
 var _prev_coin_value: int = -1
@@ -425,8 +467,6 @@ func _on_timer_tick(seconds_remaining: float) -> void:
 var _timer_pulse_tween: Tween = null
 
 func _on_timer_warning(_seconds_remaining: float) -> void:
-	if _hud_warning_rect:
-		_hud_warning_rect.visible = true
 	# Start gentle pulse on timer label
 	if _hud_timer_label and _timer_pulse_tween == null:
 		_timer_pulse_tween = UIAnimations.start_pulse(_hud_timer_label)
