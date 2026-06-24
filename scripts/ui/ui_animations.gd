@@ -51,15 +51,23 @@ static func setup_button_juice(button: Button) -> void:
 	button.button_up.connect(func(): button_release(button))
 
 
+## Whether a node's position is managed by a Container parent.
+## Container children can't have their position tweened — the container resets it.
+static func _parent_is_container(node: Control) -> bool:
+	var parent := node.get_parent()
+	return parent is Container
+
+
 ## Slide down from above with bounce (for titles).
 static func slide_down_bounce(node: Control, distance: float = 80.0, duration: float = DUR_ENTRANCE) -> Tween:
-	var target_y := node.position.y
-	node.position.y = target_y - distance
 	node.modulate.a = 0.0
 	var tween := node.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(node, "position:y", target_y, duration) \
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	if not _parent_is_container(node):
+		var target_y := node.position.y
+		node.position.y = target_y - distance
+		tween.tween_property(node, "position:y", target_y, duration) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(node, "modulate:a", 1.0, duration * 0.5) \
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	return tween
@@ -67,15 +75,16 @@ static func slide_down_bounce(node: Control, distance: float = 80.0, duration: f
 
 ## Fade in + slide up (for buttons, cards, etc).
 static func fade_slide_up(node: Control, distance: float = 40.0, duration: float = DUR_ENTRANCE_SHORT, delay: float = 0.0) -> Tween:
-	var target_y := node.position.y
-	node.position.y = target_y + distance
 	node.modulate.a = 0.0
 	var tween := node.create_tween()
 	if delay > 0.0:
 		tween.tween_interval(delay)
 	tween.set_parallel(true)
-	tween.tween_property(node, "position:y", target_y, duration) \
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	if not _parent_is_container(node):
+		var target_y := node.position.y
+		node.position.y = target_y + distance
+		tween.tween_property(node, "position:y", target_y, duration) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(node, "modulate:a", 1.0, duration * 0.6) \
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	return tween
@@ -83,13 +92,14 @@ static func fade_slide_up(node: Control, distance: float = 40.0, duration: float
 
 ## Fade in from top (for info bars, headers).
 static func fade_from_top(node: Control, distance: float = 30.0, duration: float = DUR_ENTRANCE_SHORT) -> Tween:
-	var target_y := node.position.y
-	node.position.y = target_y - distance
 	node.modulate.a = 0.0
 	var tween := node.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(node, "position:y", target_y, duration) \
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	if not _parent_is_container(node):
+		var target_y := node.position.y
+		node.position.y = target_y - distance
+		tween.tween_property(node, "position:y", target_y, duration) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(node, "modulate:a", 1.0, duration * 0.6) \
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	return tween
@@ -97,15 +107,16 @@ static func fade_from_top(node: Control, distance: float = 30.0, duration: float
 
 ## Slide in from right side.
 static func slide_in_from_right(node: Control, distance: float = 300.0, duration: float = DUR_ENTRANCE, delay: float = 0.0) -> Tween:
-	var target_x := node.position.x
-	node.position.x = target_x + distance
 	node.modulate.a = 0.0
 	var tween := node.create_tween()
 	if delay > 0.0:
 		tween.tween_interval(delay)
 	tween.set_parallel(true)
-	tween.tween_property(node, "position:x", target_x, duration) \
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	if not _parent_is_container(node):
+		var target_x := node.position.x
+		node.position.x = target_x + distance
+		tween.tween_property(node, "position:x", target_x, duration) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(node, "modulate:a", 1.0, duration * 0.5) \
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	return tween
@@ -113,15 +124,16 @@ static func slide_in_from_right(node: Control, distance: float = 300.0, duration
 
 ## Slide in from left side.
 static func slide_in_from_left(node: Control, distance: float = 300.0, duration: float = DUR_ENTRANCE, delay: float = 0.0) -> Tween:
-	var target_x := node.position.x
-	node.position.x = target_x - distance
 	node.modulate.a = 0.0
 	var tween := node.create_tween()
 	if delay > 0.0:
 		tween.tween_interval(delay)
 	tween.set_parallel(true)
-	tween.tween_property(node, "position:x", target_x, duration) \
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	if not _parent_is_container(node):
+		var target_x := node.position.x
+		node.position.x = target_x - distance
+		tween.tween_property(node, "position:x", target_x, duration) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(node, "modulate:a", 1.0, duration * 0.5) \
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	return tween
