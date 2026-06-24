@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="JudgeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/judges/judge_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+judge_name = "Dr. Tanaka"
+personality = "A veterinarian-turned-judge who approaches every competition with scientific precision. Dr. Tanaka values a balanced approach: accuracy matters, but so does working efficiently and presenting a polished final product. Methodical and fair."
+preferred_style = "Balanced"
+scoring_weights = {
+"accuracy": 0.4,
+"time": 0.35,
+"style": 0.25
+}
+strictness_level = 0.5
+reveal_cost = 60
