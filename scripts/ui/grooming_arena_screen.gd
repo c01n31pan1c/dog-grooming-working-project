@@ -8,7 +8,6 @@ extends Node
 @onready var dog_model: DogModel = $SubViewportContainer/SubViewport/DogScene/DogPlaceholder
 @onready var orbit_camera: OrbitCamera = $SubViewportContainer/SubViewport/DogScene/OrbitCamera
 @onready var zone_detection: ZoneDetection = $ZoneDetection
-@onready var guide_button: Button = $UI/TopBar/GuideButton
 @onready var zone_label: Label = $UI/BottomBar/ZoneLabel
 @onready var legend_panel: PanelContainer = $UI/LegendPanel
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
@@ -178,10 +177,6 @@ func _ready() -> void:
 	if zone_detection:
 		zone_detection.zone_hover_changed.connect(_on_zone_hover_changed)
 
-	# Wire up guide button
-	if guide_button:
-		guide_button.pressed.connect(_on_guide_button_pressed)
-
 	# Hide legend initially
 	if legend_panel:
 		legend_panel.visible = false
@@ -252,6 +247,7 @@ var _hud_tool_label: Label
 var _hud_progress_bar: ProgressBar
 var _hud_zone_count_label: Label
 var _hud_coin_label: Label
+var _hud_guide_button: Button
 var _hud_done_button: Button
 var _hud_instruction_label: Label
 var _instruction_dismissed: bool = false
@@ -290,7 +286,7 @@ func _setup_hud() -> void:
 	# -- Top RIGHT group: Coins + Pause --
 	var top_right := HBoxContainer.new()
 	top_right.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	top_right.offset_left = -250.0
+	top_right.offset_left = -440.0
 	top_right.offset_top = 8.0
 	top_right.offset_right = -16.0
 	top_right.offset_bottom = 70.0
@@ -305,6 +301,12 @@ func _setup_hud() -> void:
 	_hud_coin_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hud_coin_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	top_right.add_child(_hud_coin_label)
+
+	_hud_guide_button = Button.new()
+	_hud_guide_button.text = "Guide"
+	_hud_guide_button.custom_minimum_size = Vector2(160, 64)
+	_hud_guide_button.pressed.connect(_on_guide_button_pressed)
+	top_right.add_child(_hud_guide_button)
 
 	var pause_btn := Button.new()
 	pause_btn.text = "Pause"
@@ -602,7 +604,7 @@ func _on_zone_hover_changed(zone_id: String) -> void:
 
 func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 	if dog_model:
-		dog_model.apply_grooming(zone_id, 0.25)
+		dog_model.apply_grooming(zone_id, 0.5)
 
 	# Spawn touch effect + floating indicator at mouse/touch position
 	var ui_layer := $UI as Control

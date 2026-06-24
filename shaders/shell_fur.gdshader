@@ -30,7 +30,7 @@ float hash(vec2 p) {
 void vertex() {
 	float shell_frac = float(shell_index) / float(max(shell_count - 1, 1));
 	// Reduce extrusion when groomed
-	float effective_length = fur_length * (1.0 - groomed_amount * 0.6);
+	float effective_length = fur_length * (1.0 - groomed_amount * 0.95);
 	VERTEX += NORMAL * effective_length * shell_frac;
 }
 
@@ -45,7 +45,9 @@ void fragment() {
 	// Threshold increases with shell layer — outer shells have more transparency
 	float threshold = shell_frac * shell_frac;
 	// Density adjustment when groomed: fur appears neater
-	float density_mod = 1.0 - groomed_amount * 0.3;
+	float density_mod = 1.0 - groomed_amount * 0.8;
+	// Brighten groomed areas to show "clean" effect
+	vec3 clean_tint = mix(fur_color.rgb, fur_color.rgb * 1.3 + vec3(0.05), groomed_amount * 0.5);
 	float alpha = step(threshold, noise_val * density_mod);
 
 	// Discard transparent pixels (base shell always solid)
@@ -54,7 +56,7 @@ void fragment() {
 	}
 
 	// Color gradient from root to tip
-	vec3 base_col = mix(fur_color.rgb, fur_tip_color.rgb, shell_frac);
+	vec3 base_col = mix(clean_tint, fur_tip_color.rgb, shell_frac);
 
 	// Simple AO — darker at root
 	float ao = mix(0.4, 1.0, shell_frac);
