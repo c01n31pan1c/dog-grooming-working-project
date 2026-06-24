@@ -57,28 +57,59 @@
 **Surprises:**
 - None — clean build from spec
 
-## Session — 2026-06-24
+## Session 3 — 2026-06-24
 
-**Phase:** WS-2 — Dog Models & Grooming Zones
+**Phase:** Wave 2 — Parallel Feature Tracks (WS-2 through WS-7)
 
-**Summary:**
-- Built procedural placeholder dog model (CSG-style primitives: capsule body, sphere head, cylinder legs, box ears, cylinder tail) as reusable scene
-- 11 grooming zones with Area3D + CollisionShape3D: head, ears_left, ears_right, back, chest, belly, legs_front_left, legs_front_right, legs_rear_left, legs_rear_right, tail
-- Orbit camera with horizontal 360 deg, vertical 15-75 deg clamped, pinch-to-zoom / scroll wheel, touch + mouse support, smooth interpolation
-- Shell fur shader (Compatibility renderer compatible): 6-layer shell extrusion with alpha-masked procedural noise, fur_color/tip_color gradient, groomed_amount parameter for visual feedback, highlight_strength for hover, guide_overlay_strength for color-coded overlay
-- ShellFurSetup utility class creates shell layer duplicates at runtime to avoid bloating the .tscn
-- ZoneDetection rewritten from stub: raycasts from camera through Area3D zones using zone_id metadata, emits zone_hover_changed signal, try_groom_at_position emits EventBus.zone_groomed
-- DogModel controller script: manages zone discovery, highlight state, groomed state, guide overlay toggle with guard-size color mapping
-- Grooming arena scene: SubViewport with dog model + orbit camera, 3-point lighting (warm key, cool fill, rim), ground plane, UI overlay with guide toggle button, zone info label, color-coded legend panel
-- Default shell fur material resource in materials/
+**WS-2 — Dog Models & Grooming Zones:**
+- Procedural placeholder dog model (capsule body, sphere head, cylinder legs, box ears, cylinder tail)
+- 11 grooming zones with Area3D + CollisionShape3D
+- Orbit camera: 360° horizontal, 15-75° vertical, pinch-to-zoom, smooth interpolation
+- Shell fur shader: 6-layer, Compatibility renderer compatible, groomed_amount + highlight + guide overlay params
+- ShellFurSetup creates shell layers at runtime (keeps .tscn clean/swappable)
+- ZoneDetection: raycasts through Area3D zones using zone_id metadata
+- Grooming arena scene: SubViewport + 3-point lighting + UI overlay with guide toggle + legend
 
-**Design decisions:**
-- Shell layers created at runtime via ShellFurSetup rather than baked into .tscn — keeps placeholder scene clean and swappable
-- Zone identification uses Node.set_meta("zone_id") on both Area3D and MeshInstance3D nodes — lightweight, no extra scripts per zone
-- Orbit camera uses _unhandled_input so UI elements can consume input first
-- Right-click to groom (left-click reserved for orbit) — placeholder until tool system (WS-3) wires in proper tool-apply input
-- Guard size legend uses 7 color bands matching real grooming guard sizes (0" through 6")
-- SubViewport used for 3D scene to cleanly separate 3D rendering from 2D UI overlay
+**WS-3 — Tool System & Input:**
+- 9 starter tool .tres resources (3 clippers at 1/3/6-inch, brush, dryer, scissors, nail trimmer, shampoo, cologne)
+- ToolSystem: loads from disk, tracks ownership, filters by type, emits selection events
+- GroomingController: tool-zone validation, quality scoring vs breed standards, prep-sequence tracking
+- Toolbar UI: horizontal scrollable bar at bottom, guard sizes on clipper buttons, active tool highlight
+- TapSelectInput: proper 3D raycasting via Camera3D, PhysicsRayQueryParameters3D targeting Area3D zones
+
+**WS-4 — Competition & Scoring:**
+- 3 judge .tres resources (Mrs. Pemberton/traditional, Carlos Rivera/flashy, Dr. Tanaka/balanced)
+- TimerSystem: countdown, warnings, time bonus calc
+- ScoringEngine: accuracy/time/style scoring against breed standard
+- JudgeAI: per-judge weighted eval, strictness penalty, personality-keyed comments
+- CompetitionData resource class
+- Competition screen: 3-phase flow (pre-show, grooming, results) with judge reveal mechanic
+
+**WS-5 — Progression & Tycoon:**
+- CurrencyManager: balance tracking, auto-save, lifetime total_coins_earned
+- UpgradeSystem: dynamic catalog loading, purchase/own/consumable tracking, stat modifiers
+- ProgressionManager: 3-tier system (LOCAL→REGIONAL→NATIONAL), auto-advancement
+- ShopManager: categorized inventory, purchase flow
+- Shop scene with Equipment/Consumables/Salon Decor tabs
+- Salon hub scene with tier progress, stats, navigation
+
+**WS-6 — Breed Data & Infotainment:**
+- 4 breed .tres resources with AKC-researched grooming data (Poodle, Golden Retriever, Schnauzer, Irish Terrier)
+- Grooming callouts: contextual breed facts during grooming, non-repeating, auto-dismiss
+- Breed-pedia: collection grid + detail view with zone grooming guide
+- 28 loading screen tips
+
+**WS-7 — UI & Menus:**
+- Main menu with Play/Breed-pedia/Settings, player info bar
+- HUD: timer with urgency colors, tool indicator, progress bar, guide toggle, pause
+- Competition select: scrollable cards, detail panel, entry fee check
+- Settings overlay: audio sliders with AudioServer integration
+- Scene transitions: fade-to-black via CanvasLayer
+- UI theme: warm color palette, rounded buttons, touch-friendly sizing
+
+**Blockers filed:**
+- BLK-001: SceneTransition autoload needs registration in project.godot
+- BLK-002: SaveManager missing master_volume default (non-blocking, handled with fallback)
 
 **Blockers:**
-- None
+- None critical — BLK-001 and BLK-002 resolved during integration merge

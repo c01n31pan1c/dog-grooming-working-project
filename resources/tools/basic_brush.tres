@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "Basic Brush"
+tool_type = 1
+guard_size = 0.0
+quality_tier = 0
+price = 0
+description = "A standard slicker brush for detangling and prepping the coat."
+effect_description = "Preps a zone by removing tangles and loose fur. Some breeds require brushing before clipping."
