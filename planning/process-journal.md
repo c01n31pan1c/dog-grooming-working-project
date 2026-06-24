@@ -56,3 +56,28 @@
 
 **Surprises:**
 - None — clean build from spec
+
+## Session 3 — 2026-06-24
+
+**Phase:** WS-3 — Tool System & Input
+
+**Summary:**
+- Created 9 starter tool .tres resources (3 clippers at 1/3/6-inch guards, brush, dryer, scissors, nail trimmer, shampoo, cologne)
+- Fleshed out ToolSystem: loads tools from disk via DirAccess, tracks ownership, filters by type, emits selection events
+- Fleshed out GroomingController: full tool-zone validation, quality scoring against breed standards, per-zone progress tracking with prep-sequence awareness (brush-before-clip bonus, shampoo-dry flow)
+- Created Toolbar UI script: horizontal scrollable button bar at bottom of screen, shows guard sizes on clipper buttons, highlights active tool, sorts tools by type
+- Updated TapSelectInput: proper 3D raycasting via Camera3D.project_ray_origin/normal, PhysicsRayQueryParameters3D targeting Area3D grooming zones, resolves zone_id from node metadata or name
+
+**Design decisions not in ADRs:**
+- Grooming zones are Area3Ds on collision layer 2; TapSelectInput raycasts with collide_with_areas=true, collide_with_bodies=false
+- Zone identification: Area3D nodes should set "zone_id" metadata; falls back to node.name — this avoids coupling zone detection to a specific naming convention while keeping it simple
+- Quality scoring: perfect guard match = 1.0, wrong guard = partial credit scaled by distance (min 0.2), wrong tool type = 0.3, brushing before cutting = +0.1 bonus (capped at 1.0)
+- Nail trimmer restricted to PAW_ZONES const array; scissors get 0.7 quality on detail zones even when not the required tool (realistic — scissors are flexible in real grooming)
+- All starter tools granted including consumables (shampoo/cologne) for MVP — shop gating comes later
+- Toolbar sorts tools by ToolType enum order then guard_size for consistent UX
+
+**Agents dispatched:**
+- None (direct implementation — cohesive system with tight interdependencies)
+
+**Blockers:**
+- None
