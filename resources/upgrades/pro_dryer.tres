@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrades/upgrade_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+upgrade_name = "Pro Dryer"
+upgrade_type = "equipment"
+tier = 1
+price = 300
+effect_description = "High-velocity professional dryer. 2x drying speed."
+stat_modifiers = {"drying_speed": 2.0}
