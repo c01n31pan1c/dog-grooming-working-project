@@ -1,12 +1,19 @@
 ## ZoneDetection — Resolves screen-space input to grooming zone IDs.
 ## Uses raycasting from camera through zone Area3D collision shapes.
+## Supports SubViewport setups: the camera's world_3d is used for raycasting
+## and screen coordinates are mapped to SubViewport coordinates when needed.
 class_name ZoneDetection
 extends Node
 
 ## Reference to the camera used for raycasting
 @export var camera: Camera3D
 
-## The physics space to raycast in (auto-detected from scene tree)
+## Reference to SubViewportContainer for coordinate mapping (set by arena)
+var sub_viewport_container: SubViewportContainer = null
+## Reference to SubViewport for coordinate mapping (set by arena)
+var sub_viewport: SubViewport = null
+
+## The physics space to raycast in (from the camera's world, not the main viewport)
 var _space_state: PhysicsDirectSpaceState3D
 
 ## Currently hovered zone_id (or "" if none)
@@ -19,14 +26,26 @@ signal zone_hover_changed(zone_id: String)
 func _ready() -> void:
 	# Defer space state access until physics is ready
 	await get_tree().physics_frame
-	var viewport := get_viewport()
-	if viewport and viewport.world_3d:
-		_space_state = viewport.world_3d.direct_space_state
+	_update_space_state()
+
+
+## Refresh the physics space state from the camera's world.
+func _update_space_state() -> void:
+	if camera:
+		var world := camera.get_world_3d()
+		if world:
+			_space_state = world.direct_space_state
 
 
 func _physics_process(_delta: float) -> void:
-	if not camera or not _space_state:
+	if not camera:
 		return
+
+	# Lazily acquire space state if it wasn't ready before
+	if _space_state == null:
+		_update_space_state()
+		if _space_state == null:
+			return
 
 	var mouse_pos := get_viewport().get_mouse_position()
 	var new_zone := get_zone_at_position(mouse_pos)
@@ -36,13 +55,32 @@ func _physics_process(_delta: float) -> void:
 		zone_hover_changed.emit(current_zone)
 
 
+## Map screen coordinates to SubViewport coordinates if using a SubViewport.
+func _map_to_sub_viewport(screen_pos: Vector2) -> Vector2:
+	if sub_viewport_container == null or sub_viewport == null:
+		return screen_pos
+
+	var container_pos := sub_viewport_container.global_position
+	var container_size := sub_viewport_container.size
+	var viewport_size := Vector2(sub_viewport.size)
+
+	var local_pos := screen_pos - container_pos
+	var scale_x := viewport_size.x / maxf(container_size.x, 1.0)
+	var scale_y := viewport_size.y / maxf(container_size.y, 1.0)
+
+	return Vector2(local_pos.x * scale_x, local_pos.y * scale_y)
+
+
 ## Given a screen position, returns the zone_id under the pointer, or "" if none.
 func get_zone_at_position(screen_pos: Vector2) -> String:
 	if not camera or not _space_state:
 		return ""
 
-	var from := camera.project_ray_origin(screen_pos)
-	var to := from + camera.project_ray_normal(screen_pos) * 100.0
+	# Map to SubViewport coords for correct raycasting
+	var viewport_pos := _map_to_sub_viewport(screen_pos)
+
+	var from := camera.project_ray_origin(viewport_pos)
+	var to := from + camera.project_ray_normal(viewport_pos) * 100.0
 
 	var query := PhysicsRayQueryParameters3D.create(from, to)
 	query.collide_with_areas = true

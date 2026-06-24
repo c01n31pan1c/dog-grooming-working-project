@@ -28,6 +28,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
+physics_object_picking = true
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
@@ -76,6 +77,7 @@ shadow_enabled = false
 ;; Ground plane
 [node name="GroundPlane" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/DogScene"]
 mesh = SubResource("PlaneMesh_ground")
+material_override = SubResource("GroundMaterial")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 ;; === ZONE DETECTION ===

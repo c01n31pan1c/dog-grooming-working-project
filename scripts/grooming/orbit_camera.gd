@@ -1,5 +1,7 @@
 ## OrbitCamera — Camera that orbits around the dog model via touch/mouse drag.
-## Supports horizontal orbit (360°), vertical orbit (limited), and zoom.
+## Supports horizontal orbit (360deg), vertical orbit (limited), and zoom.
+## Only begins orbiting after the pointer has moved past a drag threshold,
+## so quick taps pass through to the grooming input system.
 class_name OrbitCamera
 extends Camera3D
 
@@ -34,11 +36,16 @@ var _target_distance: float = 3.0
 
 ## Touch/drag tracking
 var _is_dragging: bool = false
+var _drag_started: bool = false
 var _last_drag_pos: Vector2 = Vector2.ZERO
+var _press_start_pos: Vector2 = Vector2.ZERO
 ## Pinch zoom tracking
 var _touch_points: Dictionary = {}
 var _initial_pinch_distance: float = 0.0
 var _initial_zoom_distance: float = 0.0
+
+## Minimum pixels the pointer must move before we consider it a drag (not a tap).
+const DRAG_THRESHOLD: float = 8.0
 
 
 func _ready() -> void:
@@ -51,8 +58,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			_is_dragging = mb.pressed
-			_last_drag_pos = mb.position
+			if mb.pressed:
+				_is_dragging = true
+				_drag_started = false
+				_last_drag_pos = mb.position
+				_press_start_pos = mb.position
+			else:
+				_is_dragging = false
+				_drag_started = false
 		elif mb.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_target_distance = clampf(_target_distance - zoom_speed, min_distance, max_distance)
 		elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
@@ -60,11 +73,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion and _is_dragging:
 		var mm := event as InputEventMouseMotion
-		var delta := mm.position - _last_drag_pos
-		_last_drag_pos = mm.position
-		_target_horizontal -= delta.x * horizontal_sensitivity
-		_target_vertical -= delta.y * vertical_sensitivity
-		_target_vertical = clampf(_target_vertical, min_vertical_angle, max_vertical_angle)
+		# Only start actual drag rotation after passing threshold
+		if not _drag_started:
+			if mm.position.distance_to(_press_start_pos) >= DRAG_THRESHOLD:
+				_drag_started = true
+				_last_drag_pos = mm.position
+		if _drag_started:
+			var delta := mm.position - _last_drag_pos
+			_last_drag_pos = mm.position
+			_target_horizontal -= delta.x * horizontal_sensitivity
+			_target_vertical -= delta.y * vertical_sensitivity
+			_target_vertical = clampf(_target_vertical, min_vertical_angle, max_vertical_angle)
 
 	# Touch input for mobile
 	if event is InputEventScreenTouch:
@@ -73,9 +92,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_touch_points[st.index] = st.position
 			if _touch_points.size() == 1:
 				_is_dragging = true
+				_drag_started = false
 				_last_drag_pos = st.position
+				_press_start_pos = st.position
 			elif _touch_points.size() == 2:
 				_is_dragging = false
+				_drag_started = false
 				var points := _touch_points.values()
 				_initial_pinch_distance = (points[0] as Vector2).distance_to(points[1] as Vector2)
 				_initial_zoom_distance = _target_distance
@@ -83,19 +105,28 @@ func _unhandled_input(event: InputEvent) -> void:
 			_touch_points.erase(st.index)
 			if _touch_points.size() == 1:
 				_is_dragging = true
+				_drag_started = false
 				_last_drag_pos = _touch_points.values()[0]
+				_press_start_pos = _touch_points.values()[0]
 			elif _touch_points.size() == 0:
 				_is_dragging = false
+				_drag_started = false
 
 	if event is InputEventScreenDrag:
 		var sd := event as InputEventScreenDrag
 		_touch_points[sd.index] = sd.position
 		if _touch_points.size() == 1 and _is_dragging:
-			var delta := sd.position - _last_drag_pos
-			_last_drag_pos = sd.position
-			_target_horizontal -= delta.x * horizontal_sensitivity
-			_target_vertical -= delta.y * vertical_sensitivity
-			_target_vertical = clampf(_target_vertical, min_vertical_angle, max_vertical_angle)
+			# Only start actual drag rotation after passing threshold
+			if not _drag_started:
+				if sd.position.distance_to(_press_start_pos) >= DRAG_THRESHOLD:
+					_drag_started = true
+					_last_drag_pos = sd.position
+			if _drag_started:
+				var delta := sd.position - _last_drag_pos
+				_last_drag_pos = sd.position
+				_target_horizontal -= delta.x * horizontal_sensitivity
+				_target_vertical -= delta.y * vertical_sensitivity
+				_target_vertical = clampf(_target_vertical, min_vertical_angle, max_vertical_angle)
 		elif _touch_points.size() == 2:
 			var points := _touch_points.values()
 			var current_pinch := (points[0] as Vector2).distance_to(points[1] as Vector2)

@@ -11,6 +11,8 @@ extends Node
 @onready var guide_button: Button = $UI/TopBar/GuideButton
 @onready var zone_label: Label = $UI/BottomBar/ZoneLabel
 @onready var legend_panel: PanelContainer = $UI/LegendPanel
+@onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
+@onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 
 ## Dynamically created subsystems
 var _tool_system: ToolSystem
@@ -33,6 +35,9 @@ var _grooming_finished: bool = false
 
 var fur_shader: Shader
 
+## Default breed to load when no competition context is provided (free play).
+const DEFAULT_BREED_PATH := "res://resources/breeds/golden_retriever.tres"
+
 
 func _ready() -> void:
 	GameManager.current_state = GameManager.GameState.GROOMING
@@ -44,6 +49,17 @@ func _ready() -> void:
 		_is_competition_mode = true
 		if _competition_data and _competition_data.breed:
 			_breed_data = _competition_data.breed
+
+	# Free-play fallback: load default breed if none provided
+	if _breed_data == null:
+		if context.has("breed_data"):
+			_breed_data = context["breed_data"] as BreedData
+		if _breed_data == null:
+			var default_breed := load(DEFAULT_BREED_PATH)
+			if default_breed is BreedData:
+				_breed_data = default_breed as BreedData
+			else:
+				push_warning("GroomingArena: Could not load default breed from %s" % DEFAULT_BREED_PATH)
 
 	# Load the fur shader
 	fur_shader = load("res://shaders/shell_fur.gdshader") as Shader
@@ -97,6 +113,9 @@ func _ready() -> void:
 	add_child(_input_handler)
 	if orbit_camera:
 		_input_handler.set_camera(orbit_camera)
+	# Pass SubViewport references for coordinate mapping
+	if sub_viewport_container and sub_viewport:
+		_input_handler.set_sub_viewport_container(sub_viewport_container, sub_viewport)
 
 	# GroomingController
 	_grooming_controller = GroomingController.new()
@@ -144,9 +163,12 @@ func _ready() -> void:
 	_callouts = _create_callouts()
 	add_child(_callouts)
 
-	# Wire up zone detection
+	# Wire up zone detection with SubViewport references
 	if zone_detection and orbit_camera:
 		zone_detection.camera = orbit_camera
+	if zone_detection and sub_viewport_container and sub_viewport:
+		zone_detection.sub_viewport_container = sub_viewport_container
+		zone_detection.sub_viewport = sub_viewport
 
 	if zone_detection:
 		zone_detection.zone_hover_changed.connect(_on_zone_hover_changed)
@@ -197,7 +219,7 @@ func _start_session() -> void:
 		# Record breed groomed for progression
 		_progression_manager.record_breed_groomed(_breed_data.breed_name)
 	else:
-		push_warning("GroomingArena: No breed data — running in free play mode")
+		push_warning("GroomingArena: No breed data — grooming session cannot start")
 
 
 func _process(_delta: float) -> void:
@@ -341,7 +363,7 @@ var _prev_coin_value: int = -1
 func _on_hud_currency_changed(_new_amount: int, _delta: int) -> void:
 	var new_coins: int = SaveManager.data.get("currency", 0)
 	if _prev_coin_value >= 0 and _prev_coin_value != new_coins:
-		UIAnimations.number_ticker(_hud_coin_label, float(_prev_coin_value), float(new_coins), 0.4, "%d coins")
+		UIAnimations.coin_change(_hud_coin_label, _prev_coin_value, new_coins)
 	else:
 		_hud_coin_label.text = "%d coins" % new_coins
 	_prev_coin_value = new_coins
@@ -430,7 +452,7 @@ func _finish_grooming() -> void:
 		var time_bonus := _timer_system.calculate_time_bonus(100.0)
 
 		# Convert GroomingController zone format to ScoringEngine format.
-		# GroomingController stores: {groomed: bool, quality: float, tool_used: ToolData|null, wet: bool, ...}
+		# GroomingController stores: {groomed: bool, quality: float, tool_used: ToolData|null, ...}
 		# ScoringEngine expects:     {completed: bool, tool_used: String, guard_size: float}
 		var scoring_results: Dictionary = {}
 		for zone_id in raw_zone_results:
@@ -536,7 +558,7 @@ func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 		# Touch ripple effect
 		UIAnimations.spawn_touch_effect(ui_layer, touch_pos, UIAnimations.COLOR_MINT, 30.0)
 
-		# Check if correct tool was used (groomed_state increasing means correct)
+		# Check if correct tool was used
 		var is_correct := true
 		if _breed_data and _tool_data is ToolData:
 			var td := _tool_data as ToolData
@@ -546,9 +568,9 @@ func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 				is_correct = false
 
 		if is_correct:
-			UIAnimations.spawn_float_indicator(ui_layer, "✓", touch_pos, UIAnimations.COLOR_MINT)
+			UIAnimations.spawn_float_indicator(ui_layer, "Good!", touch_pos, UIAnimations.COLOR_MINT)
 		else:
-			UIAnimations.spawn_float_indicator(ui_layer, "✗", touch_pos, UIAnimations.COLOR_CORAL)
+			UIAnimations.spawn_float_indicator(ui_layer, "Wrong tool", touch_pos, UIAnimations.COLOR_CORAL)
 
 
 func _on_guide_button_pressed() -> void:

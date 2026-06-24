@@ -20,8 +20,8 @@ var _zone_progress: Dictionary = {}
 ## Camera used for raycasting (assigned by scene setup).
 var _camera: Camera3D = null
 
-## Collision mask for grooming zone Area3Ds (layer 2 = bit 1).
-const ZONE_COLLISION_LAYER: int = 2
+## Collision mask for grooming zone Area3Ds (layer 1 = bit 0, matching Area3D defaults).
+const ZONE_COLLISION_LAYER: int = 1
 
 ## ---- Tool-zone compatibility maps ----
 
