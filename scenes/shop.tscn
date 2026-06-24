@@ -58,7 +58,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0 coins"
 horizontal_alignment = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="MessageLabel" type="Label" parent="UI/MarginContainer/VBoxContainer"]
@@ -66,7 +66,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 
 [node name="CategoryTabs" type="TabContainer" parent="UI/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -101,5 +101,5 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
-custom_minimum_size = Vector2(220, 56)
+custom_minimum_size = Vector2(220, 70)
 text = "Back to Salon"

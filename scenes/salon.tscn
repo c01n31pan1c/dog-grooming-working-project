@@ -55,7 +55,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "0 coins"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 32
 theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="TierSection" type="PanelContainer" parent="UI/MarginContainer/VBoxContainer"]
@@ -70,13 +70,13 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Tier: Local Amateur"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="TierProgressBar" type="ProgressBar" parent="UI/MarginContainer/VBoxContainer/TierSection/TierVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 36)
 min_value = 0.0
 max_value = 100.0
 value = 0.0
@@ -86,7 +86,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Wins: 0/5 | Coins earned: 0/500"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
 [node name="StatsPanel" type="PanelContainer" parent="UI/MarginContainer/VBoxContainer"]
@@ -97,7 +97,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Wins: 0 | Competitions: 0 | Breeds groomed: 0"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
 [node name="Spacer" type="Control" parent="UI/MarginContainer/VBoxContainer"]
@@ -114,27 +114,27 @@ theme_override_constants/v_separation = 20
 [node name="CompeteButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 80)
+custom_minimum_size = Vector2(280, 88)
 text = "Enter Competition"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 
 [node name="ShopButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 80)
+custom_minimum_size = Vector2(280, 88)
 text = "Shop"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 
 [node name="BreedpediaButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 80)
+custom_minimum_size = Vector2(280, 88)
 text = "Breed-pedia"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 
 [node name="SettingsButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 80)
+custom_minimum_size = Vector2(280, 88)
 text = "Settings"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28

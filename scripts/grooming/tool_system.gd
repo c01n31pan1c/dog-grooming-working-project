@@ -33,7 +33,7 @@ func _load_tools() -> void:
 	while file_name != "":
 		if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap"):
 			var path := TOOLS_DIR + file_name.replace(".remap", "")
-			var res := load(path)
+			var res := ResourceLoader.load(path)
 			if res is ToolData:
 				_all_tools.append(res as ToolData)
 		file_name = dir.get_next()

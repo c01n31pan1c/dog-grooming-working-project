@@ -79,7 +79,7 @@ func _populate_competition_cards() -> void:
 
 func _create_competition_card(comp: CompetitionData, current_tier: int) -> PanelContainer:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(0, 100)
+	card.custom_minimum_size = Vector2(0, 120)
 
 	var hbox := HBoxContainer.new()
 	hbox.add_theme_constant_override("separation", 16)
@@ -88,7 +88,7 @@ func _create_competition_card(comp: CompetitionData, current_tier: int) -> Panel
 	# Left side: tier badge
 	var tier_badge := Label.new()
 	tier_badge.text = comp.get_tier_name()
-	tier_badge.custom_minimum_size = Vector2(80, 48)
+	tier_badge.custom_minimum_size = Vector2(90, 64)
 	tier_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	# Color-code tier badges
@@ -105,14 +105,14 @@ func _create_competition_card(comp: CompetitionData, current_tier: int) -> Panel
 
 	var name_label := Label.new()
 	name_label.text = comp.competition_name
-	name_label.add_theme_font_size_override("font_size", 28)
+	name_label.add_theme_font_size_override("font_size", 32)
 	name_label.add_theme_color_override("font_color", Color(0.239, 0.239, 0.361))
 	info_vbox.add_child(name_label)
 
 	var breed_name: String = comp.breed.breed_name if comp.breed else "TBD"
 	var breed_label := Label.new()
 	breed_label.text = "Breed: %s  |  Time: %ds" % [breed_name, int(comp.time_limit_seconds)]
-	breed_label.add_theme_font_size_override("font_size", 20)
+	breed_label.add_theme_font_size_override("font_size", 26)
 	breed_label.add_theme_color_override("font_color", Color(0.204, 0.286, 0.369))
 	info_vbox.add_child(breed_label)
 
@@ -127,7 +127,7 @@ func _create_competition_card(comp: CompetitionData, current_tier: int) -> Panel
 		fee_label.text = "FREE"
 		fee_label.add_theme_color_override("font_color", Color(0.71, 0.918, 0.843))
 	fee_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	fee_label.custom_minimum_size = Vector2(120, 0)
+	fee_label.custom_minimum_size = Vector2(140, 0)
 	hbox.add_child(fee_label)
 
 	# Handle locked state (tier too high)
@@ -136,7 +136,7 @@ func _create_competition_card(comp: CompetitionData, current_tier: int) -> Panel
 		card.modulate = Color(0.7, 0.75, 0.8, 0.6)
 		var lock_label := Label.new()
 		lock_label.text = "Requires %s tier" % comp.get_tier_name()
-		lock_label.add_theme_font_size_override("font_size", 16)
+		lock_label.add_theme_font_size_override("font_size", 22)
 		lock_label.add_theme_color_override("font_color", Color(1.0, 0.549, 0.486))
 		info_vbox.add_child(lock_label)
 

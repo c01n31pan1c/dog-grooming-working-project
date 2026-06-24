@@ -44,7 +44,7 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="UI/CollectionView/TitleBar/HBox"]
 layout_mode = 2
 text = "Back"
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(120, 64)
 
 [node name="TitleLabel" type="Label" parent="UI/CollectionView/TitleBar/HBox"]
 layout_mode = 2
@@ -102,7 +102,7 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="UI/DetailView/VBoxContainer/Header/HBox"]
 layout_mode = 2
 text = "Back"
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(120, 64)
 
 [node name="BreedNameLabel" type="Label" parent="UI/DetailView/VBoxContainer/Header/HBox"]
 layout_mode = 2
@@ -110,14 +110,14 @@ size_flags_horizontal = 3
 text = "Breed Name"
 horizontal_alignment = 1
 vertical_alignment = 1
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 32
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="BreedGroupLabel" type="Label" parent="UI/DetailView/VBoxContainer/Header/HBox"]
 layout_mode = 2
 text = "Group"
 vertical_alignment = 1
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 
 [node name="DifficultyContainer" type="HBoxContainer" parent="UI/DetailView/VBoxContainer/Header/HBox"]
 layout_mode = 2

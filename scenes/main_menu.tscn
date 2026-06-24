@@ -46,13 +46,13 @@ theme_override_constants/separation = 24
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 text = "Amateur"
 
 [node name="CoinIcon" type="Label" parent="UI/MainLayout/PlayerInfoBar/HBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 text = "Coins:"
 
@@ -60,7 +60,7 @@ text = "Coins:"
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 text = "0"
 
@@ -109,7 +109,7 @@ position = Vector2(3, 3)
 
 [node name="SubtitleLabel" type="Label" parent="UI/MainLayout/TitleContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 0.7)
 text = "Groom your way to glory!"
 horizontal_alignment = 1
@@ -127,22 +127,22 @@ theme_override_constants/separation = 16
 [node name="PlayButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 88)
+custom_minimum_size = Vector2(420, 96)
 theme_override_font_sizes/font_size = 36
 text = "Play"
 
 [node name="BreedpediaButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 80)
-theme_override_font_sizes/font_size = 28
+custom_minimum_size = Vector2(420, 88)
+theme_override_font_sizes/font_size = 32
 text = "Breed-pedia"
 
 [node name="SettingsButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 80)
-theme_override_font_sizes/font_size = 28
+custom_minimum_size = Vector2(420, 88)
+theme_override_font_sizes/font_size = 32
 text = "Settings"
 
 [node name="BottomSpacer" type="Control" parent="UI/MainLayout"]
@@ -211,20 +211,20 @@ layout_mode = 2
 [node name="MasterLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "Master"
 
 [node name="MasterVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 56)
 
 [node name="MasterValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 26
 text = "100%"
 horizontal_alignment = 2
 
@@ -234,20 +234,20 @@ layout_mode = 2
 [node name="MusicLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "Music"
 
 [node name="MusicVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 56)
 
 [node name="MusicValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 26
 text = "80%"
 horizontal_alignment = 2
 
@@ -257,20 +257,20 @@ layout_mode = 2
 [node name="SFXLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "SFX"
 
 [node name="SFXVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 56)
 
 [node name="SFXValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 26
 text = "100%"
 horizontal_alignment = 2
 
@@ -279,7 +279,7 @@ layout_mode = 2
 
 [node name="ControlsPlaceholder" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
 text = "Controls: coming soon"
 horizontal_alignment = 1
@@ -290,14 +290,14 @@ layout_mode = 2
 [node name="VersionLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
 text = "Version: 0.1.0"
 horizontal_alignment = 1
 
 [node name="CreditsLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
 text = "Credits: placeholder"
 horizontal_alignment = 1
@@ -305,6 +305,6 @@ horizontal_alignment = 1
 [node name="SettingsCloseButton" type="Button" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 64)
 theme_override_font_sizes/font_size = 24
 text = "Close"

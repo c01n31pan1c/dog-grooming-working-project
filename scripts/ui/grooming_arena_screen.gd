@@ -85,6 +85,11 @@ func _ready() -> void:
 	# Wait a frame for scene tree to be ready
 	await get_tree().process_frame
 
+	# Sync SubViewport size to the window viewport so coordinate mapping works
+	# on screens that differ from the hardcoded 1920x1080.
+	_sync_sub_viewport_size()
+	get_tree().root.size_changed.connect(_sync_sub_viewport_size)
+
 	# Load breed-specific fur material if available
 	var breed_fur_material: ShaderMaterial = null
 	if _breed_data and _breed_data.fur_material_path != "":
@@ -196,6 +201,15 @@ func _ready() -> void:
 	_start_session()
 
 
+## Keep the SubViewport size in sync with the window so that screen-to-viewport
+## coordinate mapping stays correct on every display resolution.
+func _sync_sub_viewport_size() -> void:
+	if sub_viewport:
+		var window_size := get_tree().root.size
+		if window_size != Vector2i.ZERO and sub_viewport.size != window_size:
+			sub_viewport.size = window_size
+
+
 func _start_session() -> void:
 	if _breed_data:
 		_grooming_controller.start_grooming(_breed_data)
@@ -254,7 +268,7 @@ func _setup_hud() -> void:
 	top_left.offset_left = 16.0
 	top_left.offset_top = 8.0
 	top_left.offset_right = 300.0
-	top_left.offset_bottom = 54.0
+	top_left.offset_bottom = 70.0
 	top_left.add_theme_constant_override("separation", 16)
 	_hud.add_child(top_left)
 
@@ -268,7 +282,7 @@ func _setup_hud() -> void:
 
 	_hud_tool_label = Label.new()
 	_hud_tool_label.text = "Tool: None"
-	_hud_tool_label.add_theme_font_size_override("font_size", 20)
+	_hud_tool_label.add_theme_font_size_override("font_size", 28)
 	_hud_tool_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	_hud_tool_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	top_left.add_child(_hud_tool_label)
@@ -279,14 +293,14 @@ func _setup_hud() -> void:
 	top_right.offset_left = -250.0
 	top_right.offset_top = 8.0
 	top_right.offset_right = -16.0
-	top_right.offset_bottom = 54.0
+	top_right.offset_bottom = 70.0
 	top_right.add_theme_constant_override("separation", 12)
 	top_right.alignment = BoxContainer.ALIGNMENT_END
 	_hud.add_child(top_right)
 
 	_hud_coin_label = Label.new()
 	_hud_coin_label.text = "%d coins" % SaveManager.data.get("currency", 0)
-	_hud_coin_label.add_theme_font_size_override("font_size", 20)
+	_hud_coin_label.add_theme_font_size_override("font_size", 28)
 	_hud_coin_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	_hud_coin_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hud_coin_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -294,7 +308,7 @@ func _setup_hud() -> void:
 
 	var pause_btn := Button.new()
 	pause_btn.text = "Pause"
-	pause_btn.custom_minimum_size = Vector2(80, 40)
+	pause_btn.custom_minimum_size = Vector2(120, 64)
 	pause_btn.pressed.connect(func() -> void:
 		get_tree().paused = not get_tree().paused
 		pause_btn.text = "Resume" if get_tree().paused else "Pause"
@@ -308,8 +322,8 @@ func _setup_hud() -> void:
 	# -- Progress bar area (just above toolbar) --
 	var progress_container := HBoxContainer.new()
 	progress_container.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	progress_container.offset_top = -140.0
-	progress_container.offset_bottom = -110.0
+	progress_container.offset_top = -160.0
+	progress_container.offset_bottom = -120.0
 	progress_container.offset_left = 20.0
 	progress_container.offset_right = -20.0
 	progress_container.add_theme_constant_override("separation", 10)
@@ -317,27 +331,27 @@ func _setup_hud() -> void:
 
 	var progress_label := Label.new()
 	progress_label.text = "Progress:"
-	progress_label.add_theme_font_size_override("font_size", 18)
+	progress_label.add_theme_font_size_override("font_size", 26)
 	progress_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	progress_container.add_child(progress_label)
 
 	_hud_progress_bar = ProgressBar.new()
 	_hud_progress_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_hud_progress_bar.custom_minimum_size = Vector2(0, 24)
+	_hud_progress_bar.custom_minimum_size = Vector2(0, 32)
 	_hud_progress_bar.max_value = 100.0
 	_hud_progress_bar.value = 0.0
 	progress_container.add_child(_hud_progress_bar)
 
 	_hud_zone_count_label = Label.new()
 	_hud_zone_count_label.text = "0 / 0"
-	_hud_zone_count_label.add_theme_font_size_override("font_size", 18)
+	_hud_zone_count_label.add_theme_font_size_override("font_size", 26)
 	_hud_zone_count_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	progress_container.add_child(_hud_zone_count_label)
 
 	# -- "Done" button (hidden until at least 1 zone groomed) --
 	_hud_done_button = Button.new()
 	_hud_done_button.text = "Done"
-	_hud_done_button.custom_minimum_size = Vector2(90, 36)
+	_hud_done_button.custom_minimum_size = Vector2(140, 64)
 	_hud_done_button.visible = false
 	_hud_done_button.pressed.connect(_finish_grooming)
 	progress_container.add_child(_hud_done_button)
@@ -345,7 +359,7 @@ func _setup_hud() -> void:
 	# -- Instruction label (center screen, semi-transparent) --
 	_hud_instruction_label = Label.new()
 	_hud_instruction_label.text = "Select a tool below, then tap the dog to groom!"
-	_hud_instruction_label.add_theme_font_size_override("font_size", 24)
+	_hud_instruction_label.add_theme_font_size_override("font_size", 30)
 	_hud_instruction_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314, 0.85))
 	_hud_instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hud_instruction_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -430,16 +444,16 @@ func _create_callouts() -> GroomingCallouts:
 
 	var margin := MarginContainer.new()
 	margin.name = "MarginContainer"
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 12)
-	margin.add_theme_constant_override("margin_bottom", 8)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 12)
 	panel.add_child(margin)
 
 	var label := Label.new()
 	label.name = "FactLabel"
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_font_size_override("font_size", 22)
 	margin.add_child(label)
 
 	return callouts

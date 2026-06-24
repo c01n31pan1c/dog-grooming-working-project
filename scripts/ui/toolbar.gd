@@ -21,7 +21,7 @@ var _tool_buttons: Dictionary = {}
 var _active_button: Button = null
 
 ## Style constants.
-const BUTTON_MIN_SIZE := Vector2(80, 80)
+const BUTTON_MIN_SIZE := Vector2(100, 100)
 const ACTIVE_COLOR := Color(1.0, 0.878, 0.4, 1.0)
 const INACTIVE_COLOR := Color(0.941, 0.969, 1.0, 1.0)
 
@@ -32,7 +32,7 @@ func _ready() -> void:
 	anchor_right = 1.0
 	anchor_top = 1.0
 	anchor_bottom = 1.0
-	offset_top = -100.0
+	offset_top = -120.0
 	offset_bottom = 0.0
 	offset_left = 0.0
 	offset_right = 0.0
@@ -48,7 +48,7 @@ func _ready() -> void:
 	_button_container = HBoxContainer.new()
 	_button_container.alignment = BoxContainer.ALIGNMENT_CENTER
 	_button_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_button_container.add_theme_constant_override("separation", 8)
+	_button_container.add_theme_constant_override("separation", 12)
 	scroll.add_child(_button_container)
 
 	# Listen for tool selection events from EventBus.
@@ -130,11 +130,6 @@ func _on_tool_button_pressed(button: Button) -> void:
 
 	if _tool_system != null:
 		_tool_system.select_tool(tool_data)
-
-	if _input_handler != null:
-		_input_handler.set_active_tool(tool_data)
-
-	_highlight_button(button)
 
 
 ## Highlight the active tool button, un-highlight others.

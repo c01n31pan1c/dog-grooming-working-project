@@ -33,7 +33,7 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/Header"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(120, 50)
+custom_minimum_size = Vector2(120, 64)
 text = "Back"
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
@@ -41,7 +41,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "SELECT COMPETITION"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -75,31 +75,35 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Competition Name"
 theme_override_font_sizes/font_size = 26
-
 [node name="DetailTierLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Tier: Local"
+theme_override_font_sizes/font_size = 26
 
 [node name="DetailBreedLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Breed: TBD"
+theme_override_font_sizes/font_size = 26
 
 [node name="DetailTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Time Limit: 120s"
+theme_override_font_sizes/font_size = 26
 
 [node name="DetailFeeLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Entry Fee: 0 coins"
+theme_override_font_sizes/font_size = 26
 
 [node name="DetailJudgesLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Judges: ..."
+theme_override_font_sizes/font_size = 26
 
 [node name="DetailDescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox"]
 unique_name_in_owner = true
@@ -115,7 +119,7 @@ theme_override_constants/separation = 20
 [node name="EnterButton" type="Button" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox/ButtonRow"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(220, 70)
 text = "Enter Competition"
 
 [node name="InsufficientFundsLabel" type="Label" parent="MarginContainer/VBoxContainer/DetailPanel/DetailMargin/DetailVBox/ButtonRow"]

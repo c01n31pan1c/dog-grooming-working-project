@@ -84,7 +84,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 	else:
 		name_label.text = "???"
 		name_label.modulate = Color(0.7, 0.75, 0.8, 1.0)
-	name_label.add_theme_font_size_override("font_size", 20)
+	name_label.add_theme_font_size_override("font_size", 26)
 	inner_vbox.add_child(name_label)
 
 	# Group
@@ -93,7 +93,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 		group_label.text = breed_data.breed_group
 	else:
 		group_label.text = _get_unlock_hint(breed_data.unlock_requirement)
-	group_label.add_theme_font_size_override("font_size", 14)
+	group_label.add_theme_font_size_override("font_size", 20)
 	group_label.modulate = Color(0.6, 0.65, 0.7, 1.0)
 	inner_vbox.add_child(group_label)
 
@@ -103,7 +103,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 	for i in range(3):
 		star_text += "★" if i <= breed_data.difficulty_tier else "☆"
 	stars_label.text = star_text
-	stars_label.add_theme_font_size_override("font_size", 18)
+	stars_label.add_theme_font_size_override("font_size", 24)
 	stars_label.add_theme_color_override("font_color", Color(1.0, 0.843, 0.0))
 	inner_vbox.add_child(stars_label)
 
@@ -111,7 +111,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 	if breed_data.breed_name in _encountered_breeds:
 		var badge := Label.new()
 		badge.text = "GROOMED"
-		badge.add_theme_font_size_override("font_size", 12)
+		badge.add_theme_font_size_override("font_size", 18)
 		badge.modulate = Color(0.71, 0.918, 0.843, 1.0)
 		inner_vbox.add_child(badge)
 	else:
@@ -119,7 +119,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 		if is_unlocked:
 			var new_badge := Label.new()
 			new_badge.text = "NEW"
-			new_badge.add_theme_font_size_override("font_size", 14)
+			new_badge.add_theme_font_size_override("font_size", 20)
 			new_badge.add_theme_color_override("font_color", UIAnimations.COLOR_GOLD)
 			inner_vbox.add_child(new_badge)
 			# Defer pulse until node is in tree and laid out

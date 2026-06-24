@@ -62,7 +62,7 @@ func _populate_difficulty(tier: int) -> void:
 	for i in range(3):
 		var star := Label.new()
 		star.text = "★" if i <= tier else "☆"
-		star.add_theme_font_size_override("font_size", 24)
+		star.add_theme_font_size_override("font_size", 28)
 		_difficulty_container.add_child(star)
 
 
@@ -71,14 +71,14 @@ func _populate_facts(facts: Array) -> void:
 
 	var header := Label.new()
 	header.text = "Grooming Facts"
-	header.add_theme_font_size_override("font_size", 22)
+	header.add_theme_font_size_override("font_size", 28)
 	_facts_container.add_child(header)
 
 	for fact in facts:
 		var fact_label := Label.new()
 		fact_label.text = "• " + fact
 		fact_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		fact_label.add_theme_font_size_override("font_size", 16)
+		fact_label.add_theme_font_size_override("font_size", 22)
 		_facts_container.add_child(fact_label)
 
 
@@ -87,7 +87,7 @@ func _populate_zones(zones: Dictionary) -> void:
 
 	var header := Label.new()
 	header.text = "Grooming Zone Guide"
-	header.add_theme_font_size_override("font_size", 22)
+	header.add_theme_font_size_override("font_size", 28)
 	_zones_container.add_child(header)
 
 	# Sort zones by suggested_order
@@ -113,7 +113,7 @@ func _populate_zones(zones: Dictionary) -> void:
 		if guard > 0.0:
 			guard_text = " | Guard: %.1f mm" % guard
 		zone_header.text = "%s — %s%s" % [_format_zone_name(zone_id), tool_name, guard_text]
-		zone_header.add_theme_font_size_override("font_size", 18)
+		zone_header.add_theme_font_size_override("font_size", 24)
 		zone_vbox.add_child(zone_header)
 
 		# Notes
@@ -122,7 +122,7 @@ func _populate_zones(zones: Dictionary) -> void:
 			var notes_label := Label.new()
 			notes_label.text = notes
 			notes_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			notes_label.add_theme_font_size_override("font_size", 14)
+			notes_label.add_theme_font_size_override("font_size", 20)
 			notes_label.modulate = Color(0.8, 0.8, 0.8, 1.0)
 			zone_vbox.add_child(notes_label)
 
@@ -134,7 +134,7 @@ func _populate_zones(zones: Dictionary) -> void:
 			for s in steps:
 				step_names.append(s.replace("_", " ").capitalize())
 			steps_label.text = "Steps: " + " → ".join(step_names)
-			steps_label.add_theme_font_size_override("font_size", 14)
+			steps_label.add_theme_font_size_override("font_size", 20)
 			steps_label.modulate = Color(0.7, 0.85, 1.0, 1.0)
 			zone_vbox.add_child(steps_label)
 

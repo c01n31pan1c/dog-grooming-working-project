@@ -90,10 +90,10 @@ func _build_ui() -> void:
 	header_row.add_theme_constant_override("separation", 24)
 	main_vbox.add_child(header_row)
 
-	_header_tier_label = _make_label("", 22, COLOR_MINT)
+	_header_tier_label = _make_label("", 28, COLOR_MINT)
 	header_row.add_child(_header_tier_label)
 
-	_header_breed_label = _make_label("", 22, COLOR_TEXT)
+	_header_breed_label = _make_label("", 28, COLOR_TEXT)
 	header_row.add_child(_header_breed_label)
 
 	main_vbox.add_child(_make_separator())
@@ -108,13 +108,13 @@ func _build_ui() -> void:
 	time_fee_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	main_vbox.add_child(time_fee_row)
 
-	_time_label = _make_label("", 28, COLOR_TEXT)
+	_time_label = _make_label("", 32, COLOR_TEXT)
 	time_fee_row.add_child(_time_label)
 
-	_fee_label = _make_label("", 28, COLOR_TEXT)
+	_fee_label = _make_label("", 32, COLOR_TEXT)
 	time_fee_row.add_child(_fee_label)
 
-	_balance_label = _make_label("", 22, COLOR_HIDDEN)
+	_balance_label = _make_label("", 26, COLOR_HIDDEN)
 	_balance_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main_vbox.add_child(_balance_label)
 
@@ -132,7 +132,7 @@ func _build_ui() -> void:
 	main_vbox.add_child(_make_separator())
 
 	# --- Insufficient funds warning ---
-	_insufficient_label = _make_label("", 20, COLOR_CORAL)
+	_insufficient_label = _make_label("", 26, COLOR_CORAL)
 	_insufficient_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_insufficient_label.visible = false
 	main_vbox.add_child(_insufficient_label)
@@ -144,7 +144,7 @@ func _build_ui() -> void:
 	main_vbox.add_child(button_row)
 
 	_back_button = _make_button("Back", 24)
-	_back_button.custom_minimum_size = Vector2(180, 56)
+	_back_button.custom_minimum_size = Vector2(180, 70)
 	_back_button.pressed.connect(_on_back_pressed)
 	# Style back button more subtly
 	var back_style := StyleBoxFlat.new()
@@ -160,7 +160,7 @@ func _build_ui() -> void:
 	button_row.add_child(_back_button)
 
 	_start_button = _make_button("Start Grooming", 28)
-	_start_button.custom_minimum_size = Vector2(300, 64)
+	_start_button.custom_minimum_size = Vector2(300, 80)
 	_start_button.pressed.connect(_on_start_pressed)
 	button_row.add_child(_start_button)
 
@@ -222,7 +222,7 @@ func _populate_breed_card() -> void:
 
 	var breed: BreedData = _competition_data.breed
 
-	var name_label := _make_label(breed.breed_name, 26, COLOR_TEXT)
+	var name_label := _make_label(breed.breed_name, 30, COLOR_TEXT)
 	vbox.add_child(name_label)
 
 	# Group and difficulty
@@ -231,7 +231,7 @@ func _populate_breed_card() -> void:
 	vbox.add_child(info_row)
 
 	if breed.get("breed_group") != null and breed.breed_group != "":
-		var group_label := _make_label("Group: %s" % breed.breed_group, 20, COLOR_HIDDEN)
+		var group_label := _make_label("Group: %s" % breed.breed_group, 24, COLOR_HIDDEN)
 		info_row.add_child(group_label)
 
 	# Difficulty stars
@@ -242,7 +242,7 @@ func _populate_breed_card() -> void:
 			stars += "★"
 		for i in range(5 - diff):
 			stars += "☆"
-		var diff_label := _make_label("Difficulty: %s" % stars, 20, COLOR_TEXT)
+		var diff_label := _make_label("Difficulty: %s" % stars, 24, COLOR_TEXT)
 		info_row.add_child(diff_label)
 
 	# Grooming facts / preview
@@ -250,17 +250,17 @@ func _populate_breed_card() -> void:
 		var facts: Array = breed.grooming_facts
 		var count := mini(facts.size(), 2)
 		for i in range(count):
-			var fact_label := _make_label("• %s" % str(facts[i]), 18, COLOR_HIDDEN)
+			var fact_label := _make_label("• %s" % str(facts[i]), 24, COLOR_HIDDEN)
 			fact_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			vbox.add_child(fact_label)
 	elif breed.get("description") != null and breed.description != "":
-		var desc_label := _make_label(breed.description, 18, COLOR_HIDDEN)
+		var desc_label := _make_label(breed.description, 24, COLOR_HIDDEN)
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vbox.add_child(desc_label)
 
 	# Zone count
 	if breed.grooming_zones.size() > 0:
-		var zones_label := _make_label("%d grooming zones" % breed.grooming_zones.size(), 18, COLOR_MINT)
+		var zones_label := _make_label("%d grooming zones" % breed.grooming_zones.size(), 24, COLOR_MINT)
 		vbox.add_child(zones_label)
 
 
@@ -303,12 +303,12 @@ func _build_judge_card(index: int, judge: JudgeData) -> PanelContainer:
 	hbox.add_child(info_vbox)
 
 	# Judge name
-	var name_label := _make_label(judge.judge_name, 24, COLOR_TEXT)
+	var name_label := _make_label(judge.judge_name, 28, COLOR_TEXT)
 	info_vbox.add_child(name_label)
 
 	# Personality hint (one-liner derived from preferred_style + strictness)
 	var hint := _get_personality_hint(judge)
-	var hint_label := _make_label(hint, 18, COLOR_HIDDEN)
+	var hint_label := _make_label(hint, 24, COLOR_HIDDEN)
 	info_vbox.add_child(hint_label)
 
 	# Preferences area
@@ -320,14 +320,14 @@ func _build_judge_card(index: int, judge: JudgeData) -> PanelContainer:
 		var style_pct := int(judge.scoring_weights.get("style", 0.0) * 100)
 		prefs_label = _make_label(
 			"Accuracy: %d%%  |  Time: %d%%  |  Style: %d%%" % [accuracy_pct, time_pct, style_pct],
-			18, COLOR_MINT
+			24, COLOR_MINT
 		)
 		info_vbox.add_child(prefs_label)
 
-		var style_label := _make_label("Preferred Style: %s" % judge.preferred_style, 18, COLOR_MINT)
+		var style_label := _make_label("Preferred Style: %s" % judge.preferred_style, 24, COLOR_MINT)
 		info_vbox.add_child(style_label)
 	else:
-		prefs_label = _make_label("Preferences: Hidden", 18, COLOR_HIDDEN)
+		prefs_label = _make_label("Preferences: Hidden", 24, COLOR_HIDDEN)
 		info_vbox.add_child(prefs_label)
 
 	# Right side: reveal button (or revealed badge)
@@ -336,12 +336,12 @@ func _build_judge_card(index: int, judge: JudgeData) -> PanelContainer:
 	hbox.add_child(right_vbox)
 
 	if is_revealed:
-		var revealed_badge := _make_label("Revealed ✓", 18, COLOR_MINT)
+		var revealed_badge := _make_label("Revealed ✓", 24, COLOR_MINT)
 		revealed_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		right_vbox.add_child(revealed_badge)
 	else:
-		var reveal_btn := _make_button("Reveal - %d coins" % judge.reveal_cost, 18)
-		reveal_btn.custom_minimum_size = Vector2(200, 44)
+		var reveal_btn := _make_button("Reveal - %d coins" % judge.reveal_cost, 24)
+		reveal_btn.custom_minimum_size = Vector2(220, 64)
 		var coins: int = SaveManager.data.get("currency", 0)
 		reveal_btn.disabled = coins < judge.reveal_cost
 		reveal_btn.pressed.connect(_on_reveal_pressed.bind(index))

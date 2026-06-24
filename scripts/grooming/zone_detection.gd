@@ -60,15 +60,17 @@ func _map_to_sub_viewport(screen_pos: Vector2) -> Vector2:
 	if sub_viewport_container == null or sub_viewport == null:
 		return screen_pos
 
-	var container_pos := sub_viewport_container.global_position
-	var container_size := sub_viewport_container.size
+	# Use the container's actual global rect so this works at any screen size.
+	var container_rect := sub_viewport_container.get_global_rect()
 	var viewport_size := Vector2(sub_viewport.size)
 
-	var local_pos := screen_pos - container_pos
-	var scale_x := viewport_size.x / maxf(container_size.x, 1.0)
-	var scale_y := viewport_size.y / maxf(container_size.y, 1.0)
+	# Convert screen position to a 0-1 normalized position within the container.
+	var local_pos := screen_pos - container_rect.position
+	var norm_x := local_pos.x / maxf(container_rect.size.x, 1.0)
+	var norm_y := local_pos.y / maxf(container_rect.size.y, 1.0)
 
-	return Vector2(local_pos.x * scale_x, local_pos.y * scale_y)
+	# Scale the normalized position to SubViewport pixel coordinates.
+	return Vector2(norm_x * viewport_size.x, norm_y * viewport_size.y)
 
 
 ## Given a screen position, returns the zone_id under the pointer, or "" if none.

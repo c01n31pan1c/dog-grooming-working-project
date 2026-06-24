@@ -97,14 +97,14 @@ func _create_item_panel(item: Dictionary) -> PanelContainer:
 
 	var name_label := Label.new()
 	name_label.text = data.upgrade_name
-	name_label.add_theme_font_size_override("font_size", 20)
+	name_label.add_theme_font_size_override("font_size", 26)
 	name_label.add_theme_color_override("font_color", Color(0.239, 0.239, 0.361))
 	info_vbox.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.text = data.effect_description
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_font_size_override("font_size", 20)
 	desc_label.add_theme_color_override("font_color", Color(0.204, 0.286, 0.369))
 	info_vbox.add_child(desc_label)
 
@@ -116,7 +116,7 @@ func _create_item_panel(item: Dictionary) -> PanelContainer:
 		status_label.add_theme_color_override("font_color", Color(0.71, 0.918, 0.843))
 	else:
 		status_label.text = ""
-	status_label.add_theme_font_size_override("font_size", 14)
+	status_label.add_theme_font_size_override("font_size", 20)
 	info_vbox.add_child(status_label)
 
 	var buy_vbox := VBoxContainer.new()
@@ -131,7 +131,7 @@ func _create_item_panel(item: Dictionary) -> PanelContainer:
 
 	var buy_button := Button.new()
 	buy_button.text = "Buy"
-	buy_button.custom_minimum_size = Vector2(100, 40)
+	buy_button.custom_minimum_size = Vector2(120, 64)
 
 	if data.upgrade_type != "consumable" and item["owned"]:
 		buy_button.disabled = true
