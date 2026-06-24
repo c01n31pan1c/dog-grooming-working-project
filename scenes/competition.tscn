@@ -67,7 +67,7 @@ offset_right = 150.0
 offset_bottom = 95.0
 horizontal_alignment = 1
 text = "Tier: Local"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
 [node name="BreedLabel" type="Label" parent="UI/PreShowPanel"]
@@ -81,7 +81,7 @@ offset_right = 150.0
 offset_bottom = 125.0
 horizontal_alignment = 1
 text = "Breed: TBD"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 
 [node name="TimeLimitLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -94,7 +94,7 @@ offset_right = 150.0
 offset_bottom = 155.0
 horizontal_alignment = 1
 text = "Time: 120s"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 
 [node name="EntryFeeLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -107,7 +107,7 @@ offset_right = 150.0
 offset_bottom = 185.0
 horizontal_alignment = 1
 text = "Entry Fee: 0 coins"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="JudgesContainer" type="VBoxContainer" parent="UI/PreShowPanel"]
@@ -130,7 +130,8 @@ anchor_bottom = 1.0
 offset_left = -120.0
 offset_top = -80.0
 offset_right = 120.0
-offset_bottom = -30.0
+offset_bottom = -10.0
+custom_minimum_size = Vector2(0, 70)
 text = "Start Grooming"
 theme_override_font_sizes/font_size = 24
 
@@ -201,7 +202,7 @@ offset_right = 150.0
 offset_bottom = -135.0
 horizontal_alignment = 1
 text = "Total Score: 0.0"
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="PlacementLabel" type="Label" parent="UI/ResultsPanel"]
@@ -217,7 +218,7 @@ offset_right = 150.0
 offset_bottom = -105.0
 horizontal_alignment = 1
 text = "Placement"
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 
 [node name="RewardLabel" type="Label" parent="UI/ResultsPanel"]
 layout_mode = 1
@@ -232,7 +233,7 @@ offset_right = 150.0
 offset_bottom = -75.0
 horizontal_alignment = 1
 text = "Reward"
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="ContinueButton" type="Button" parent="UI/ResultsPanel"]
@@ -243,8 +244,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -120.0
-offset_top = -60.0
+offset_top = -80.0
 offset_right = 120.0
 offset_bottom = -10.0
+custom_minimum_size = Vector2(0, 70)
 text = "Continue"
 theme_override_font_sizes/font_size = 24
