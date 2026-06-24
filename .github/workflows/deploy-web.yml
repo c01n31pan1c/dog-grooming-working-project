@@ -24,17 +24,20 @@ jobs:
 
       - name: Setup export templates
         run: |
-          TEMPLATE_DIR="/root/.local/share/godot/export_templates/4.3.stable"
-          mkdir -p "$TEMPLATE_DIR"
-          # Check if templates already exist from Docker image
-          if [ ! -f "$TEMPLATE_DIR/web_release.zip" ]; then
-            echo "Downloading Godot 4.3 export templates..."
-            wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O /tmp/templates.tpz
-            cd /tmp && unzip -q templates.tpz
+          # Godot in this container uses /github/home as HOME
+          for BASE in "/root" "/github/home" "$HOME"; do
+            TEMPLATE_DIR="$BASE/.local/share/godot/export_templates/4.3.stable"
+            mkdir -p "$TEMPLATE_DIR"
+          done
+          echo "Downloading Godot 4.3 export templates..."
+          wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O /tmp/templates.tpz
+          cd /tmp && unzip -q templates.tpz
+          for BASE in "/root" "/github/home" "$HOME"; do
+            TEMPLATE_DIR="$BASE/.local/share/godot/export_templates/4.3.stable"
             cp /tmp/templates/* "$TEMPLATE_DIR/" 2>/dev/null || true
-          fi
-          echo "Available templates:"
-          ls "$TEMPLATE_DIR/"
+          done
+          echo "Templates installed. Checking /github/home path:"
+          ls /github/home/.local/share/godot/export_templates/4.3.stable/ | head -5
 
       - name: Import project
         run: godot --headless --import
