@@ -341,7 +341,7 @@ var _prev_coin_value: int = -1
 func _on_hud_currency_changed(_new_amount: int, _delta: int) -> void:
 	var new_coins: int = SaveManager.data.get("currency", 0)
 	if _prev_coin_value >= 0 and _prev_coin_value != new_coins:
-		UIAnimations.coin_change(_hud_coin_label, _prev_coin_value, new_coins)
+		UIAnimations.number_ticker(_hud_coin_label, float(_prev_coin_value), float(new_coins), 0.4, "%d coins")
 	else:
 		_hud_coin_label.text = "%d coins" % new_coins
 	_prev_coin_value = new_coins

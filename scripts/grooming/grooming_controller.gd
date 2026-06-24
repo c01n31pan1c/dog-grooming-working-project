@@ -141,7 +141,7 @@ func _apply_tool_effect(zone_id: String, tool_data: ToolData, quality: float) ->
 
 		ToolData.ToolType.MEDICINE:
 			# Medicine is a bonus action; doesn't mark groomed.
-			pass
+			zone_state["medicine_applied"] = true
 
 		ToolData.ToolType.CLIPPER, ToolData.ToolType.SCISSORS, ToolData.ToolType.NAIL_TRIMMER:
 			# These are primary grooming tools that mark a zone done.

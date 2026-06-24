@@ -11,8 +11,8 @@ var _camera: Camera3D = null
 ## Physics ray length for zone detection.
 const RAY_LENGTH: float = 1000.0
 
-## Collision mask for grooming zones (layer 2 = bit 1).
-const ZONE_COLLISION_MASK: int = 2
+## Collision mask for grooming zones (layer 1 = bit 0, matching Area3D defaults).
+const ZONE_COLLISION_MASK: int = 1
 
 
 func set_camera(camera: Camera3D) -> void:

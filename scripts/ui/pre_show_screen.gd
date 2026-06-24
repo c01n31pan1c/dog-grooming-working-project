@@ -235,8 +235,8 @@ func _populate_breed_card() -> void:
 		info_row.add_child(group_label)
 
 	# Difficulty stars
-	if breed.get("difficulty") != null:
-		var diff: int = breed.difficulty if breed.difficulty is int else int(breed.difficulty)
+	if breed.get("difficulty_tier") != null:
+		var diff: int = breed.difficulty_tier if breed.difficulty_tier is int else int(breed.difficulty_tier)
 		var stars := ""
 		for i in range(diff):
 			stars += "★"

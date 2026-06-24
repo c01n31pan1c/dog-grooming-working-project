@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://grooming_arena_001"]
+[gd_scene load_steps=8 format=3 uid="uid://grooming_arena_001"]
 
 [ext_resource type="Script" path="res://scripts/ui/grooming_arena_screen.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://dog_placeholder_001" path="res://models/dog_placeholder.tscn" id="2"]
