@@ -26,6 +26,7 @@ func _ready() -> void:
 
 	_detail_view.back_pressed.connect(_on_detail_back)
 	_back_to_menu_button.pressed.connect(_on_back_to_menu)
+	UIAnimations.setup_button_juice(_back_to_menu_button)
 
 	# Listen for grooming completions to track encounters
 	EventBus.grooming_completed.connect(_on_grooming_completed)
@@ -46,9 +47,13 @@ func _build_collection_grid() -> void:
 	for child in _breed_grid.get_children():
 		child.queue_free()
 
+	var card_index: int = 0
 	for breed in _all_breeds:
 		var card := _create_breed_card(breed)
 		_breed_grid.add_child(card)
+		# Staggered fade-in animation for each card
+		UIAnimations.fade_slide_up(card, 30.0, 0.3, card_index * 0.06)
+		card_index += 1
 
 
 func _create_breed_card(breed_data: Resource) -> PanelContainer:
@@ -109,22 +114,45 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 		badge.add_theme_font_size_override("font_size", 12)
 		badge.modulate = Color(0.71, 0.918, 0.843, 1.0)
 		inner_vbox.add_child(badge)
+	else:
+		# "NEW" badge with gentle pulse for newly discovered breeds
+		if is_unlocked:
+			var new_badge := Label.new()
+			new_badge.text = "NEW"
+			new_badge.add_theme_font_size_override("font_size", 14)
+			new_badge.add_theme_color_override("font_color", UIAnimations.COLOR_GOLD)
+			inner_vbox.add_child(new_badge)
+			# Defer pulse until node is in tree and laid out
+			new_badge.ready.connect(func(): UIAnimations.badge_pulse(new_badge))
 
 	# Click handler
 	var button := Button.new()
 	button.flat = true
 	button.anchors_preset = Control.PRESET_FULL_RECT
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.pressed.connect(_on_breed_card_pressed.bind(breed_data))
+	button.pressed.connect(_on_breed_card_pressed.bind(breed_data, card))
 	card.add_child(button)
 
 	return card
 
 
-func _on_breed_card_pressed(breed_data: Resource) -> void:
+func _on_breed_card_pressed(breed_data: Resource, card: Control = null) -> void:
+	# Tap bounce on the card before navigating
+	if card:
+		UIAnimations._ensure_center_pivot(card)
+		var tween := card.create_tween()
+		tween.tween_property(card, "scale", Vector2(0.95, 0.95), 0.08) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(card, "scale", Vector2.ONE, 0.12) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		await tween.finished
+
 	var is_unlocked: bool = _is_breed_unlocked(breed_data)
 	_collection_view.visible = false
 	_detail_view.show_breed(breed_data, is_unlocked)
+
+	# Detail view slides in from the right
+	UIAnimations.slide_in_from_right(_detail_view, 400.0, 0.4)
 
 
 func _on_detail_back() -> void:

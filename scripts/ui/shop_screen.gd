@@ -31,6 +31,7 @@ func _ready() -> void:
 	_shop_manager.setup(_currency_manager, _upgrade_system)
 
 	_back_button.pressed.connect(_on_back_pressed)
+	UIAnimations.setup_button_juice(_back_button)
 	EventBus.currency_changed.connect(_on_currency_changed)
 
 	_update_balance_display()
@@ -139,6 +140,7 @@ func _create_item_panel(item: Dictionary) -> PanelContainer:
 		buy_button.disabled = true
 
 	buy_button.pressed.connect(_on_buy_pressed.bind(upgrade_id))
+	UIAnimations.setup_button_juice(buy_button)
 	buy_vbox.add_child(buy_button)
 
 	return panel

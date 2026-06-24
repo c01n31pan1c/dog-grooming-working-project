@@ -55,9 +55,17 @@ func transition_out() -> void:
 
 
 ## Fade from black back to visible. Await this to know when it completes.
+## Includes a subtle zoom effect (1.02 -> 1.0) on the new scene for smoothness.
 func transition_in() -> void:
 	if _tween and _tween.is_running():
 		_tween.kill()
+
+	# Apply subtle zoom-in on the scene root if available
+	var scene_root := get_tree().current_scene
+	if scene_root:
+		var ui_node := scene_root.get_node_or_null("UI") as Control
+		if ui_node:
+			UIAnimations.scene_entrance_zoom(ui_node, fade_duration)
 
 	_tween = create_tween()
 	_tween.tween_property(_overlay, "color:a", 0.0, fade_duration)

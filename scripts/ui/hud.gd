@@ -48,6 +48,8 @@ func _ready() -> void:
 	# Button connections
 	guide_toggle_button.pressed.connect(_on_guide_toggle_pressed)
 	pause_button.pressed.connect(_on_pause_pressed)
+	UIAnimations.setup_button_juice(guide_toggle_button)
+	UIAnimations.setup_button_juice(pause_button)
 
 	# Initialize display
 	_update_coin_display()
@@ -82,6 +84,9 @@ func _update_timer_display() -> void:
 	var fraction := time_remaining / maxf(time_total, 0.01)
 	if fraction <= URGENCY_RED_THRESHOLD:
 		timer_label.add_theme_color_override("font_color", COLOR_RED)
+		# Start pulse if not already pulsing
+		if _timer_pulse_tween == null or not _timer_pulse_tween.is_running():
+			_timer_pulse_tween = UIAnimations.start_pulse(timer_label)
 	elif fraction <= URGENCY_YELLOW_THRESHOLD:
 		timer_label.add_theme_color_override("font_color", COLOR_YELLOW)
 	else:
@@ -90,14 +95,23 @@ func _update_timer_display() -> void:
 
 func _update_progress_display() -> void:
 	var pct := (float(zones_completed) / float(total_zones)) * 100.0
-	progress_bar.value = pct
+	# Smooth fill animation instead of jumping
+	UIAnimations.smooth_progress(progress_bar, pct, 0.3)
 	progress_label.text = "%d / %d" % [zones_completed, total_zones]
 
 
+var _last_coin_value: int = -1
+
 func _update_coin_display() -> void:
 	var coins: int = SaveManager.data.get("currency", 0)
-	coin_label.text = str(coins)
+	if _last_coin_value >= 0 and _last_coin_value != coins:
+		UIAnimations.coin_change(coin_label, _last_coin_value, coins)
+	else:
+		coin_label.text = str(coins)
+	_last_coin_value = coins
 
+
+var _timer_pulse_tween: Tween = null
 
 func _on_zone_groomed(_zone_id: String, _tool_data: Resource) -> void:
 	zones_completed += 1

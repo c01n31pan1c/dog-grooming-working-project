@@ -32,6 +32,8 @@ func _ready() -> void:
 
 	enter_button.pressed.connect(_on_enter_pressed)
 	back_button.pressed.connect(_on_back_pressed)
+	UIAnimations.setup_button_juice(enter_button)
+	UIAnimations.setup_button_juice(back_button)
 
 	_load_competitions()
 	_populate_competition_cards()

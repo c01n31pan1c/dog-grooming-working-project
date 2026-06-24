@@ -33,10 +33,36 @@ func _ready() -> void:
 	_breedpedia_button.pressed.connect(_on_breedpedia_pressed)
 	_settings_button.pressed.connect(_on_settings_pressed)
 
+	# Wire up button press juice
+	UIAnimations.setup_button_juice(_compete_button)
+	UIAnimations.setup_button_juice(_shop_button)
+	UIAnimations.setup_button_juice(_breedpedia_button)
+	UIAnimations.setup_button_juice(_settings_button)
+
 	EventBus.currency_changed.connect(_on_currency_changed)
 	EventBus.tier_advanced.connect(_on_tier_advanced)
 
 	_refresh_display()
+	_play_entrance_animations()
+
+
+func _play_entrance_animations() -> void:
+	# Balance and tier labels slide in from left
+	UIAnimations.slide_in_from_left(_balance_label, 200.0, 0.4)
+	UIAnimations.slide_in_from_left(_tier_label, 200.0, 0.4, 0.05)
+
+	# Stats slide in from right
+	UIAnimations.slide_in_from_right(_stats_label, 200.0, 0.4, 0.1)
+
+	# Buttons slide up staggered
+	var buttons: Array[Button] = [_compete_button, _shop_button, _breedpedia_button, _settings_button]
+	for i in buttons.size():
+		UIAnimations.fade_slide_up(buttons[i], 30.0, 0.3, 0.2 + i * 0.08)
+
+	# Tier progress bar fills from 0 to current value
+	var target_val := _progress_bar.value
+	_progress_bar.value = 0.0
+	UIAnimations.smooth_progress(_progress_bar, target_val, 0.8)
 
 
 func _refresh_display() -> void:

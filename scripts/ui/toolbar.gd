@@ -138,13 +138,18 @@ func _on_tool_button_pressed(button: Button) -> void:
 
 
 ## Highlight the active tool button, un-highlight others.
+## Includes bounce animation for selection and deselect for previous.
 func _highlight_button(button: Button) -> void:
-	# Reset previous active button.
+	# Animate previous active button (deselect shrink).
 	if _active_button != null and is_instance_valid(_active_button):
 		_active_button.modulate = INACTIVE_COLOR
+		UIAnimations.tool_deselect(_active_button)
 
 	_active_button = button
 	button.modulate = ACTIVE_COLOR
+
+	# Animate new selection (bounce).
+	UIAnimations.tool_select_bounce(button)
 
 
 ## Called when a tool is selected via EventBus (e.g., from code, not UI).

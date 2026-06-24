@@ -30,6 +30,7 @@ func _ready() -> void:
 	reward = context.get("reward", 0)
 
 	continue_button.pressed.connect(_on_continue_pressed)
+	UIAnimations.setup_button_juice(continue_button)
 
 	# Hide panels not used in results-only mode
 	var pre_show_panel := $UI/PreShowPanel as Control
@@ -75,7 +76,8 @@ func _populate_results() -> void:
 	var sep2 := HSeparator.new()
 	results_container.add_child(sep2)
 
-	# Display per-judge breakdown
+	# Display per-judge breakdown with staggered slide-in
+	var judge_index: int = 0
 	for jr in judge_results:
 		var judge_block := VBoxContainer.new()
 		judge_block.add_theme_constant_override("separation", 4)
@@ -112,6 +114,10 @@ func _populate_results() -> void:
 
 		results_container.add_child(judge_block)
 
+		# Staggered slide-in from the right for each judge section
+		UIAnimations.slide_in_from_right(judge_block, 300.0, 0.5, 0.3 + judge_index * 0.2)
+		judge_index += 1
+
 	# Score breakdown
 	var sep3 := HSeparator.new()
 	results_container.add_child(sep3)
@@ -126,19 +132,37 @@ func _populate_results() -> void:
 	breakdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	results_container.add_child(breakdown_label)
 
-	# Total and placement
-	total_score_label.text = "Total Score: %.1f" % panel_score
+	# Total score — number ticker from 0 to final value
+	total_score_label.text = "Total Score: 0.0"
+	var score_delay := 0.3 + judge_results.size() * 0.2 + 0.3
+	UIAnimations.number_ticker(total_score_label, 0.0, panel_score, UIAnimations.DUR_SCORE_REVEAL, "Total Score: %.1f", score_delay)
 
+	# Placement — scales up from 0 with big bounce
 	if placement <= 3:
 		var ordinals := {1: "1st", 2: "2nd", 3: "3rd"}
 		placement_label.text = "Placement: %s Place!" % ordinals[placement]
 	else:
 		placement_label.text = "No placement this time."
+	UIAnimations.pop_scale(placement_label, 0.5, score_delay + UIAnimations.DUR_SCORE_REVEAL)
 
+	# Reward — gold flash + number ticker
 	if reward > 0:
-		reward_label.text = "Earned: %d coins!" % reward
+		reward_label.text = "Earned: 0 coins!"
+		var reward_delay := score_delay + UIAnimations.DUR_SCORE_REVEAL + 0.3
+		UIAnimations.number_ticker(reward_label, 0.0, float(reward), 0.8, "Earned: %d coins!", reward_delay)
+		UIAnimations.gold_flash(reward_label)
 	else:
 		reward_label.text = "No coin reward."
+
+	# 1st place celebration effect
+	if placement == 1:
+		var celebration_delay := score_delay + UIAnimations.DUR_SCORE_REVEAL + 0.5
+		var results_panel := $UI/ResultsPanel as Control
+		if results_panel:
+			get_tree().create_timer(celebration_delay).timeout.connect(func():
+				var center := results_panel.size * 0.5
+				UIAnimations.celebration(results_panel, center, 12)
+			)
 
 
 func _on_continue_pressed() -> void:

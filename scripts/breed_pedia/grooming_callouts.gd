@@ -87,30 +87,53 @@ func _show_random_fact() -> void:
 	_display_callout(facts[idx])
 
 
-## Display a fact string as a callout popup.
+## The original X position of the panel (cached for slide animations).
+var _panel_origin_x: float = 0.0
+var _panel_origin_cached: bool = false
+
+## Display a fact string as a callout popup with slide-in + bounce.
 func _display_callout(fact_text: String) -> void:
 	_label.text = fact_text
 	_panel.visible = true
 	_is_showing = true
 	_callout_timer = DISPLAY_DURATION
 
-	# Fade in
+	# Cache origin position on first use
+	if not _panel_origin_cached:
+		_panel_origin_x = _panel.position.x
+		_panel_origin_cached = true
+
+	# Slide in from the left with bounce + fade in
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
+	_panel.position.x = _panel_origin_x - 300.0
+	_panel.modulate.a = 0.0
 	_tween = create_tween()
-	_tween.tween_property(_panel, "modulate:a", 1.0, FADE_DURATION)
+	_tween.set_parallel(true)
+	_tween.tween_property(_panel, "position:x", _panel_origin_x, FADE_DURATION + 0.2) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	_tween.tween_property(_panel, "modulate:a", 1.0, FADE_DURATION) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
-## Hide the current callout with a fade out.
+## Hide the current callout with slide out + fade.
 func _hide_callout() -> void:
 	_is_showing = false
 	_cooldown_timer = COOLDOWN
 
+	if not _panel_origin_cached:
+		_panel_origin_x = _panel.position.x
+		_panel_origin_cached = true
+
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
 	_tween = create_tween()
-	_tween.tween_property(_panel, "modulate:a", 0.0, FADE_DURATION)
-	_tween.tween_callback(_panel.set.bind("visible", false))
+	_tween.set_parallel(true)
+	_tween.tween_property(_panel, "position:x", _panel_origin_x - 300.0, FADE_DURATION) \
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	_tween.tween_property(_panel, "modulate:a", 0.0, FADE_DURATION) \
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	_tween.chain().tween_callback(_panel.set.bind("visible", false))
 
 
 ## Manually trigger a callout for a specific fact string.

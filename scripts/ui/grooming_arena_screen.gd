@@ -426,8 +426,27 @@ func _finish_grooming() -> void:
 
 	if _is_competition_mode and _competition_data:
 		# Calculate scores and show results via competition results screen
-		var zone_results := _grooming_controller.get_zone_results()
+		var raw_zone_results := _grooming_controller.get_zone_results()
 		var time_bonus := _timer_system.calculate_time_bonus(100.0)
+
+		# Convert GroomingController zone format to ScoringEngine format.
+		# GroomingController stores: {groomed: bool, quality: float, tool_used: ToolData|null, wet: bool, ...}
+		# ScoringEngine expects:     {completed: bool, tool_used: String, guard_size: float}
+		var scoring_results: Dictionary = {}
+		for zone_id in raw_zone_results:
+			var raw: Dictionary = raw_zone_results[zone_id]
+			var tool_used_str: String = ""
+			var guard_size_val: float = 0.0
+			var tool_ref = raw.get("tool_used", null)
+			if tool_ref != null and tool_ref is ToolData:
+				var td: ToolData = tool_ref as ToolData
+				tool_used_str = ToolData.ToolType.keys()[td.tool_type]
+				guard_size_val = td.guard_size
+			scoring_results[zone_id] = {
+				"completed": raw.get("groomed", false),
+				"tool_used": tool_used_str,
+				"guard_size": guard_size_val,
+			}
 
 		# Build style extras from zone states
 		var style_extras := {
@@ -438,7 +457,7 @@ func _finish_grooming() -> void:
 		}
 
 		var score_breakdown := _scoring_engine.calculate_score(
-			zone_results, _breed_data, time_bonus, style_extras
+			scoring_results, _breed_data, time_bonus, style_extras
 		)
 
 		var panel_result := _judge_ai.calculate_panel_score(
@@ -508,6 +527,28 @@ func _on_zone_hover_changed(zone_id: String) -> void:
 func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 	if dog_model:
 		dog_model.apply_grooming(zone_id, 0.25)
+
+	# Spawn touch effect + floating indicator at mouse/touch position
+	var ui_layer := $UI as Control
+	if ui_layer:
+		var touch_pos := ui_layer.get_viewport().get_mouse_position()
+
+		# Touch ripple effect
+		UIAnimations.spawn_touch_effect(ui_layer, touch_pos, UIAnimations.COLOR_MINT, 30.0)
+
+		# Check if correct tool was used (groomed_state increasing means correct)
+		var is_correct := true
+		if _breed_data and _tool_data is ToolData:
+			var td := _tool_data as ToolData
+			var zone_info: Dictionary = _breed_data.grooming_zones.get(zone_id, {})
+			var required_tool: String = zone_info.get("required_tool", "")
+			if required_tool != "" and td.tool_type != ToolData.ToolType.get(required_tool.to_upper(), -1):
+				is_correct = false
+
+		if is_correct:
+			UIAnimations.spawn_float_indicator(ui_layer, "✓", touch_pos, UIAnimations.COLOR_MINT)
+		else:
+			UIAnimations.spawn_float_indicator(ui_layer, "✗", touch_pos, UIAnimations.COLOR_CORAL)
 
 
 func _on_guide_button_pressed() -> void:
