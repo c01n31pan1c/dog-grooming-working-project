@@ -4,6 +4,8 @@
 
 [resource]
 script = ExtResource("1")
+model_scene_path = "res://models/dog_schnauzer.tscn"
+fur_material_path = "res://materials/fur_schnauzer_miniature.tres"
 breed_name = "Miniature Schnauzer"
 breed_group = "Terrier"
 description = "The Miniature Schnauzer is instantly recognizable by its distinguished beard, bushy eyebrows, and crisp body outline. This double-coated breed has a wiry topcoat over a soft undercoat. For show dogs, the topcoat is maintained through hand-stripping — pulling dead hairs by hand to preserve the coat's harsh, wiry texture and vibrant color. Pet Schnauzers are typically clipped, which is faster but gradually softens the coat texture. The breed's iconic facial furnishings require careful scissor work to frame the expression properly."

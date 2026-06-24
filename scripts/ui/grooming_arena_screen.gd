@@ -48,12 +48,35 @@ func _ready() -> void:
 	# Load the fur shader
 	fur_shader = load("res://shaders/shell_fur.gdshader") as Shader
 
+	# Load breed-specific model if available
+	if _breed_data and _breed_data.model_scene_path != "":
+		var breed_scene := load(_breed_data.model_scene_path) as PackedScene
+		if breed_scene:
+			var dog_scene_parent := dog_model.get_parent()
+			var old_model := dog_model
+			var new_model := breed_scene.instantiate() as DogModel
+			if new_model:
+				dog_scene_parent.add_child(new_model)
+				new_model.transform = old_model.transform
+				new_model.name = old_model.name
+				old_model.queue_free()
+				dog_model = new_model
+			else:
+				push_warning("GroomingArena: Failed to instantiate breed model, using placeholder")
+		else:
+			push_warning("GroomingArena: Failed to load breed scene '%s', using placeholder" % _breed_data.model_scene_path)
+
 	# Wait a frame for scene tree to be ready
 	await get_tree().process_frame
 
-	# Apply shell fur to the dog model
+	# Load breed-specific fur material if available
+	var breed_fur_material: ShaderMaterial = null
+	if _breed_data and _breed_data.fur_material_path != "":
+		breed_fur_material = load(_breed_data.fur_material_path) as ShaderMaterial
+
+	# Apply shell fur to the dog model (with breed-specific colors if available)
 	if dog_model and fur_shader:
-		var shell_meshes := ShellFurSetup.setup(dog_model, fur_shader)
+		var shell_meshes := ShellFurSetup.setup(dog_model, fur_shader, breed_fur_material)
 		for zone_id in shell_meshes:
 			dog_model.zone_meshes[zone_id] = shell_meshes[zone_id]
 
@@ -306,14 +329,22 @@ func _on_hud_zone_groomed(_zone_id: String, _tool_data: Resource) -> void:
 	if _breed_data == null:
 		return
 	var progress := _grooming_controller.get_grooming_progress()
-	_hud_progress_bar.value = progress * 100.0
+	# Smooth progress bar fill instead of jumping
+	UIAnimations.smooth_progress(_hud_progress_bar, progress * 100.0, 0.3)
 	var total: int = _breed_data.grooming_zones.size()
 	var done: int = int(progress * total)
 	_hud_zone_count_label.text = "%d / %d" % [done, total]
 
 
+var _prev_coin_value: int = -1
+
 func _on_hud_currency_changed(_new_amount: int, _delta: int) -> void:
-	_hud_coin_label.text = "%d coins" % SaveManager.data.get("currency", 0)
+	var new_coins: int = SaveManager.data.get("currency", 0)
+	if _prev_coin_value >= 0 and _prev_coin_value != new_coins:
+		UIAnimations.coin_change(_hud_coin_label, _prev_coin_value, new_coins)
+	else:
+		_hud_coin_label.text = "%d coins" % new_coins
+	_prev_coin_value = new_coins
 
 
 ## --- Callouts ---
@@ -369,9 +400,14 @@ func _on_timer_tick(seconds_remaining: float) -> void:
 			_hud_timer_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 
 
+var _timer_pulse_tween: Tween = null
+
 func _on_timer_warning(_seconds_remaining: float) -> void:
 	if _hud_warning_rect:
 		_hud_warning_rect.visible = true
+	# Start gentle pulse on timer label
+	if _hud_timer_label and _timer_pulse_tween == null:
+		_timer_pulse_tween = UIAnimations.start_pulse(_hud_timer_label)
 
 
 func _on_timer_expired() -> void:

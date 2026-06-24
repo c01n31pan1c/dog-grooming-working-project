@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/shell_fur.gdshader" id="1"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/fur_color = Color(0.961, 0.941, 0.91, 1)
+shader_parameter/fur_tip_color = Color(0.878, 0.847, 0.8, 1)
+shader_parameter/fur_length = 0.05
+shader_parameter/fur_density = 65.0
+shader_parameter/shell_index = 0
+shader_parameter/shell_count = 6
+shader_parameter/groomed_amount = 0.0
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1.0, 0.878, 0.4, 0.4)
+shader_parameter/guide_overlay_strength = 0.0
+shader_parameter/guide_color = Color(1, 0, 0, 0.5)

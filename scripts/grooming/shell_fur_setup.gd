@@ -7,7 +7,8 @@ const SHELL_COUNT: int = 6
 
 ## Apply shell fur materials to all MeshInstance3D children with zone_id metadata.
 ## Returns a Dictionary mapping zone_id -> Array[MeshInstance3D] (the shell copies).
-static func setup(dog_root: Node3D, fur_shader: Shader) -> Dictionary:
+## If breed_material is provided, its shader parameters are used as defaults for fur color/length/density.
+static func setup(dog_root: Node3D, fur_shader: Shader, breed_material: ShaderMaterial = null) -> Dictionary:
 	var zone_shells: Dictionary = {}
 	var meshes: Array[MeshInstance3D] = []
 	_find_fur_meshes(dog_root, meshes)
@@ -21,7 +22,7 @@ static func setup(dog_root: Node3D, fur_shader: Shader) -> Dictionary:
 			zone_shells[zone_id] = []
 
 		# Apply shell materials to the original mesh (shell 0 = base)
-		var base_mat := _create_shell_material(fur_shader, 0, zone_id)
+		var base_mat := _create_shell_material(fur_shader, 0, zone_id, breed_material)
 		original_mesh.material_override = base_mat
 		zone_shells[zone_id].append(original_mesh)
 
@@ -33,7 +34,7 @@ static func setup(dog_root: Node3D, fur_shader: Shader) -> Dictionary:
 			shell_mesh.name = "%s_shell_%d" % [original_mesh.name, shell_idx]
 			shell_mesh.set_meta("zone_id", zone_id)
 
-			var shell_mat := _create_shell_material(fur_shader, shell_idx, zone_id)
+			var shell_mat := _create_shell_material(fur_shader, shell_idx, zone_id, breed_material)
 			shell_mesh.material_override = shell_mat
 
 			original_mesh.add_child(shell_mesh)
@@ -42,15 +43,24 @@ static func setup(dog_root: Node3D, fur_shader: Shader) -> Dictionary:
 	return zone_shells
 
 
-static func _create_shell_material(fur_shader: Shader, shell_index: int, _zone_id: String) -> ShaderMaterial:
+static func _create_shell_material(fur_shader: Shader, shell_index: int, _zone_id: String, breed_material: ShaderMaterial = null) -> ShaderMaterial:
 	var mat := ShaderMaterial.new()
 	mat.shader = fur_shader
 	mat.set_shader_parameter("shell_index", shell_index)
 	mat.set_shader_parameter("shell_count", SHELL_COUNT)
-	mat.set_shader_parameter("fur_color", Color(0.65, 0.45, 0.25, 1.0))
-	mat.set_shader_parameter("fur_tip_color", Color(0.85, 0.7, 0.45, 1.0))
-	mat.set_shader_parameter("fur_length", 0.04)
-	mat.set_shader_parameter("fur_density", 40.0)
+
+	# Use breed-specific fur parameters if available, otherwise defaults
+	if breed_material:
+		mat.set_shader_parameter("fur_color", breed_material.get_shader_parameter("fur_color"))
+		mat.set_shader_parameter("fur_tip_color", breed_material.get_shader_parameter("fur_tip_color"))
+		mat.set_shader_parameter("fur_length", breed_material.get_shader_parameter("fur_length"))
+		mat.set_shader_parameter("fur_density", breed_material.get_shader_parameter("fur_density"))
+	else:
+		mat.set_shader_parameter("fur_color", Color(0.65, 0.45, 0.25, 1.0))
+		mat.set_shader_parameter("fur_tip_color", Color(0.85, 0.7, 0.45, 1.0))
+		mat.set_shader_parameter("fur_length", 0.04)
+		mat.set_shader_parameter("fur_density", 40.0)
+
 	mat.set_shader_parameter("groomed_amount", 0.0)
 	mat.set_shader_parameter("highlight_strength", 0.0)
 	mat.set_shader_parameter("guide_overlay_strength", 0.0)

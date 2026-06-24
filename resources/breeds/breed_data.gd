@@ -16,3 +16,9 @@ extends Resource
 
 ## What the player needs to unlock this breed (e.g., "tier_1", "competition_wins_5")
 @export var unlock_requirement: String = ""
+
+## Path to the breed-specific model scene (.tscn). Falls back to dog_placeholder.tscn if empty.
+@export_file("*.tscn") var model_scene_path: String = ""
+
+## Path to the breed-specific fur material (.tres). Falls back to shell_fur_default.tres if empty.
+@export_file("*.tres") var fur_material_path: String = ""

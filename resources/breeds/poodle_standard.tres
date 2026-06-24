@@ -4,6 +4,8 @@
 
 [resource]
 script = ExtResource("1")
+model_scene_path = "res://models/dog_poodle_standard.tscn"
+fur_material_path = "res://materials/fur_poodle_standard.tres"
 breed_name = "Standard Poodle"
 breed_group = "Non-Sporting"
 description = "The Standard Poodle is one of the most iconic breeds in competitive grooming. Originally bred as a water retriever in Germany, the Poodle's elaborate clips were designed with function in mind — shaved areas reduced drag in water while puffs of hair protected vital joints and organs from cold. Today, the Continental Clip remains the gold standard for show Poodles. Their curly, dense, single-layer coat grows continuously and does not shed, making regular professional grooming essential every 4-6 weeks."

@@ -4,6 +4,8 @@
 
 [resource]
 script = ExtResource("1")
+model_scene_path = "res://models/dog_irish_terrier.tscn"
+fur_material_path = "res://materials/fur_irish_terrier.tres"
 breed_name = "Irish Terrier"
 breed_group = "Terrier"
 description = "The Irish Terrier is a bold, fiery breed with a dense, wiry red coat that is maintained through hand-stripping — the traditional technique of pulling dead hairs from the topcoat by hand. Each hair has a deep red tip that fades to wheaten at the root, so the coat appears to darken when freshly stripped and lightens as it grows out. The breed standard demands a harsh, flat-lying coat with no softness or woolliness. Irish Terriers are sometimes called the 'Red Devil' for their spirited temperament and striking color."

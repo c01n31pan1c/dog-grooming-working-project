@@ -4,6 +4,8 @@
 
 [resource]
 script = ExtResource("1")
+model_scene_path = "res://models/dog_golden_retriever.tscn"
+fur_material_path = "res://materials/fur_golden_retriever.tres"
 breed_name = "Golden Retriever"
 breed_group = "Sporting"
 description = "The Golden Retriever is one of the most popular breeds worldwide, known for its friendly temperament and beautiful golden double coat. Their water-repellent outer coat and dense, insulating undercoat require regular maintenance but should never be shaved — doing so damages the coat's natural protection against heat, cold, and UV rays. Grooming focuses on thorough brushing, deshedding the undercoat, and neatening the natural feathering on the legs, chest, belly, and tail."
