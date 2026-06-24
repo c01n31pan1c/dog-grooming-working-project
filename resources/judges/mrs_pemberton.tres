@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="JudgeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/judges/judge_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+judge_name = "Mrs. Pemberton"
+personality = "A traditionalist through and through. Mrs. Pemberton has judged kennel club shows for over thirty years and believes there is no substitute for precision and adherence to the breed standard. She has little patience for flashy shortcuts and values meticulous, correct grooming above all else."
+preferred_style = "Traditional"
+scoring_weights = {
+"accuracy": 0.6,
+"time": 0.15,
+"style": 0.25
+}
+strictness_level = 0.7
+reveal_cost = 50
