@@ -34,8 +34,8 @@ static func _load_resources_from(dir_path: String, extension: String) -> Array[R
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
-		if not dir.current_is_dir() and file_name.get_extension() == extension:
-			var res := ResourceLoader.load(dir_path + file_name)
+		if not dir.current_is_dir() and (file_name.get_extension() == extension or file_name.ends_with(".%s.remap" % extension)):
+			var res := ResourceLoader.load(dir_path + file_name.replace(".remap", ""))
 			if res != null:
 				results.append(res)
 		file_name = dir.get_next()

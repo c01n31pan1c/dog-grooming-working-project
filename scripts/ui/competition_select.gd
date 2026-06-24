@@ -49,8 +49,9 @@ func _load_competitions() -> void:
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var res := ResourceLoader.load(COMPETITIONS_DIR + file_name)
+		if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap"):
+			var res_path := COMPETITIONS_DIR + file_name.replace(".remap", "")
+			var res := ResourceLoader.load(res_path)
 			if res is CompetitionData:
 				_competitions.append(res as CompetitionData)
 		file_name = dir.get_next()

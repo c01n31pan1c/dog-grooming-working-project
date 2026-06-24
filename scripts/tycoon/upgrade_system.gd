@@ -24,8 +24,8 @@ func _load_catalog() -> void:
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var res := ResourceLoader.load(UPGRADES_DIR + file_name)
+		if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap"):
+			var res := ResourceLoader.load(UPGRADES_DIR + file_name.replace(".remap", ""))
 			if res is UpgradeData:
 				var upgrade_id := file_name.get_basename()
 				_catalog[upgrade_id] = res
