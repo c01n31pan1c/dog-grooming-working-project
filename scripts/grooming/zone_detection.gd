@@ -92,7 +92,7 @@ func get_zone_at_position(screen_pos: Vector2) -> String:
 	if result.is_empty():
 		return ""
 
-	var collider := result.get("collider")
+	var collider: Object = result.get("collider")
 	if collider and collider.has_meta("zone_id"):
 		return collider.get_meta("zone_id") as String
 

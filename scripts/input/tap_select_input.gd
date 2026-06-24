@@ -141,7 +141,7 @@ func _raycast_for_zone(screen_position: Vector2) -> String:
 	if result.is_empty():
 		return ""
 
-	var collider := result["collider"]
+	var collider: Object = result["collider"]
 	if collider is Area3D:
 		# Grooming zone Area3Ds should have a "zone_id" metadata or be named
 		# with the zone_id. Check metadata first, fall back to node name.
