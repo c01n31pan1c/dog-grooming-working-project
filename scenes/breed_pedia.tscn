@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://breed_pedia_001"]
+[gd_scene load_steps=3 format=3 uid="uid://breed_pedia_001"]
 
 [ext_resource type="Script" path="res://scripts/ui/breed_pedia_screen.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/breed_pedia/breed_viewer.gd" id="2"]
 
 [node name="BreedPedia" type="Node"]
 script = ExtResource("1")
@@ -12,3 +13,136 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="CollectionView" type="Control" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleBar" type="HBoxContainer" parent="UI/CollectionView"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="BackButton" type="Button" parent="UI/CollectionView/TitleBar"]
+layout_mode = 2
+text = "Back"
+custom_minimum_size = Vector2(100, 0)
+
+[node name="TitleLabel" type="Label" parent="UI/CollectionView/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Breed-pedia"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/CollectionView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 70.0
+offset_left = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BreedGrid" type="GridContainer" parent="UI/CollectionView/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+
+[node name="DetailView" type="Control" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+script = ExtResource("2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DetailView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="UI/DetailView/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+
+[node name="BackButton" type="Button" parent="UI/DetailView/VBoxContainer/Header"]
+layout_mode = 2
+text = "Back"
+custom_minimum_size = Vector2(100, 0)
+
+[node name="BreedNameLabel" type="Label" parent="UI/DetailView/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Breed Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BreedGroupLabel" type="Label" parent="UI/DetailView/VBoxContainer/Header"]
+layout_mode = 2
+text = "Group"
+vertical_alignment = 1
+
+[node name="DifficultyContainer" type="HBoxContainer" parent="UI/DetailView/VBoxContainer/Header"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/DetailView/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Content" type="VBoxContainer" parent="UI/DetailView/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="UI/DetailView/VBoxContainer/ScrollContainer/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 120)
+fit_content = true
+text = ""
+
+[node name="FactsContainer" type="VBoxContainer" parent="UI/DetailView/VBoxContainer/ScrollContainer/Content"]
+layout_mode = 2
+
+[node name="ZonesContainer" type="VBoxContainer" parent="UI/DetailView/VBoxContainer/ScrollContainer/Content"]
+layout_mode = 2
+
+[node name="LockOverlay" type="ColorRect" parent="UI/DetailView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+visible = false
+
+[node name="LockLabel" type="Label" parent="UI/DetailView/LockOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -30.0
+offset_right = 200.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Locked"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -12,3 +12,103 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "YOUR SALON"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+
+[node name="BalanceLabel" type="Label" parent="UI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 coins"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="TierSection" type="VBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TierLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/TierSection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tier: Local Amateur"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+
+[node name="TierProgressBar" type="ProgressBar" parent="UI/MarginContainer/VBoxContainer/TierSection"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+
+[node name="ProgressDetail" type="Label" parent="UI/MarginContainer/VBoxContainer/TierSection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wins: 0/5 | Coins earned: 0/500"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="StatsLabel" type="Label" parent="UI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wins: 0 | Competitions: 0 | Breeds groomed: 0"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Spacer" type="Control" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ButtonsGrid" type="GridContainer" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+columns = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+
+[node name="CompeteButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(250, 80)
+text = "Enter Competition"
+theme_override_font_sizes/font_size = 22
+
+[node name="ShopButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(250, 80)
+text = "Shop"
+theme_override_font_sizes/font_size = 22
+
+[node name="BreedpediaButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(250, 80)
+text = "Breed-pedia"
+theme_override_font_sizes/font_size = 22
+
+[node name="SettingsButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(250, 80)
+text = "Settings"
+theme_override_font_sizes/font_size = 22

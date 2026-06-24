@@ -41,7 +41,7 @@ var style_extras: Dictionary = {"cologne": false, "accessories": [], "medicine":
 @onready var tier_label: Label = $UI/PreShowPanel/TierLabel
 @onready var breed_label: Label = $UI/PreShowPanel/BreedLabel
 @onready var time_limit_label: Label = $UI/PreShowPanel/TimeLimitLabel
-@onready var entry_label: Label = $UI/PreShowPanel/EntryFeeLabel
+@onready var entry_fee_label: Label = $UI/PreShowPanel/EntryFeeLabel
 @onready var judges_container: VBoxContainer = $UI/PreShowPanel/JudgesContainer
 @onready var start_button: Button = $UI/PreShowPanel/StartButton
 
@@ -108,7 +108,7 @@ func _populate_pre_show() -> void:
 	competition_name_label.text = competition_data.competition_name
 	tier_label.text = "Tier: %s" % competition_data.get_tier_name()
 	time_limit_label.text = "Time: %ds" % int(competition_data.time_limit_seconds)
-	entry_label.text = "Entry Fee: %d coins" % competition_data.entry_fee
+	entry_fee_label.text = "Entry Fee: %d coins" % competition_data.entry_fee
 
 	if competition_data.breed != null:
 		breed_label.text = "Breed: %s" % competition_data.breed.breed_name
