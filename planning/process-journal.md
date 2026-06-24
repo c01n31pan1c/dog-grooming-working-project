@@ -56,3 +56,29 @@
 
 **Surprises:**
 - None — clean build from spec
+
+## Session — 2026-06-24
+
+**Phase:** WS-2 — Dog Models & Grooming Zones
+
+**Summary:**
+- Built procedural placeholder dog model (CSG-style primitives: capsule body, sphere head, cylinder legs, box ears, cylinder tail) as reusable scene
+- 11 grooming zones with Area3D + CollisionShape3D: head, ears_left, ears_right, back, chest, belly, legs_front_left, legs_front_right, legs_rear_left, legs_rear_right, tail
+- Orbit camera with horizontal 360 deg, vertical 15-75 deg clamped, pinch-to-zoom / scroll wheel, touch + mouse support, smooth interpolation
+- Shell fur shader (Compatibility renderer compatible): 6-layer shell extrusion with alpha-masked procedural noise, fur_color/tip_color gradient, groomed_amount parameter for visual feedback, highlight_strength for hover, guide_overlay_strength for color-coded overlay
+- ShellFurSetup utility class creates shell layer duplicates at runtime to avoid bloating the .tscn
+- ZoneDetection rewritten from stub: raycasts from camera through Area3D zones using zone_id metadata, emits zone_hover_changed signal, try_groom_at_position emits EventBus.zone_groomed
+- DogModel controller script: manages zone discovery, highlight state, groomed state, guide overlay toggle with guard-size color mapping
+- Grooming arena scene: SubViewport with dog model + orbit camera, 3-point lighting (warm key, cool fill, rim), ground plane, UI overlay with guide toggle button, zone info label, color-coded legend panel
+- Default shell fur material resource in materials/
+
+**Design decisions:**
+- Shell layers created at runtime via ShellFurSetup rather than baked into .tscn — keeps placeholder scene clean and swappable
+- Zone identification uses Node.set_meta("zone_id") on both Area3D and MeshInstance3D nodes — lightweight, no extra scripts per zone
+- Orbit camera uses _unhandled_input so UI elements can consume input first
+- Right-click to groom (left-click reserved for orbit) — placeholder until tool system (WS-3) wires in proper tool-apply input
+- Guard size legend uses 7 color bands matching real grooming guard sizes (0" through 6")
+- SubViewport used for 3D scene to cleanly separate 3D rendering from 2D UI overlay
+
+**Blockers:**
+- None
