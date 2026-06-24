@@ -2,10 +2,8 @@
 .godot/
 *.import
 
-# Export
-export_presets.cfg
-
 # Build artifacts
+build/
 android/build/
 ios/build/
 *.apk

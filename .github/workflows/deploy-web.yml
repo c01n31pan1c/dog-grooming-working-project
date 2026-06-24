@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup export templates
+        run: |
+          mkdir -p /root/.local/share/godot/export_templates/4.3.stable
+          # Templates are pre-installed in the Docker image; ensure they're in place
+          ls /root/.local/share/godot/export_templates/4.3.stable/ || true
+
+      - name: Import project
+        run: godot --headless --import
+        timeout-minutes: 3
+
+      - name: Export to Web
+        run: |
+          mkdir -p build/web
+          godot --headless --export-release "Web" build/web/index.html
+
+      - name: Add COI Service Worker
+        run: |
+          # Download coi-serviceworker for SharedArrayBuffer support on GitHub Pages
+          wget -O build/web/coi-serviceworker.js \
+            https://raw.githubusercontent.com/nicoschi/coi-serviceworker/main/coi-serviceworker.min.js || \
+          wget -O build/web/coi-serviceworker.js \
+            https://raw.githubusercontent.com/nicoschi/coi-serviceworker/refs/heads/main/coi-serviceworker.min.js || true
+          # Inject script tag into index.html <head>
+          sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html || true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
