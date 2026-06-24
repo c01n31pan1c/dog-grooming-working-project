@@ -1,0 +1,23 @@
+# Godot 4.x
+.godot/
+*.import
+
+# Export
+export_presets.cfg
+
+# Build artifacts
+android/build/
+ios/build/
+*.apk
+*.aab
+*.ipa
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~

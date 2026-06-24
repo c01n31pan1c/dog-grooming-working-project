@@ -29,3 +29,30 @@
 
 **Distillation candidates:**
 - None yet (Phase 1 only)
+
+## Session 2 — 2026-06-24
+
+**Phase:** WS-1 — Core Project Scaffold
+
+**Summary:**
+- Created full Godot 4.3+ project scaffold per spec, ADR-004 through ADR-008
+- 4 autoload singletons functional: EventBus, GameManager, SceneManager, SaveManager
+- 4 custom Resource classes: BreedData, ToolData, JudgeData, UpgradeData
+- Input abstraction layer with GroomingInput base + TapSelectInput implementation
+- 6 scene shells with scripts aware of GameManager state
+- Stub scripts for all subsystems (grooming, competition, tycoon, breed_pedia)
+- Export presets skeleton for Android + iOS
+- .gitignore for Godot
+
+**Design decisions not in ADRs:**
+- EventBus loads before GameManager in autoload order (GameManager references SceneManager which references EventBus)
+- Scene shell scripts set GameManager.current_state directly in _ready() as a safety net — GameManager.change_state() is the primary transition path but if a scene is loaded directly (e.g., during development), state stays consistent
+- SaveManager uses tab-indented JSON for human readability during development
+- Resource class .gd files live alongside their .tres instances in resources/ subdirectories rather than in scripts/ — keeps data definitions co-located with data instances
+- DataLoader uses DirAccess to scan resource directories dynamically rather than hardcoded lists
+
+**Agents dispatched:**
+- None (direct implementation — scaffold is a single coherent unit)
+
+**Surprises:**
+- None — clean build from spec
