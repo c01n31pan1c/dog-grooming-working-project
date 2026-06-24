@@ -24,9 +24,17 @@ jobs:
 
       - name: Setup export templates
         run: |
-          mkdir -p /root/.local/share/godot/export_templates/4.3.stable
-          # Templates are pre-installed in the Docker image; ensure they're in place
-          ls /root/.local/share/godot/export_templates/4.3.stable/ || true
+          TEMPLATE_DIR="/root/.local/share/godot/export_templates/4.3.stable"
+          mkdir -p "$TEMPLATE_DIR"
+          # Check if templates already exist from Docker image
+          if [ ! -f "$TEMPLATE_DIR/web_release.zip" ]; then
+            echo "Downloading Godot 4.3 export templates..."
+            wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O /tmp/templates.tpz
+            cd /tmp && unzip -q templates.tpz
+            cp /tmp/templates/* "$TEMPLATE_DIR/" 2>/dev/null || true
+          fi
+          echo "Available templates:"
+          ls "$TEMPLATE_DIR/"
 
       - name: Import project
         run: godot --headless --import
@@ -39,12 +47,8 @@ jobs:
 
       - name: Add COI Service Worker
         run: |
-          # Download coi-serviceworker for SharedArrayBuffer support on GitHub Pages
-          wget -O build/web/coi-serviceworker.js \
-            https://raw.githubusercontent.com/nicoschi/coi-serviceworker/main/coi-serviceworker.min.js || \
-          wget -O build/web/coi-serviceworker.js \
-            https://raw.githubusercontent.com/nicoschi/coi-serviceworker/refs/heads/main/coi-serviceworker.min.js || true
-          # Inject script tag into index.html <head>
+          wget -q -O build/web/coi-serviceworker.js \
+            https://raw.githubusercontent.com/nicoschi/coi-serviceworker/main/coi-serviceworker.min.js || true
           sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html || true
 
       - name: Upload Pages artifact
