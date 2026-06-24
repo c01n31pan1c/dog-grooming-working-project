@@ -13,9 +13,12 @@ var _is_transitioning: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	# Grab the initial scene from the tree (set by project.godot main_scene)
-	var root := get_tree().root
-	_current_scene = root.get_child(root.get_child_count() - 1)
+	# Defer scene grab — autoload _ready() runs before the main scene is added.
+	call_deferred("_initialize_current_scene")
+
+
+func _initialize_current_scene() -> void:
+	_current_scene = get_tree().current_scene
 
 
 ## Switch to a new scene by file path.
