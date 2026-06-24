@@ -7,13 +7,13 @@ signal back_pressed
 
 var _current_breed: Resource = null
 
-@onready var _breed_name_label: Label = $VBoxContainer/Header/BreedNameLabel
-@onready var _breed_group_label: Label = $VBoxContainer/Header/BreedGroupLabel
-@onready var _difficulty_container: HBoxContainer = $VBoxContainer/Header/DifficultyContainer
+@onready var _breed_name_label: Label = $VBoxContainer/Header/HBox/BreedNameLabel
+@onready var _breed_group_label: Label = $VBoxContainer/Header/HBox/BreedGroupLabel
+@onready var _difficulty_container: HBoxContainer = $VBoxContainer/Header/HBox/DifficultyContainer
 @onready var _description_label: RichTextLabel = $VBoxContainer/ScrollContainer/Content/DescriptionLabel
 @onready var _facts_container: VBoxContainer = $VBoxContainer/ScrollContainer/Content/FactsContainer
 @onready var _zones_container: VBoxContainer = $VBoxContainer/ScrollContainer/Content/ZonesContainer
-@onready var _back_button: Button = $VBoxContainer/Header/BackButton
+@onready var _back_button: Button = $VBoxContainer/Header/HBox/BackButton
 @onready var _lock_overlay: Control = $LockOverlay
 @onready var _lock_label: Label = $LockOverlay/LockLabel
 

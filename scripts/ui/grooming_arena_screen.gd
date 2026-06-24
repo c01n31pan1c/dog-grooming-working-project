@@ -218,7 +218,7 @@ func _setup_hud() -> void:
 	top_bar.add_child(_hud_timer_label)
 
 	_hud_warning_rect = ColorRect.new()
-	_hud_warning_rect.color = Color(1, 0, 0, 0.2)
+	_hud_warning_rect.color = Color(1.0, 0.549, 0.486, 0.2)
 	_hud_warning_rect.custom_minimum_size = Vector2(120, 40)
 	_hud_warning_rect.visible = false
 	top_bar.add_child(_hud_warning_rect)
@@ -364,11 +364,11 @@ func _on_timer_tick(seconds_remaining: float) -> void:
 		var total := _timer_system.get_duration()
 		var fraction := seconds_remaining / maxf(total, 0.01)
 		if fraction <= 0.15:
-			_hud_timer_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2))
+			_hud_timer_label.add_theme_color_override("font_color", Color(1.0, 0.42, 0.42))
 		elif fraction <= 0.4:
-			_hud_timer_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.1))
+			_hud_timer_label.add_theme_color_override("font_color", Color(1.0, 0.549, 0.486))
 		else:
-			_hud_timer_label.add_theme_color_override("font_color", Color.WHITE)
+			_hud_timer_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 
 
 func _on_timer_warning(_seconds_remaining: float) -> void:

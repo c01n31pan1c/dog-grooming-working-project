@@ -22,8 +22,8 @@ var _active_button: Button = null
 
 ## Style constants.
 const BUTTON_MIN_SIZE := Vector2(80, 80)
-const ACTIVE_COLOR := Color(0.3, 0.7, 1.0, 1.0)
-const INACTIVE_COLOR := Color(0.8, 0.8, 0.8, 1.0)
+const ACTIVE_COLOR := Color(1.0, 0.878, 0.4, 1.0)
+const INACTIVE_COLOR := Color(0.941, 0.969, 1.0, 1.0)
 
 
 func _ready() -> void:

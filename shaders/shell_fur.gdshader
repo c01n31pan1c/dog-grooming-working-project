@@ -2,8 +2,8 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 // Fur parameters
-uniform vec4 fur_color : source_color = vec4(0.65, 0.45, 0.25, 1.0);
-uniform vec4 fur_tip_color : source_color = vec4(0.85, 0.7, 0.45, 1.0);
+uniform vec4 fur_color : source_color = vec4(0.82, 0.68, 0.42, 1.0);
+uniform vec4 fur_tip_color : source_color = vec4(0.95, 0.88, 0.65, 1.0);
 uniform float fur_length : hint_range(0.0, 0.15) = 0.04;
 uniform float fur_density : hint_range(1.0, 80.0) = 40.0;
 uniform int shell_index = 0;
@@ -14,7 +14,7 @@ uniform float groomed_amount : hint_range(0.0, 1.0) = 0.0;
 
 // Highlight state
 uniform float highlight_strength : hint_range(0.0, 1.0) = 0.0;
-uniform vec4 highlight_color : source_color = vec4(0.3, 0.7, 1.0, 0.4);
+uniform vec4 highlight_color : source_color = vec4(1.0, 0.878, 0.4, 0.4);
 
 // Guide overlay
 uniform float guide_overlay_strength : hint_range(0.0, 1.0) = 0.0;

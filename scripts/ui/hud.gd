@@ -32,9 +32,9 @@ var guide_visible: bool = false
 const URGENCY_YELLOW_THRESHOLD := 0.4
 const URGENCY_RED_THRESHOLD := 0.15
 ## Colors for timer urgency.
-const COLOR_NORMAL := Color.WHITE
-const COLOR_YELLOW := Color(1.0, 0.85, 0.1)
-const COLOR_RED := Color(1.0, 0.2, 0.2)
+const COLOR_NORMAL := Color(0.173, 0.243, 0.314)
+const COLOR_YELLOW := Color(1.0, 0.549, 0.486)
+const COLOR_RED := Color(1.0, 0.42, 0.42)
 
 
 func _ready() -> void:

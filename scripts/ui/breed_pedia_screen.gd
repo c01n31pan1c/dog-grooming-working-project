@@ -15,8 +15,8 @@ var _unlocked_breeds: Dictionary = {}
 @onready var _collection_view: Control = $UI/CollectionView
 @onready var _breed_grid: GridContainer = $UI/CollectionView/ScrollContainer/BreedGrid
 @onready var _detail_view: BreedViewer = $UI/DetailView
-@onready var _title_label: Label = $UI/CollectionView/TitleBar/TitleLabel
-@onready var _back_to_menu_button: Button = $UI/CollectionView/TitleBar/BackButton
+@onready var _title_label: Label = $UI/CollectionView/TitleBar/HBox/TitleLabel
+@onready var _back_to_menu_button: Button = $UI/CollectionView/TitleBar/HBox/BackButton
 
 
 func _ready() -> void:
@@ -78,7 +78,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 		name_label.text = breed_data.breed_name
 	else:
 		name_label.text = "???"
-		name_label.modulate = Color(0.5, 0.5, 0.5, 1.0)
+		name_label.modulate = Color(0.7, 0.75, 0.8, 1.0)
 	name_label.add_theme_font_size_override("font_size", 20)
 	inner_vbox.add_child(name_label)
 
@@ -89,16 +89,17 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 	else:
 		group_label.text = _get_unlock_hint(breed_data.unlock_requirement)
 	group_label.add_theme_font_size_override("font_size", 14)
-	group_label.modulate = Color(0.7, 0.7, 0.7, 1.0)
+	group_label.modulate = Color(0.6, 0.65, 0.7, 1.0)
 	inner_vbox.add_child(group_label)
 
-	# Difficulty stars
+	# Difficulty stars — yellow accent
 	var stars_label := Label.new()
 	var star_text := ""
 	for i in range(3):
 		star_text += "★" if i <= breed_data.difficulty_tier else "☆"
 	stars_label.text = star_text
 	stars_label.add_theme_font_size_override("font_size", 18)
+	stars_label.add_theme_color_override("font_color", Color(1.0, 0.843, 0.0))
 	inner_vbox.add_child(stars_label)
 
 	# Encountered badge
@@ -106,7 +107,7 @@ func _create_breed_card(breed_data: Resource) -> PanelContainer:
 		var badge := Label.new()
 		badge.text = "GROOMED"
 		badge.add_theme_font_size_override("font_size", 12)
-		badge.modulate = Color(0.3, 1.0, 0.3, 1.0)
+		badge.modulate = Color(0.71, 0.918, 0.843, 1.0)
 		inner_vbox.add_child(badge)
 
 	# Click handler

@@ -27,7 +27,7 @@ func _ready() -> void:
 
 	# Create the overlay programmatically so this script works standalone
 	_overlay = ColorRect.new()
-	_overlay.color = Color(0, 0, 0, 0)  # Start transparent
+	_overlay.color = Color(0.831, 0.914, 0.969, 0)  # Start transparent — pastel blue fade
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_overlay)
 

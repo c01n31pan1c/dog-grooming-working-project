@@ -25,6 +25,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Background" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.831, 0.914, 0.969, 1)
+
 [node name="PreShowPanel" type="Control" parent="UI"]
 layout_mode = 1
 anchors_preset = 15
@@ -44,6 +53,8 @@ offset_right = 200.0
 offset_bottom = 60.0
 horizontal_alignment = 1
 text = "Competition Name"
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="TierLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -56,6 +67,8 @@ offset_right = 150.0
 offset_bottom = 95.0
 horizontal_alignment = 1
 text = "Tier: Local"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
 [node name="BreedLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -68,6 +81,7 @@ offset_right = 150.0
 offset_bottom = 125.0
 horizontal_alignment = 1
 text = "Breed: TBD"
+theme_override_font_sizes/font_size = 22
 
 [node name="TimeLimitLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -80,6 +94,7 @@ offset_right = 150.0
 offset_bottom = 155.0
 horizontal_alignment = 1
 text = "Time: 120s"
+theme_override_font_sizes/font_size = 22
 
 [node name="EntryFeeLabel" type="Label" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -92,6 +107,8 @@ offset_right = 150.0
 offset_bottom = 185.0
 horizontal_alignment = 1
 text = "Entry Fee: 0 coins"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="JudgesContainer" type="VBoxContainer" parent="UI/PreShowPanel"]
 layout_mode = 1
@@ -110,11 +127,12 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -80.0
+offset_left = -120.0
 offset_top = -80.0
-offset_right = 80.0
-offset_bottom = -40.0
+offset_right = 120.0
+offset_bottom = -30.0
 text = "Start Grooming"
+theme_override_font_sizes/font_size = 24
 
 [node name="GroomingPanel" type="Control" parent="UI"]
 visible = false
@@ -136,6 +154,7 @@ offset_right = 60.0
 offset_bottom = 40.0
 horizontal_alignment = 1
 text = "2:00"
+theme_override_font_sizes/font_size = 32
 
 [node name="TimerWarningIndicator" type="ColorRect" parent="UI/GroomingPanel"]
 visible = false
@@ -147,7 +166,7 @@ offset_left = -70.0
 offset_top = 5.0
 offset_right = 70.0
 offset_bottom = 45.0
-color = Color(1, 0, 0, 0.2)
+color = Color(1.0, 0.549, 0.486, 0.2)
 
 [node name="ResultsPanel" type="Control" parent="UI"]
 visible = false
@@ -163,10 +182,11 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -250.0
+offset_left = -280.0
 offset_top = 30.0
-offset_right = 250.0
+offset_right = 280.0
 offset_bottom = 400.0
+theme_override_constants/separation = 8
 
 [node name="TotalScoreLabel" type="Label" parent="UI/ResultsPanel"]
 layout_mode = 1
@@ -176,11 +196,13 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -150.0
-offset_top = -160.0
+offset_top = -170.0
 offset_right = 150.0
 offset_bottom = -135.0
 horizontal_alignment = 1
 text = "Total Score: 0.0"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="PlacementLabel" type="Label" parent="UI/ResultsPanel"]
 layout_mode = 1
@@ -195,6 +217,7 @@ offset_right = 150.0
 offset_bottom = -105.0
 horizontal_alignment = 1
 text = "Placement"
+theme_override_font_sizes/font_size = 24
 
 [node name="RewardLabel" type="Label" parent="UI/ResultsPanel"]
 layout_mode = 1
@@ -209,6 +232,8 @@ offset_right = 150.0
 offset_bottom = -75.0
 horizontal_alignment = 1
 text = "Reward"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
 
 [node name="ContinueButton" type="Button" parent="UI/ResultsPanel"]
 layout_mode = 1
@@ -217,8 +242,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -80.0
+offset_left = -120.0
 offset_top = -60.0
-offset_right = 80.0
-offset_bottom = -20.0
+offset_right = 120.0
+offset_bottom = -10.0
 text = "Continue"
+theme_override_font_sizes/font_size = 24

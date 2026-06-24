@@ -55,6 +55,7 @@ func _populate_results() -> void:
 		var header := Label.new()
 		header.text = competition_data.competition_name
 		header.add_theme_font_size_override("font_size", 28)
+		header.add_theme_color_override("font_color", Color(0.239, 0.239, 0.361))
 		header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		results_container.add_child(header)
 
@@ -82,6 +83,7 @@ func _populate_results() -> void:
 		var judge_header := Label.new()
 		judge_header.text = "%s — Score: %.1f" % [jr.get("judge_name", "Judge"), jr.get("weighted_score", 0.0)]
 		judge_header.add_theme_font_size_override("font_size", 22)
+		judge_header.add_theme_color_override("font_color", Color(0.239, 0.239, 0.361))
 		judge_block.add_child(judge_header)
 
 		var comments: Array = jr.get("comments", [])
@@ -97,7 +99,7 @@ func _populate_results() -> void:
 			var liked_label := Label.new()
 			liked_label.text = "  Liked: %s" % ", ".join(PackedStringArray(liked))
 			liked_label.add_theme_font_size_override("font_size", 16)
-			liked_label.add_theme_color_override("font_color", Color(0.3, 0.9, 0.3))
+			liked_label.add_theme_color_override("font_color", Color(0.44, 0.78, 0.65))
 			judge_block.add_child(liked_label)
 
 		var disliked: Array = jr.get("disliked", [])
@@ -105,7 +107,7 @@ func _populate_results() -> void:
 			var disliked_label := Label.new()
 			disliked_label.text = "  Disliked: %s" % ", ".join(PackedStringArray(disliked))
 			disliked_label.add_theme_font_size_override("font_size", 16)
-			disliked_label.add_theme_color_override("font_color", Color(0.9, 0.4, 0.4))
+			disliked_label.add_theme_color_override("font_color", Color(1.0, 0.549, 0.486))
 			judge_block.add_child(disliked_label)
 
 		results_container.add_child(judge_block)

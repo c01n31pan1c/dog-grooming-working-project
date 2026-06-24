@@ -7,10 +7,10 @@
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
-background_color = Color(0.18, 0.2, 0.25, 1)
+background_color = Color(0.831, 0.914, 0.969, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.35, 0.35, 0.4, 1)
-ambient_light_energy = 0.6
+ambient_light_color = Color(0.85, 0.9, 0.95, 1)
+ambient_light_energy = 0.8
 tonemap_mode = 2
 
 [node name="GroomingArena" type="Node"]
@@ -55,22 +55,22 @@ max_distance = 6.0
 ;; Key light (warm, main shadow caster)
 [node name="KeyLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/DogScene"]
 transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 2, 3, 2)
-light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 1.2
+light_color = Color(1, 0.97, 0.92, 1)
+light_energy = 1.4
 shadow_enabled = true
 
 ;; Fill light (cool, softer, opposite side)
 [node name="FillLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/DogScene"]
 transform = Transform3D(0.866, 0.25, -0.433, 0, 0.866, 0.5, 0.5, -0.433, 0.75, -2, 2, 1)
-light_color = Color(0.85, 0.9, 1, 1)
-light_energy = 0.5
+light_color = Color(0.9, 0.94, 1, 1)
+light_energy = 0.6
 shadow_enabled = false
 
 ;; Rim/back light (highlights edges)
 [node name="RimLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/DogScene"]
 transform = Transform3D(1, 0, 0, 0, 0.866, -0.5, 0, 0.5, 0.866, 0, 2, -3)
-light_color = Color(0.9, 0.92, 1, 1)
-light_energy = 0.7
+light_color = Color(1.0, 0.98, 0.95, 1)
+light_energy = 0.8
 shadow_enabled = false
 
 ;; Ground plane
@@ -125,6 +125,7 @@ mouse_filter = 2
 layout_mode = 2
 text = "Hover over a zone"
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 ;; Legend panel for guide overlay
 [node name="LegendPanel" type="PanelContainer" parent="UI"]
@@ -146,6 +147,8 @@ layout_mode = 2
 layout_mode = 2
 text = "Guard Size Legend"
 horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
 [node name="Legend0" type="Label" parent="UI/LegendPanel/LegendContent"]
 layout_mode = 2
@@ -188,5 +191,5 @@ modulate = Color(0.9, 0.1, 0.9, 1)
 size = Vector2(8, 8)
 
 [sub_resource type="StandardMaterial3D" id="GroundMaterial"]
-albedo_color = Color(0.3, 0.32, 0.35, 1)
-roughness = 0.9
+albedo_color = Color(0.88, 0.92, 0.95, 1)
+roughness = 0.85
