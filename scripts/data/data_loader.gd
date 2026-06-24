@@ -20,6 +20,10 @@ static func load_all_upgrades() -> Array[Resource]:
 	return _load_resources_from("res://resources/upgrades/", "tres")
 
 
+static func load_all_competitions() -> Array[Resource]:
+	return _load_resources_from("res://resources/competitions/", "tres")
+
+
 static func _load_resources_from(dir_path: String, extension: String) -> Array[Resource]:
 	var results: Array[Resource] = []
 	var dir := DirAccess.open(dir_path)

@@ -1,7 +1,9 @@
 ## CompetitionSelect — UI for browsing and entering competitions.
-## Displays available competitions for the player's current tier,
-## with a scrollable card list and a detail panel.
+## Loads real CompetitionData .tres resources from resources/competitions/.
+## Displays available competitions filtered by player tier, with detail panel.
 extends Control
+
+const COMPETITIONS_DIR := "res://resources/competitions/"
 
 @onready var card_container: VBoxContainer = %CardContainer
 @onready var detail_panel: PanelContainer = %DetailPanel
@@ -16,58 +18,48 @@ extends Control
 @onready var back_button: Button = %BackButton
 @onready var insufficient_funds_label: Label = %InsufficientFundsLabel
 
-## Currently selected competition data.
-var _selected_competition: Dictionary = {}
+## Currently selected CompetitionData resource.
+var _selected_competition: CompetitionData = null
 
-## Placeholder competition data — replaced by real data from resources later.
-var _competitions: Array[Dictionary] = [
-	{
-		"id": "local_poodle_1",
-		"name": "Poodle Puppy Cup",
-		"tier": 0,
-		"breed": "Poodle",
-		"time_limit": 180,
-		"entry_fee": 50,
-		"judges": 3,
-		"description": "A beginner-friendly local show. Groom a Standard Poodle to breed standard.",
-		"locked": false,
-		"lock_reason": "",
-	},
-	{
-		"id": "local_terrier_1",
-		"name": "Terrier Trim Trial",
-		"tier": 0,
-		"breed": "Yorkshire Terrier",
-		"time_limit": 150,
-		"entry_fee": 75,
-		"judges": 3,
-		"description": "Show off your terrier trimming skills at this local event.",
-		"locked": false,
-		"lock_reason": "",
-	},
-	{
-		"id": "regional_golden_1",
-		"name": "Golden Gala",
-		"tier": 1,
-		"breed": "Golden Retriever",
-		"time_limit": 240,
-		"entry_fee": 150,
-		"judges": 5,
-		"description": "A prestigious regional competition. Requires Regional tier.",
-		"locked": true,
-		"lock_reason": "Reach Regional tier to unlock",
-	},
-]
+## All loaded competition resources.
+var _competitions: Array[CompetitionData] = []
 
 
 func _ready() -> void:
+	GameManager.current_state = GameManager.GameState.COMPETITION
 	detail_panel.visible = false
 	insufficient_funds_label.visible = false
 
 	enter_button.pressed.connect(_on_enter_pressed)
 	back_button.pressed.connect(_on_back_pressed)
 
+	_load_competitions()
 	_populate_competition_cards()
+
+
+func _load_competitions() -> void:
+	_competitions.clear()
+	var dir := DirAccess.open(COMPETITIONS_DIR)
+	if dir == null:
+		push_warning("CompetitionSelect: Could not open competitions directory: %s" % COMPETITIONS_DIR)
+		return
+
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while file_name != "":
+		if file_name.ends_with(".tres"):
+			var res := ResourceLoader.load(COMPETITIONS_DIR + file_name)
+			if res is CompetitionData:
+				_competitions.append(res as CompetitionData)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+
+	# Sort by tier then name
+	_competitions.sort_custom(func(a: CompetitionData, b: CompetitionData) -> bool:
+		if a.tier != b.tier:
+			return a.tier < b.tier
+		return a.competition_name < b.competition_name
+	)
 
 
 func _populate_competition_cards() -> void:
@@ -82,7 +74,7 @@ func _populate_competition_cards() -> void:
 		card_container.add_child(card)
 
 
-func _create_competition_card(comp: Dictionary, _current_tier: int) -> PanelContainer:
+func _create_competition_card(comp: CompetitionData, current_tier: int) -> PanelContainer:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(0, 100)
 
@@ -92,8 +84,8 @@ func _create_competition_card(comp: Dictionary, _current_tier: int) -> PanelCont
 
 	# Left side: tier badge
 	var tier_badge := Label.new()
-	tier_badge.text = "T%d" % comp.get("tier", 0)
-	tier_badge.custom_minimum_size = Vector2(48, 48)
+	tier_badge.text = comp.get_tier_name()
+	tier_badge.custom_minimum_size = Vector2(80, 48)
 	tier_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hbox.add_child(tier_badge)
@@ -103,12 +95,13 @@ func _create_competition_card(comp: Dictionary, _current_tier: int) -> PanelCont
 	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var name_label := Label.new()
-	name_label.text = comp.get("name", "Unknown")
+	name_label.text = comp.competition_name
 	name_label.add_theme_font_size_override("font_size", 28)
 	info_vbox.add_child(name_label)
 
+	var breed_name: String = comp.breed.breed_name if comp.breed else "TBD"
 	var breed_label := Label.new()
-	breed_label.text = "Breed: %s  |  Time: %ds" % [comp.get("breed", "?"), comp.get("time_limit", 0)]
+	breed_label.text = "Breed: %s  |  Time: %ds" % [breed_name, int(comp.time_limit_seconds)]
 	breed_label.add_theme_font_size_override("font_size", 20)
 	info_vbox.add_child(breed_label)
 
@@ -116,17 +109,20 @@ func _create_competition_card(comp: Dictionary, _current_tier: int) -> PanelCont
 
 	# Right side: entry fee
 	var fee_label := Label.new()
-	fee_label.text = "%d coins" % comp.get("entry_fee", 0)
+	if comp.entry_fee > 0:
+		fee_label.text = "%d coins" % comp.entry_fee
+	else:
+		fee_label.text = "FREE"
 	fee_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	fee_label.custom_minimum_size = Vector2(120, 0)
 	hbox.add_child(fee_label)
 
-	# Handle locked state
-	var is_locked: bool = comp.get("locked", false)
+	# Handle locked state (tier too high)
+	var is_locked: bool = comp.tier > current_tier
 	if is_locked:
 		card.modulate = Color(0.5, 0.5, 0.5, 0.7)
 		var lock_label := Label.new()
-		lock_label.text = comp.get("lock_reason", "Locked")
+		lock_label.text = "Requires %s tier" % comp.get_tier_name()
 		lock_label.add_theme_font_size_override("font_size", 16)
 		lock_label.add_theme_color_override("font_color", Color(1.0, 0.6, 0.6))
 		info_vbox.add_child(lock_label)
@@ -141,49 +137,59 @@ func _create_competition_card(comp: Dictionary, _current_tier: int) -> PanelCont
 	return card
 
 
-func _on_competition_card_pressed(comp: Dictionary) -> void:
+func _on_competition_card_pressed(comp: CompetitionData) -> void:
 	_selected_competition = comp
 	_show_detail_panel(comp)
 
 
-func _show_detail_panel(comp: Dictionary) -> void:
+func _show_detail_panel(comp: CompetitionData) -> void:
 	detail_panel.visible = true
-	detail_name_label.text = comp.get("name", "")
-	detail_tier_label.text = "Tier: %d" % comp.get("tier", 0)
-	detail_breed_label.text = "Breed: %s" % comp.get("breed", "")
-	detail_time_label.text = "Time Limit: %ds" % comp.get("time_limit", 0)
-	detail_fee_label.text = "Entry Fee: %d coins" % comp.get("entry_fee", 0)
+	detail_name_label.text = comp.competition_name
+	detail_tier_label.text = "Tier: %s" % comp.get_tier_name()
 
-	var judge_count: int = comp.get("judges", 3)
-	detail_judges_label.text = "Judges: %s" % ("? " * judge_count).strip_edges()
+	if comp.breed:
+		detail_breed_label.text = "Breed: %s" % comp.breed.breed_name
+	else:
+		detail_breed_label.text = "Breed: TBD"
 
-	detail_description_label.text = comp.get("description", "")
+	detail_time_label.text = "Time Limit: %ds" % int(comp.time_limit_seconds)
+
+	if comp.entry_fee > 0:
+		detail_fee_label.text = "Entry Fee: %d coins" % comp.entry_fee
+	else:
+		detail_fee_label.text = "Entry Fee: FREE"
+
+	# Show judge names
+	var judge_names: PackedStringArray = PackedStringArray()
+	for judge in comp.judges:
+		judge_names.append(judge.judge_name)
+	detail_judges_label.text = "Judges: %s" % ", ".join(judge_names)
+
+	# Build description from breed info
+	if comp.breed:
+		detail_description_label.text = "Groom a %s to breed standard. %d zones to complete." % [
+			comp.breed.breed_name,
+			comp.breed.grooming_zones.size(),
+		]
+	else:
+		detail_description_label.text = ""
 
 	# Check funds
 	var coins: int = SaveManager.data.get("currency", 0)
-	var fee: int = comp.get("entry_fee", 0)
-	var can_afford := coins >= fee
+	var can_afford := coins >= comp.entry_fee
 	enter_button.disabled = not can_afford
 	insufficient_funds_label.visible = not can_afford
 	if not can_afford:
-		insufficient_funds_label.text = "Need %d more coins" % (fee - coins)
+		insufficient_funds_label.text = "Need %d more coins" % (comp.entry_fee - coins)
 
 
 func _on_enter_pressed() -> void:
-	if _selected_competition.is_empty():
+	if _selected_competition == null:
 		return
 
-	var fee: int = _selected_competition.get("entry_fee", 0)
-	var coins: int = SaveManager.data.get("currency", 0)
-	if coins < fee:
-		return
-
-	# Deduct entry fee
-	SaveManager.modify_currency(-fee)
-
-	# Transition to grooming with competition context
+	# Transition to grooming arena with competition context
 	GameManager.change_state(GameManager.GameState.GROOMING, {
-		"competition": _selected_competition,
+		"competition_data": _selected_competition,
 		"mode": "competition",
 	})
 

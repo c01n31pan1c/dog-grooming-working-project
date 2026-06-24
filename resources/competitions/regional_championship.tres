@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CompetitionData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/competition/competition_data.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/breeds/schnauzer_miniature.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/judges/mrs_pemberton.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/judges/dr_tanaka.tres" id="4"]
+[ext_resource type="Resource" path="res://resources/judges/carlos_rivera.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+competition_name = "Regional Grooming Championship"
+tier = 1
+judges = [ExtResource("3"), ExtResource("4"), ExtResource("5")]
+breed = ExtResource("2")
+time_limit_seconds = 120.0
+entry_fee = 100
+reward_table = {1: 250, 2: 150, 3: 75}

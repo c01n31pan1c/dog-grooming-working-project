@@ -84,4 +84,6 @@ func _on_breedpedia_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	push_warning("SalonScreen: Settings not yet implemented.")
+	# Settings is handled as an overlay on the main menu.
+	# From salon, navigate to main menu for now.
+	GameManager.change_state(GameManager.GameState.MAIN_MENU)

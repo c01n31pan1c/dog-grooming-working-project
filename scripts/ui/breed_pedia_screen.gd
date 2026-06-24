@@ -147,17 +147,21 @@ func _on_grooming_completed(breed_data: Resource, _results: Dictionary) -> void:
 
 
 ## Check if a breed is unlocked based on its requirement.
-## In a full implementation this would query SaveManager / progression state.
+## Queries SaveManager / progression state for real unlock checks.
 func _is_breed_unlocked(breed_data: Resource) -> bool:
 	match breed_data.unlock_requirement:
 		"available_at_start":
 			return true
 		"tier_regional":
-			# TODO: query actual progression tier from SaveManager
-			return false
+			return SaveManager.data.get("current_tier", 0) >= 1
+		"tier_national":
+			return SaveManager.data.get("current_tier", 0) >= 2
 		"competition_wins_3":
-			# TODO: query actual win count from SaveManager
-			return false
+			return SaveManager.data.get("total_wins", 0) >= 3
+		"competition_wins_5":
+			return SaveManager.data.get("total_wins", 0) >= 5
+		"competition_wins_10":
+			return SaveManager.data.get("total_wins", 0) >= 10
 		_:
 			return false
 

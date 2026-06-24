@@ -8,6 +8,7 @@ enum GameState {
 	SALON,
 	GROOMING,
 	COMPETITION,
+	COMPETITION_RESULTS,
 	BREED_PEDIA,
 	SHOP,
 	LOADING,
@@ -24,7 +25,8 @@ var state_scene_map: Dictionary = {
 	GameState.MAIN_MENU: "res://scenes/main_menu.tscn",
 	GameState.SALON: "res://scenes/salon.tscn",
 	GameState.GROOMING: "res://scenes/grooming_arena.tscn",
-	GameState.COMPETITION: "res://scenes/competition.tscn",
+	GameState.COMPETITION: "res://scenes/competition_select.tscn",
+	GameState.COMPETITION_RESULTS: "res://scenes/competition.tscn",
 	GameState.BREED_PEDIA: "res://scenes/breed_pedia.tscn",
 	GameState.SHOP: "res://scenes/shop.tscn",
 }
@@ -35,6 +37,8 @@ var transition_context: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Load saved data on app start (D. Save/Load integration)
+	SaveManager.load_game()
 
 
 ## Request a state change. Returns true if the transition is valid.

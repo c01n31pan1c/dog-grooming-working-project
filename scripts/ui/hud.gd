@@ -105,8 +105,9 @@ func _on_zone_groomed(_zone_id: String, _tool_data: Resource) -> void:
 
 
 func _on_tool_selected(tool_data: Resource) -> void:
-	if tool_data and tool_data.has_method("get") or tool_data != null:
-		tool_name_label.text = tool_data.get("display_name") if tool_data.get("display_name") else "Tool"
+	if tool_data != null and tool_data is ToolData:
+		var td := tool_data as ToolData
+		tool_name_label.text = td.tool_name if td.tool_name != "" else "Tool"
 	else:
 		tool_name_label.text = "None"
 
