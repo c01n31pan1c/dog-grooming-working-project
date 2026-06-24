@@ -69,24 +69,42 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 1.5
 
-[node name="TitleContainer" type="CenterContainer" parent="UI/MainLayout"]
+[node name="TitleContainer" type="VBoxContainer" parent="UI/MainLayout"]
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
 
-[node name="TitleLabel" type="Label" parent="UI/MainLayout/TitleContainer"]
+[node name="TitleWrapper" type="Control" parent="UI/MainLayout/TitleContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 120)
+
+[node name="TitleLabel" type="Label" parent="UI/MainLayout/TitleContainer/TitleWrapper"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 52
 theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 text = "Dog Grooming
 Championship"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TitleShadow" type="Label" parent="UI/MainLayout/TitleContainer"]
-layout_mode = 2
+[node name="TitleShadow" type="Label" parent="UI/MainLayout/TitleContainer/TitleWrapper"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 52
 theme_override_colors/font_color = Color(1.0, 0.878, 0.4, 0.35)
 text = "Dog Grooming
 Championship"
 horizontal_alignment = 1
+vertical_alignment = 1
 position = Vector2(3, 3)
 
 [node name="SubtitleLabel" type="Label" parent="UI/MainLayout/TitleContainer"]
@@ -95,7 +113,6 @@ theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 0.7)
 text = "Groom your way to glory!"
 horizontal_alignment = 1
-position = Vector2(0, 130)
 
 [node name="MidSpacer" type="Control" parent="UI/MainLayout"]
 layout_mode = 2

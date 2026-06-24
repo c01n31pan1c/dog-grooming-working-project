@@ -12,7 +12,7 @@ extends Node
 
 ## Scene node references for animations.
 @onready var _player_info_bar: PanelContainer = $UI/MainLayout/PlayerInfoBar
-@onready var _title_container: CenterContainer = $UI/MainLayout/TitleContainer
+@onready var _title_container: VBoxContainer = $UI/MainLayout/TitleContainer
 @onready var _button_container: VBoxContainer = $UI/MainLayout/ButtonContainer
 
 ## Tier display names — maps tier index to human-readable name.
@@ -45,18 +45,31 @@ func _ready() -> void:
 
 
 func _play_entrance_animations() -> void:
-	# Title slides down from above with bounce
-	UIAnimations.slide_down_bounce(_title_container, 80.0, 0.6)
+	# Title fades in (no position animation — VBoxContainer manages position)
+	_title_container.modulate.a = 0.0
+	var title_tween := _title_container.create_tween()
+	title_tween.tween_property(_title_container, "modulate:a", 1.0, 0.5) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
-	# Player info bar fades in from top
-	UIAnimations.fade_from_top(_player_info_bar, 30.0, 0.4)
+	# Player info bar fades in (no position animation — VBoxContainer manages position)
+	_player_info_bar.modulate.a = 0.0
+	var info_tween := _player_info_bar.create_tween()
+	info_tween.tween_property(_player_info_bar, "modulate:a", 1.0, 0.4) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
-	# Buttons fade in and slide up sequentially (staggered)
+	# Buttons fade in sequentially (staggered) — no position animation
+	# because VBoxContainer manages child positions and overrides tweens.
 	var buttons := _button_container.get_children()
 	for i in buttons.size():
 		var btn := buttons[i] as Control
 		if btn:
-			UIAnimations.fade_slide_up(btn, 40.0, 0.3, 0.3 + i * UIAnimations.DUR_STAGGER)
+			btn.modulate.a = 0.0
+			var delay := 0.3 + i * UIAnimations.DUR_STAGGER
+			var tween := btn.create_tween()
+			if delay > 0.0:
+				tween.tween_interval(delay)
+			tween.tween_property(btn, "modulate:a", 1.0, 0.3) \
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
 func _update_player_info() -> void:
