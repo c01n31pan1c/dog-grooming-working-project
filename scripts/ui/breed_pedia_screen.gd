@@ -12,6 +12,9 @@ var _all_breeds: Array[Resource] = []
 ## Currently unlocked breed names (determined by progression state).
 var _unlocked_breeds: Dictionary = {}
 
+## The state to return to when the back button is pressed.
+var _origin_state: int = GameManager.GameState.MAIN_MENU
+
 @onready var _collection_view: Control = $UI/CollectionView
 @onready var _breed_grid: GridContainer = $UI/CollectionView/ScrollContainer/BreedGrid
 @onready var _detail_view: BreedViewer = $UI/DetailView
@@ -21,6 +24,9 @@ var _unlocked_breeds: Dictionary = {}
 
 func _ready() -> void:
 	GameManager.current_state = GameManager.GameState.BREED_PEDIA
+	var context: Dictionary = GameManager.transition_context
+	if context.has("origin"):
+		_origin_state = context["origin"]
 	_load_breeds()
 	_build_collection_grid()
 
@@ -161,7 +167,7 @@ func _on_detail_back() -> void:
 
 
 func _on_back_to_menu() -> void:
-	GameManager.change_state(GameManager.GameState.MAIN_MENU)
+	GameManager.change_state(_origin_state)
 
 
 func _on_grooming_completed(breed_data: Resource, _results: Dictionary) -> void:

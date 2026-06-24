@@ -90,7 +90,7 @@ func _on_play_pressed() -> void:
 
 
 func _on_breedpedia_pressed() -> void:
-	GameManager.change_state(GameManager.GameState.BREED_PEDIA)
+	GameManager.change_state(GameManager.GameState.BREED_PEDIA, {"origin": GameManager.GameState.MAIN_MENU})
 
 
 func _on_settings_pressed() -> void:

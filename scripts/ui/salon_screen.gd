@@ -15,6 +15,7 @@ var _progression_manager: ProgressionManager
 @onready var _shop_button: Button = %ShopButton
 @onready var _breedpedia_button: Button = %BreedpediaButton
 @onready var _settings_button: Button = %SettingsButton
+@onready var _back_button: Button = %BackButton
 
 
 func _ready() -> void:
@@ -32,12 +33,14 @@ func _ready() -> void:
 	_shop_button.pressed.connect(_on_shop_pressed)
 	_breedpedia_button.pressed.connect(_on_breedpedia_pressed)
 	_settings_button.pressed.connect(_on_settings_pressed)
+	_back_button.pressed.connect(_on_back_pressed)
 
 	# Wire up button press juice
 	UIAnimations.setup_button_juice(_compete_button)
 	UIAnimations.setup_button_juice(_shop_button)
 	UIAnimations.setup_button_juice(_breedpedia_button)
 	UIAnimations.setup_button_juice(_settings_button)
+	UIAnimations.setup_button_juice(_back_button)
 
 	EventBus.currency_changed.connect(_on_currency_changed)
 	EventBus.tier_advanced.connect(_on_tier_advanced)
@@ -106,10 +109,14 @@ func _on_shop_pressed() -> void:
 
 
 func _on_breedpedia_pressed() -> void:
-	GameManager.change_state(GameManager.GameState.BREED_PEDIA)
+	GameManager.change_state(GameManager.GameState.BREED_PEDIA, {"origin": GameManager.GameState.SALON})
 
 
 func _on_settings_pressed() -> void:
 	# Settings is handled as an overlay on the main menu.
 	# From salon, navigate to main menu for now.
+	GameManager.change_state(GameManager.GameState.MAIN_MENU)
+
+
+func _on_back_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.MAIN_MENU)

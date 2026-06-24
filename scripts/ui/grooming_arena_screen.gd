@@ -302,6 +302,12 @@ func _setup_hud() -> void:
 	_hud_coin_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	top_right.add_child(_hud_coin_label)
 
+	var quit_btn := Button.new()
+	quit_btn.text = "Quit"
+	quit_btn.custom_minimum_size = Vector2(100, 64)
+	quit_btn.pressed.connect(_on_quit_pressed)
+	top_right.add_child(quit_btn)
+
 	_hud_guide_button = Button.new()
 	_hud_guide_button.text = "Guide"
 	_hud_guide_button.custom_minimum_size = Vector2(160, 64)
@@ -627,6 +633,15 @@ func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 			UIAnimations.spawn_float_indicator(ui_layer, "Good!", touch_pos, UIAnimations.COLOR_MINT)
 		else:
 			UIAnimations.spawn_float_indicator(ui_layer, "Wrong tool", touch_pos, UIAnimations.COLOR_CORAL)
+
+
+func _on_quit_pressed() -> void:
+	_grooming_finished = true
+	_timer_system.stop_timer()
+	if _is_competition_mode:
+		GameManager.change_state(GameManager.GameState.COMPETITION)
+	else:
+		GameManager.change_state(GameManager.GameState.SALON)
 
 
 func _on_guide_button_pressed() -> void:

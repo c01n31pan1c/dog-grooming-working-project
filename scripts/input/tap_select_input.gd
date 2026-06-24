@@ -41,7 +41,19 @@ func set_sub_viewport_container(container: SubViewportContainer, viewport: SubVi
 	_sub_viewport = viewport
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+	# Skip events over GUI elements (toolbar at bottom of screen).
+	# Without this guard, taps on the toolbar would also trigger grooming raycasts.
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		var pos: Vector2
+		if event is InputEventMouseButton:
+			pos = (event as InputEventMouseButton).position
+		else:
+			pos = (event as InputEventScreenTouch).position
+		var screen_height := get_viewport().get_visible_rect().size.y
+		if pos.y > screen_height - 130.0:  # Toolbar area
+			return
+
 	if event is InputEventScreenTouch:
 		_handle_touch(event as InputEventScreenTouch)
 	elif event is InputEventMouseButton:

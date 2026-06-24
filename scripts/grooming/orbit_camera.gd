@@ -53,7 +53,7 @@ func _ready() -> void:
 	_update_position_immediate()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	# Mouse drag for orbit
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
