@@ -155,9 +155,7 @@ func _start_session() -> void:
 	if _breed_data:
 		_grooming_controller.start_grooming(_breed_data)
 
-		# Deduct entry fee
-		if _competition_data and _competition_data.entry_fee > 0:
-			_currency_manager.spend_currency(_competition_data.entry_fee)
+		# Entry fee is deducted by PreShowScreen before arriving here.
 
 		# Start timer
 		var time_limit := 120.0

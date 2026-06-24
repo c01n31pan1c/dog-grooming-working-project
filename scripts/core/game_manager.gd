@@ -9,6 +9,7 @@ enum GameState {
 	GROOMING,
 	COMPETITION,
 	COMPETITION_RESULTS,
+	PRE_SHOW,
 	BREED_PEDIA,
 	SHOP,
 	LOADING,
@@ -27,6 +28,7 @@ var state_scene_map: Dictionary = {
 	GameState.GROOMING: "res://scenes/grooming_arena.tscn",
 	GameState.COMPETITION: "res://scenes/competition_select.tscn",
 	GameState.COMPETITION_RESULTS: "res://scenes/competition.tscn",
+	GameState.PRE_SHOW: "res://scenes/pre_show.tscn",
 	GameState.BREED_PEDIA: "res://scenes/breed_pedia.tscn",
 	GameState.SHOP: "res://scenes/shop.tscn",
 }

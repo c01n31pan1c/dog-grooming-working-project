@@ -197,10 +197,9 @@ func _on_enter_pressed() -> void:
 	if _selected_competition == null:
 		return
 
-	# Transition to grooming arena with competition context
-	GameManager.change_state(GameManager.GameState.GROOMING, {
+	# Transition to pre-show screen with competition context
+	GameManager.change_state(GameManager.GameState.PRE_SHOW, {
 		"competition_data": _selected_competition,
-		"mode": "competition",
 	})
 
 
