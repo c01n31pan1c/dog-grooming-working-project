@@ -1,7 +1,79 @@
-[gd_scene load_steps=3 format=3 uid="uid://dog_irish_terrier_001"]
+[gd_scene load_steps=23 format=3 uid="uid://dog_irish_terrier_001"]
 
 [ext_resource type="Script" path="res://scripts/grooming/dog_model.gd" id="1"]
 [ext_resource type="Shader" path="res://shaders/shell_fur.gdshader" id="2"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
+radius = 0.2
+height = 0.78
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_back"]
+radius = 0.2
+height = 0.78
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_belly"]
+radius = 0.16
+height = 0.58
+
+[sub_resource type="BoxShape3D" id="BoxShape_belly"]
+size = Vector3(0.32, 0.14, 0.58)
+
+[sub_resource type="SphereMesh" id="SphereMesh_chest"]
+radius = 0.19
+height = 0.38
+
+[sub_resource type="SphereShape3D" id="SphereShape_chest"]
+radius = 0.19
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.16
+height = 0.32
+
+[sub_resource type="SphereShape3D" id="SphereShape_head"]
+radius = 0.16
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_snout"]
+radius = 0.065
+height = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_nose"]
+radius = 0.035
+height = 0.07
+
+[sub_resource type="BoxMesh" id="BoxMesh_beard"]
+size = Vector3(0.08, 0.07, 0.1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+radius = 0.028
+height = 0.056
+
+[sub_resource type="BoxMesh" id="BoxMesh_ear"]
+size = Vector3(0.07, 0.1, 0.05)
+
+[sub_resource type="BoxShape3D" id="BoxShape_ear"]
+size = Vector3(0.07, 0.1, 0.05)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_leg"]
+top_radius = 0.05
+bottom_radius = 0.042
+height = 0.36
+
+[sub_resource type="CylinderShape3D" id="CylinderShape_leg"]
+radius = 0.05
+height = 0.36
+
+[sub_resource type="SphereMesh" id="SphereMesh_paw"]
+radius = 0.048
+height = 0.076
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
+top_radius = 0.028
+bottom_radius = 0.048
+height = 0.28
+
+[sub_resource type="CylinderShape3D" id="CylinderShape_tail"]
+radius = 0.04
+height = 0.28
 
 [node name="DogIrishTerrier" type="Node3D"]
 script = ExtResource("1")
@@ -196,82 +268,3 @@ metadata/zone_id = "tail"
 [node name="TailShape" type="CollisionShape3D" parent="Tail/TailZone"]
 shape = SubResource("CylinderShape_tail")
 transform = Transform3D(1, 0, 0, 0, 0.766, 0.643, 0, -0.643, 0.766, 0, 0.14, -0.08)
-
-;; === SUB RESOURCES ===
-;; Irish Terrier: medium, wiry, slightly longer body
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
-radius = 0.2
-height = 0.78
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape_back"]
-radius = 0.2
-height = 0.78
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_belly"]
-radius = 0.16
-height = 0.58
-
-[sub_resource type="BoxShape3D" id="BoxShape_belly"]
-size = Vector3(0.32, 0.14, 0.58)
-
-[sub_resource type="SphereMesh" id="SphereMesh_chest"]
-radius = 0.19
-height = 0.38
-
-[sub_resource type="SphereShape3D" id="SphereShape_chest"]
-radius = 0.19
-
-[sub_resource type="SphereMesh" id="SphereMesh_head"]
-radius = 0.16
-height = 0.32
-
-[sub_resource type="SphereShape3D" id="SphereShape_head"]
-radius = 0.16
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_snout"]
-radius = 0.065
-height = 0.2
-
-[sub_resource type="SphereMesh" id="SphereMesh_nose"]
-radius = 0.035
-height = 0.07
-
-;; Beard — less pronounced than schnauzer
-[sub_resource type="BoxMesh" id="BoxMesh_beard"]
-size = Vector3(0.08, 0.07, 0.1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_eye"]
-radius = 0.028
-height = 0.056
-
-;; V-shaped folded ears — small folded triangles
-[sub_resource type="BoxMesh" id="BoxMesh_ear"]
-size = Vector3(0.07, 0.1, 0.05)
-
-[sub_resource type="BoxShape3D" id="BoxShape_ear"]
-size = Vector3(0.07, 0.1, 0.05)
-
-;; Medium straight legs
-[sub_resource type="CylinderMesh" id="CylinderMesh_leg"]
-top_radius = 0.05
-bottom_radius = 0.042
-height = 0.36
-
-[sub_resource type="CylinderShape3D" id="CylinderShape_leg"]
-radius = 0.05
-height = 0.36
-
-[sub_resource type="SphereMesh" id="SphereMesh_paw"]
-radius = 0.048
-height = 0.076
-
-;; Longer tail, carried high (more upright angle)
-[sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
-top_radius = 0.028
-bottom_radius = 0.048
-height = 0.28
-
-[sub_resource type="CylinderShape3D" id="CylinderShape_tail"]
-radius = 0.04
-height = 0.28

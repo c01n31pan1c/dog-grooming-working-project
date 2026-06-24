@@ -1,12 +1,80 @@
-[gd_scene load_steps=3 format=3 uid="uid://dog_golden_retriever_001"]
+[gd_scene load_steps=21 format=3 uid="uid://dog_golden_retriever_001"]
 
 [ext_resource type="Script" path="res://scripts/grooming/dog_model.gd" id="1"]
 [ext_resource type="Shader" path="res://shaders/shell_fur.gdshader" id="2"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
+radius = 0.26
+height = 0.9
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_back"]
+radius = 0.26
+height = 0.9
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_belly"]
+radius = 0.21
+height = 0.7
+
+[sub_resource type="BoxShape3D" id="BoxShape_belly"]
+size = Vector3(0.42, 0.17, 0.7)
+
+[sub_resource type="SphereMesh" id="SphereMesh_chest"]
+radius = 0.24
+height = 0.48
+
+[sub_resource type="SphereShape3D" id="SphereShape_chest"]
+radius = 0.24
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape_head"]
+radius = 0.2
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_snout"]
+radius = 0.08
+height = 0.22
+
+[sub_resource type="SphereMesh" id="SphereMesh_nose"]
+radius = 0.04
+height = 0.08
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+radius = 0.03
+height = 0.06
+
+[sub_resource type="BoxMesh" id="BoxMesh_ear"]
+size = Vector3(0.1, 0.18, 0.07)
+
+[sub_resource type="BoxShape3D" id="BoxShape_ear"]
+size = Vector3(0.1, 0.18, 0.07)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_leg"]
+top_radius = 0.06
+bottom_radius = 0.05
+height = 0.44
+
+[sub_resource type="CylinderShape3D" id="CylinderShape_leg"]
+radius = 0.06
+height = 0.44
+
+[sub_resource type="SphereMesh" id="SphereMesh_paw"]
+radius = 0.055
+height = 0.09
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
+top_radius = 0.04
+bottom_radius = 0.065
+height = 0.32
+
+[sub_resource type="CylinderShape3D" id="CylinderShape_tail"]
+radius = 0.055
+height = 0.32
+
 [node name="DogGoldenRetriever" type="Node3D"]
 script = ExtResource("1")
 
-;; === BODY (large athletic capsule) ===
 [node name="Body" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
@@ -42,7 +110,6 @@ metadata/zone_id = "chest"
 shape = SubResource("SphereShape_chest")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.4)
 
-;; === HEAD ===
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, 0.6)
 
@@ -55,17 +122,14 @@ metadata/zone_id = "head"
 [node name="HeadShape" type="CollisionShape3D" parent="Head/HeadZone"]
 shape = SubResource("SphereShape_head")
 
-;; Snout (broad, friendly)
 [node name="SnoutMesh" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("CapsuleMesh_snout")
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -0.04, 0.2)
 
-;; Nose
 [node name="NoseMesh" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("SphereMesh_nose")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0.34)
 
-;; Eyes
 [node name="EyeLeft" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("SphereMesh_eye")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.06, 0.17)
@@ -74,7 +138,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.06, 0.17)
 mesh = SubResource("SphereMesh_eye")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.06, 0.17)
 
-;; === EARS (floppy — angled down) ===
 [node name="EarLeft" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 0.08, -0.02)
 
@@ -103,7 +166,6 @@ metadata/zone_id = "ears_right"
 shape = SubResource("BoxShape_ear")
 transform = Transform3D(0.866, 0.5, 0, -0.5, 0.866, 0, 0, 0, 1, -0.06, -0.04, 0)
 
-;; === LEGS (proportional, athletic) ===
 [node name="LegFrontLeft" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0.28)
 
@@ -176,7 +238,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.24, 0)
 mesh = SubResource("SphereMesh_paw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.02)
 
-;; === TAIL (feathered — thicker, longer) ===
 [node name="Tail" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.55)
 
@@ -190,77 +251,3 @@ metadata/zone_id = "tail"
 [node name="TailShape" type="CollisionShape3D" parent="Tail/TailZone"]
 shape = SubResource("CylinderShape_tail")
 transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 0.12, -0.1)
-
-;; === SUB RESOURCES ===
-;; Golden Retriever: larger body, proportional athletic build
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
-radius = 0.26
-height = 0.9
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape_back"]
-radius = 0.26
-height = 0.9
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_belly"]
-radius = 0.21
-height = 0.7
-
-[sub_resource type="BoxShape3D" id="BoxShape_belly"]
-size = Vector3(0.42, 0.17, 0.7)
-
-[sub_resource type="SphereMesh" id="SphereMesh_chest"]
-radius = 0.24
-height = 0.48
-
-[sub_resource type="SphereShape3D" id="SphereShape_chest"]
-radius = 0.24
-
-[sub_resource type="SphereMesh" id="SphereMesh_head"]
-radius = 0.2
-height = 0.4
-
-[sub_resource type="SphereShape3D" id="SphereShape_head"]
-radius = 0.2
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_snout"]
-radius = 0.08
-height = 0.22
-
-[sub_resource type="SphereMesh" id="SphereMesh_nose"]
-radius = 0.04
-height = 0.08
-
-[sub_resource type="SphereMesh" id="SphereMesh_eye"]
-radius = 0.03
-height = 0.06
-
-;; Floppy ears — wider, longer boxes hanging down
-[sub_resource type="BoxMesh" id="BoxMesh_ear"]
-size = Vector3(0.1, 0.18, 0.07)
-
-[sub_resource type="BoxShape3D" id="BoxShape_ear"]
-size = Vector3(0.1, 0.18, 0.07)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_leg"]
-top_radius = 0.06
-bottom_radius = 0.05
-height = 0.44
-
-[sub_resource type="CylinderShape3D" id="CylinderShape_leg"]
-radius = 0.06
-height = 0.44
-
-[sub_resource type="SphereMesh" id="SphereMesh_paw"]
-radius = 0.055
-height = 0.09
-
-;; Feathered tail — thicker cylinder
-[sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
-top_radius = 0.04
-bottom_radius = 0.065
-height = 0.32
-
-[sub_resource type="CylinderShape3D" id="CylinderShape_tail"]
-radius = 0.055
-height = 0.32

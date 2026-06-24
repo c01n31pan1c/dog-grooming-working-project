@@ -13,6 +13,13 @@ ambient_light_color = Color(0.85, 0.9, 0.95, 1)
 ambient_light_energy = 0.8
 tonemap_mode = 2
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(8, 8)
+
+[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
+albedo_color = Color(0.88, 0.92, 0.95, 1)
+roughness = 0.85
+
 [node name="GroomingArena" type="Node"]
 script = ExtResource("1")
 
@@ -187,11 +194,3 @@ layout_mode = 2
 text = "■ 6 inch (long)"
 modulate = Color(0.9, 0.1, 0.9, 1)
 
-;; === SUB RESOURCES ===
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-size = Vector2(8, 8)
-
-[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
-albedo_color = Color(0.88, 0.92, 0.95, 1)
-roughness = 0.85
