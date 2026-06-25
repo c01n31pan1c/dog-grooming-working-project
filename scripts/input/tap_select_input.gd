@@ -21,9 +21,9 @@ const RAY_LENGTH: float = 1000.0
 const ZONE_COLLISION_MASK: int = 1
 
 ## Tap vs drag disambiguation: max pixels moved before a press becomes a drag.
-const TAP_DISTANCE_THRESHOLD: float = 12.0
+const TAP_DISTANCE_THRESHOLD: float = 30.0
 ## Max time (seconds) for a press to count as a tap.
-const TAP_TIME_THRESHOLD: float = 0.3
+const TAP_TIME_THRESHOLD: float = 0.5
 
 ## Tracking for tap detection
 var _press_position: Vector2 = Vector2.ZERO
@@ -75,6 +75,7 @@ func _handle_touch(event: InputEventScreenTouch) -> void:
 			var elapsed := (Time.get_ticks_msec() / 1000.0) - _press_time
 			var dist := event.position.distance_to(_press_position)
 			if elapsed <= TAP_TIME_THRESHOLD and dist <= TAP_DISTANCE_THRESHOLD:
+				get_viewport().set_input_as_handled()
 				_try_apply_at(event.position)
 		_is_pressed = false
 
@@ -91,6 +92,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				var elapsed := (Time.get_ticks_msec() / 1000.0) - _press_time
 				var dist := event.position.distance_to(_press_position)
 				if elapsed <= TAP_TIME_THRESHOLD and dist <= TAP_DISTANCE_THRESHOLD:
+					get_viewport().set_input_as_handled()
 					_try_apply_at(event.position)
 			_is_pressed = false
 

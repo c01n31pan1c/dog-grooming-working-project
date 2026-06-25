@@ -45,7 +45,7 @@ var _initial_pinch_distance: float = 0.0
 var _initial_zoom_distance: float = 0.0
 
 ## Minimum pixels the pointer must move before we consider it a drag (not a tap).
-const DRAG_THRESHOLD: float = 8.0
+const DRAG_THRESHOLD: float = 25.0
 
 
 func _ready() -> void:
@@ -78,6 +78,7 @@ func _input(event: InputEvent) -> void:
 			if mm.position.distance_to(_press_start_pos) >= DRAG_THRESHOLD:
 				_drag_started = true
 				_last_drag_pos = mm.position
+				get_viewport().set_input_as_handled()
 		if _drag_started:
 			var delta := mm.position - _last_drag_pos
 			_last_drag_pos = mm.position
@@ -121,6 +122,7 @@ func _input(event: InputEvent) -> void:
 				if sd.position.distance_to(_press_start_pos) >= DRAG_THRESHOLD:
 					_drag_started = true
 					_last_drag_pos = sd.position
+					get_viewport().set_input_as_handled()
 			if _drag_started:
 				var delta := sd.position - _last_drag_pos
 				_last_drag_pos = sd.position
