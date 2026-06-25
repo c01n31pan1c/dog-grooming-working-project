@@ -128,6 +128,9 @@ func _ready() -> void:
 	add_child(_input_handler)
 	_input_handler.setup(zone_detection)
 
+	# Give OrbitCamera a reference to the groom input so it can check grooming state
+	orbit_camera.set_groom_input(_input_handler)
+
 	# GroomingController
 	_grooming_controller = GroomingController.new()
 	_grooming_controller.name = "GroomingController"

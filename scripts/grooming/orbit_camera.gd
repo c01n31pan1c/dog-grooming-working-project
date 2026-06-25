@@ -45,8 +45,15 @@ var _initial_pinch_distance: float = 0.0
 var _initial_zoom_distance: float = 0.0
 var _prev_midpoint: Vector2 = Vector2.ZERO
 
+## Reference to groom input to check active grooming state
+var _groom_input: Node = null
+
 ## Minimum pixels the pointer must move before we consider it a drag (not a tap).
 const DRAG_THRESHOLD: float = 25.0
+
+
+func set_groom_input(input: Node) -> void:
+	_groom_input = input
 
 
 func _ready() -> void:
@@ -55,6 +62,13 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# Skip emulated mouse events generated from touch (device == -1).
+	# Without this, single-finger touches produce InputEventMouseButton/Motion
+	# that bypass the two-finger guard and cause unwanted camera orbit.
+	if event is InputEventMouseButton or event is InputEventMouseMotion:
+		if event.device == -1:
+			return
+
 	# Mouse drag for orbit
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
@@ -92,6 +106,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var st := event as InputEventScreenTouch
 		if st.pressed:
+			# If groom input is actively handling a single-finger touch, don't
+			# start tracking this touch for orbit to avoid conflict.
+			if _groom_input and _groom_input._is_touching:
+				return
 			_touch_points[st.index] = st.position
 			if _touch_points.size() == 2:
 				var points := _touch_points.values()
