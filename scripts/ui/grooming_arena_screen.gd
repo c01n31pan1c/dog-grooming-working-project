@@ -16,7 +16,7 @@ extends Node
 ## Dynamically created subsystems
 var _tool_system: ToolSystem
 var _grooming_controller: GroomingController
-var _input_handler: TapSelectInput
+var _input_handler: ContinuousGroomInput
 var _toolbar: Toolbar
 var _hud: CanvasLayer  # The HUD scene instance
 var _timer_system: TimerSystem
@@ -111,15 +111,11 @@ func _ready() -> void:
 	_tool_system.name = "ToolSystem"
 	add_child(_tool_system)
 
-	# TapSelectInput (input handler)
-	_input_handler = TapSelectInput.new()
-	_input_handler.name = "TapSelectInput"
+	# ContinuousGroomInput (input handler)
+	_input_handler = ContinuousGroomInput.new()
+	_input_handler.name = "ContinuousGroomInput"
 	add_child(_input_handler)
-	if orbit_camera:
-		_input_handler.set_camera(orbit_camera)
-	# Pass SubViewport references for coordinate mapping
-	if sub_viewport_container and sub_viewport:
-		_input_handler.set_sub_viewport_container(sub_viewport_container, sub_viewport)
+	_input_handler.setup(zone_detection)
 
 	# GroomingController
 	_grooming_controller = GroomingController.new()
@@ -181,7 +177,9 @@ func _ready() -> void:
 	if legend_panel:
 		legend_panel.visible = false
 
-	# Listen for zone_groomed events to update visuals
+	# Listen for continuous grooming tick to update visuals smoothly
+	EventBus.zone_grooming_tick.connect(_on_zone_grooming_tick)
+	# Listen for zone_groomed events (threshold crossings) for HUD/effects
 	EventBus.zone_groomed.connect(_on_zone_groomed)
 
 	# Timer signals
@@ -366,7 +364,7 @@ func _setup_hud() -> void:
 
 	# -- Instruction label (center screen, semi-transparent) --
 	_hud_instruction_label = Label.new()
-	_hud_instruction_label.text = "Select a tool below, then tap the dog to groom!"
+	_hud_instruction_label.text = "Select a tool below, then drag across the dog to groom!"
 	_hud_instruction_label.add_theme_font_size_override("font_size", 30)
 	_hud_instruction_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314, 0.85))
 	_hud_instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -608,10 +606,12 @@ func _on_zone_hover_changed(zone_id: String) -> void:
 	_update_zone_label(zone_id)
 
 
-func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
+func _on_zone_grooming_tick(zone_id: String, amount: float) -> void:
 	if dog_model:
-		dog_model.apply_grooming(zone_id, 0.5)
+		dog_model.set_groomed_amount(zone_id, amount)
 
+
+func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:
 	# Spawn touch effect + floating indicator at mouse/touch position
 	var ui_layer := $UI as Control
 	if ui_layer:

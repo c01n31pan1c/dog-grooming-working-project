@@ -85,6 +85,14 @@ func apply_grooming(zone_id: String, amount: float = 0.25) -> void:
 	_update_zone_groomed_visuals(zone_id)
 
 
+## Set the groomed amount directly (used by continuous grooming tick).
+func set_groomed_amount(zone_id: String, amount: float) -> void:
+	if not groomed_state.has(zone_id):
+		return
+	groomed_state[zone_id] = amount
+	_update_zone_groomed_visuals(zone_id)
+
+
 ## Toggle the grooming guide overlay
 func toggle_guide_overlay() -> void:
 	guide_overlay_visible = not guide_overlay_visible

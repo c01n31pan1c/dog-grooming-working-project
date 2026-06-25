@@ -7,6 +7,9 @@ extends Node
 ## Emitted when the player applies a tool to a grooming zone.
 signal tool_applied(zone_id: String, tool_data: Resource)
 
+## Emitted every frame while the player is actively grooming a zone (continuous mode).
+signal grooming_tick(zone_id: String, tool_data: Resource, delta: float)
+
 ## Emitted when the player's pointer (finger/mouse) moves.
 signal pointer_moved(position: Vector2)
 

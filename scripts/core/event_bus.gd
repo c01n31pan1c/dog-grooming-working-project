@@ -8,6 +8,7 @@ signal grooming_started(breed_data: Resource)
 signal grooming_completed(breed_data: Resource, results: Dictionary)
 signal tool_selected(tool_data: Resource)
 signal zone_groomed(zone_id: String, tool_data: Resource)
+signal zone_grooming_tick(zone_id: String, amount: float)
 
 # Competition signals
 signal competition_started(competition_data: Dictionary)

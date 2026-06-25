@@ -14,8 +14,14 @@ var _tool_system: ToolSystem = null
 ## The breed currently being groomed (set when grooming session starts).
 var _current_breed: BreedData = null
 
-## Per-zone grooming state: zone_id -> {groomed: bool, quality: float, tool_used: ToolData, wet: bool, brushed: bool, cologned: bool}
+## Per-zone grooming state: zone_id -> {groomed: bool, groomed_amount: float, quality: float, tool_used: ToolData, wet: bool, brushed: bool, cologned: bool}
 var _zone_progress: Dictionary = {}
+
+## Tracks last threshold crossed per zone for zone_groomed emission.
+var _last_threshold: Dictionary = {}
+
+## Rate at which continuous grooming fills a zone (1.0 / rate = seconds to fill).
+const GROOM_RATE_PER_SECOND: float = 0.3
 
 ## Camera used for raycasting (assigned by scene setup).
 var _camera: Camera3D = null
@@ -43,11 +49,14 @@ func set_input_handler(handler: GroomingInput) -> void:
 	if _input_handler != null:
 		if _input_handler.tool_applied.is_connected(_on_tool_applied):
 			_input_handler.tool_applied.disconnect(_on_tool_applied)
+		if _input_handler.grooming_tick.is_connected(_on_grooming_tick):
+			_input_handler.grooming_tick.disconnect(_on_grooming_tick)
 		if _input_handler.pointer_moved.is_connected(_on_pointer_moved):
 			_input_handler.pointer_moved.disconnect(_on_pointer_moved)
 
 	_input_handler = handler
 	_input_handler.tool_applied.connect(_on_tool_applied)
+	_input_handler.grooming_tick.connect(_on_grooming_tick)
 	_input_handler.pointer_moved.connect(_on_pointer_moved)
 
 
@@ -61,15 +70,18 @@ func start_grooming(breed_data: BreedData) -> void:
 	_zone_progress.clear()
 
 	# Initialize progress tracking for every zone defined on the breed.
+	_last_threshold.clear()
 	for zone_id in breed_data.grooming_zones:
 		_zone_progress[zone_id] = {
 			"groomed": false,
+			"groomed_amount": 0.0,
 			"quality": 0.0,
 			"tool_used": null,
 			"wet": false,
 			"brushed": false,
 			"cologned": false,
 		}
+		_last_threshold[zone_id] = 0.0
 
 	EventBus.grooming_started.emit(breed_data)
 
@@ -108,8 +120,69 @@ func _on_tool_applied(zone_id: String, tool_data: Resource) -> void:
 	_apply_tool_effect(zone_id, td, quality)
 
 
+func _on_grooming_tick(zone_id: String, tool_data: Resource, delta: float) -> void:
+	if _current_breed == null:
+		return
+
+	var td: ToolData = tool_data as ToolData
+	if td == null:
+		return
+
+	if zone_id == "unresolved" or zone_id.is_empty():
+		return
+
+	if not _zone_progress.has(zone_id):
+		return
+
+	if not _is_tool_valid_for_zone(zone_id, td):
+		return
+
+	var quality := _calculate_quality(zone_id, td)
+	if quality <= 0.0:
+		return
+
+	var zone_state: Dictionary = _zone_progress[zone_id]
+	var amount := GROOM_RATE_PER_SECOND * delta * quality
+	zone_state["groomed_amount"] = clampf(zone_state["groomed_amount"] + amount, 0.0, 1.0)
+
+	_apply_prep_effect_if_needed(zone_id, td, zone_state)
+
+	if zone_state["groomed_amount"] >= 1.0 and not zone_state["groomed"]:
+		zone_state["groomed"] = true
+		zone_state["tool_used"] = td
+		if quality > zone_state["quality"]:
+			zone_state["quality"] = quality
+
+	EventBus.zone_grooming_tick.emit(zone_id, zone_state["groomed_amount"])
+
+	if _check_threshold(zone_id, zone_state["groomed_amount"]):
+		EventBus.zone_groomed.emit(zone_id, td)
+
+
+func _apply_prep_effect_if_needed(zone_id: String, tool_data: ToolData, zone_state: Dictionary) -> void:
+	match tool_data.tool_type:
+		ToolData.ToolType.SHAMPOO:
+			zone_state["wet"] = true
+		ToolData.ToolType.DRYER:
+			if zone_state["wet"]:
+				zone_state["wet"] = false
+		ToolData.ToolType.BRUSH:
+			zone_state["brushed"] = true
+		ToolData.ToolType.COLOGNE:
+			zone_state["cologned"] = true
+
+
+func _check_threshold(zone_id: String, amount: float) -> bool:
+	var prev: float = _last_threshold.get(zone_id, 0.0)
+	var thresholds: Array[float] = [0.25, 0.5, 0.75, 1.0]
+	for t in thresholds:
+		if prev < t and amount >= t:
+			_last_threshold[zone_id] = t
+			return true
+	return false
+
+
 func _on_pointer_moved(_position: Vector2) -> void:
-	# Future: hover/highlight feedback on zones.
 	pass
 
 
@@ -146,6 +219,7 @@ func _apply_tool_effect(zone_id: String, tool_data: ToolData, quality: float) ->
 		ToolData.ToolType.CLIPPER, ToolData.ToolType.SCISSORS, ToolData.ToolType.NAIL_TRIMMER:
 			# These are primary grooming tools that mark a zone done.
 			zone_state["groomed"] = true
+			zone_state["groomed_amount"] = 1.0
 			zone_state["tool_used"] = tool_data
 			# Keep best quality if groomed multiple times.
 			if quality > zone_state["quality"]:
@@ -247,12 +321,11 @@ func get_grooming_progress() -> float:
 	if _zone_progress.is_empty():
 		return 0.0
 
-	var groomed_count := 0
+	var total := 0.0
 	for zone_id in _zone_progress:
-		if _zone_progress[zone_id]["groomed"]:
-			groomed_count += 1
+		total += _zone_progress[zone_id]["groomed_amount"]
 
-	return float(groomed_count) / float(_zone_progress.size())
+	return total / float(_zone_progress.size())
 
 
 ## Detailed per-zone results for scoring.
