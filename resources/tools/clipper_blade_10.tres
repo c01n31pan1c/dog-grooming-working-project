@@ -7,6 +7,7 @@ script = ExtResource("1")
 tool_name = "#10 Blade"
 tool_type = 0
 guard_size = 0.0625
+interaction_mode = 0
 quality_tier = 0
 price = 0
 description = "Close-cut blade (1/16 inch). Used for face, feet, and sanitary areas."

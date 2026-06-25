@@ -7,6 +7,7 @@ script = ExtResource("1")
 tool_name = "Stripping Knife"
 tool_type = 8
 guard_size = 0.0
+interaction_mode = 0
 quality_tier = 0
 price = 0
 description = "For hand-stripping wire-coated breeds. Removes dead hair without cutting."

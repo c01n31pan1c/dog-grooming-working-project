@@ -7,6 +7,7 @@ script = ExtResource("1")
 tool_name = "Basic Scissors"
 tool_type = 3
 guard_size = 0.0
+interaction_mode = 1
 quality_tier = 0
 price = 0
 description = "Standard grooming shears for precision trimming and shaping."

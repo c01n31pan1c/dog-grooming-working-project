@@ -7,6 +7,7 @@ script = ExtResource("1")
 tool_name = "Basic Shampoo"
 tool_type = 5
 guard_size = 0.0
+interaction_mode = 2
 quality_tier = 0
 price = 100
 description = "A gentle all-purpose shampoo for washing and cleansing the coat."
