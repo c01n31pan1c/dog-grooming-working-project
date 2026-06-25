@@ -110,8 +110,8 @@ func _populate_zones(zones: Dictionary) -> void:
 		var tool_name: String = zone_data.get("required_tool", "UNKNOWN")
 		var guard: float = zone_data.get("guard_size", 0.0)
 		var guard_text := ""
-		if guard > 0.0:
-			guard_text = " | Guard: %.1f mm" % guard
+		if tool_name == "CLIPPER" and guard > 0.0:
+			guard_text = " | " + _guard_size_to_label(guard)
 		zone_header.text = "%s — %s%s" % [_format_zone_name(zone_id), tool_name, guard_text]
 		zone_header.add_theme_font_size_override("font_size", 24)
 		zone_vbox.add_child(zone_header)
@@ -143,6 +143,19 @@ func _populate_zones(zones: Dictionary) -> void:
 
 func _format_zone_name(zone_id: String) -> String:
 	return zone_id.replace("_", " ").capitalize()
+
+
+func _guard_size_to_label(guard: float) -> String:
+	if absf(guard - 0.0625) < 0.01:
+		return "#10 Blade (1/16\")"
+	elif absf(guard - 0.125) < 0.01:
+		return "#7F Blade (1/8\")"
+	elif absf(guard - 0.25) < 0.01:
+		return "#5 Blade (1/4\")"
+	elif absf(guard - 1.0) < 0.01:
+		return "1\" Guard Comb"
+	else:
+		return "%.2f\"" % guard
 
 
 func _get_unlock_text(requirement: String) -> String:

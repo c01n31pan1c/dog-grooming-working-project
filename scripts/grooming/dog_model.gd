@@ -15,13 +15,12 @@ var guide_overlay_visible: bool = false
 
 ## Guard size color mapping for the guide overlay
 const GUARD_COLORS: Dictionary = {
-	0.0: Color(0.9, 0.1, 0.1, 0.7),    # No guard (close clip) - Red
-	0.25: Color(0.9, 0.5, 0.1, 0.7),    # 1/4 inch - Orange
-	0.5: Color(0.9, 0.9, 0.1, 0.7),     # 1/2 inch - Yellow
-	1.0: Color(0.1, 0.8, 0.1, 0.7),     # 1 inch - Green
-	2.0: Color(0.1, 0.5, 0.9, 0.7),     # 2 inch - Blue
-	4.0: Color(0.5, 0.1, 0.9, 0.7),     # 4 inch - Purple
-	6.0: Color(0.9, 0.1, 0.9, 0.7),     # 6 inch (long) - Magenta
+	0.0: Color(0.4, 0.7, 1.0, 0.7),     # Scissors/Brush/Hand-strip (no clipper) - Light Blue
+	0.0625: Color(0.9, 0.2, 0.2, 0.7),  # #10 Blade (1/16") - Red (close shave)
+	0.125: Color(0.9, 0.5, 0.1, 0.7),   # #7F Blade (1/8") - Orange
+	0.25: Color(0.9, 0.9, 0.1, 0.7),    # #5 Blade (1/4") - Yellow
+	0.5: Color(0.5, 0.9, 0.1, 0.7),     # 1/2" guard - Yellow-Green
+	1.0: Color(0.1, 0.8, 0.1, 0.7),     # 1" Guard Comb - Green
 }
 
 ## Currently highlighted zone
@@ -137,11 +136,19 @@ func _update_guide_overlay() -> void:
 func _get_guide_color_for_zone(zone_id: String) -> Color:
 	if breed_data and breed_data.grooming_zones.has(zone_id):
 		var zone_info: Dictionary = breed_data.grooming_zones[zone_id]
-		var guard_size: float = zone_info.get("guard_size", 1.0)
-		# Find closest guard color
-		var best_key := 1.0
+		var required_tool: String = zone_info.get("required_tool", "")
+		var guard_size: float = zone_info.get("guard_size", 0.0)
+
+		# Non-clipper tools always get the 0.0 color (light blue)
+		if required_tool != "CLIPPER":
+			return GUARD_COLORS[0.0]
+
+		# For clippers, find closest guard color (skip 0.0 which is non-clipper)
+		var best_key := 0.0625
 		var best_diff := 999.0
 		for key in GUARD_COLORS:
+			if key == 0.0:
+				continue  # Skip the non-clipper color
 			var diff := absf(key - guard_size)
 			if diff < best_diff:
 				best_diff = diff
