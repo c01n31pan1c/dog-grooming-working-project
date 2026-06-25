@@ -12,6 +12,7 @@ enum ToolType {
 	SHAMPOO,
 	COLOGNE,
 	MEDICINE,
+	HAND_STRIP,
 }
 
 @export var tool_name: String = ""

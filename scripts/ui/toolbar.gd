@@ -96,8 +96,7 @@ func _rebuild_buttons() -> void:
 func _get_button_label(tool_data: ToolData) -> String:
 	match tool_data.tool_type:
 		ToolData.ToolType.CLIPPER:
-			# Show guard size for clippers.
-			return "Clip\n%s\"" % str(tool_data.guard_size)
+			return tool_data.tool_name
 		ToolData.ToolType.BRUSH:
 			return "Brush"
 		ToolData.ToolType.DRYER:
@@ -112,6 +111,8 @@ func _get_button_label(tool_data: ToolData) -> String:
 			return "Cologne"
 		ToolData.ToolType.MEDICINE:
 			return "Meds"
+		ToolData.ToolType.HAND_STRIP:
+			return "Strip"
 	return tool_data.tool_name
 
 

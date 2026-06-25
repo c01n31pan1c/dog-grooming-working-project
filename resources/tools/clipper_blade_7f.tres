@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "#7F Blade"
+tool_type = 0
+guard_size = 0.125
+quality_tier = 0
+price = 0
+description = "Medium blade (1/8 inch). Standard for body work on many breeds."
+effect_description = "Leaves hair at 1/8 inch — neat, even finish"

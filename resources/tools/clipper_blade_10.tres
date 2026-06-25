@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tools/tool_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tool_name = "#10 Blade"
+tool_type = 0
+guard_size = 0.0625
+quality_tier = 0
+price = 0
+description = "Close-cut blade (1/16 inch). Used for face, feet, and sanitary areas."
+effect_description = "Leaves hair at 1/16 inch — clean, close shave"

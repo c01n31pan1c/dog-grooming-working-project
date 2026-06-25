@@ -249,12 +249,12 @@ func _calculate_quality(zone_id: String, tool_data: ToolData) -> float:
 
 			if required_tool == "CLIPPER":
 				# Right tool type -- check guard size.
-				if absf(tool_data.guard_size - required_guard) < 0.1:
+				if absf(tool_data.guard_size - required_guard) < 0.02:
 					quality = 1.0  # Perfect match.
 				else:
 					# Wrong guard -- partial credit scaled by how far off.
 					var diff := absf(tool_data.guard_size - required_guard)
-					quality = maxf(0.2, 1.0 - (diff / 6.0))
+					quality = maxf(0.2, 1.0 - (diff / 0.5))
 			else:
 				quality = 0.3  # Wrong tool type entirely.
 

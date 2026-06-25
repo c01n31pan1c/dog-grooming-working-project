@@ -4,10 +4,10 @@
 
 [resource]
 script = ExtResource("1")
-tool_name = "Basic Clipper (1-inch)"
+tool_name = "1\" Guard Comb"
 tool_type = 0
 guard_size = 1.0
 quality_tier = 0
 price = 0
-description = "Standard clipper with a 1-inch guard. Best for close, clean cuts on the body."
-effect_description = "Clips fur to 1 inch. Use on zones requiring a short, tight trim."
+description = "Snap-on guard comb (1 inch). For the longest clipper cut."
+effect_description = "Leaves hair at 1 inch — long, blended finish"
