@@ -34,6 +34,11 @@ var _grooming_finished: bool = false
 
 var fur_shader: Shader
 
+## Particle effect throttling
+var _last_particle_time: Dictionary = {}
+const PARTICLE_COOLDOWN := 0.4
+var _cached_fur_color: Color = Color(0.65, 0.45, 0.25)
+
 ## Default breed to load when no competition context is provided (free play).
 const DEFAULT_BREED_PATH := "res://resources/breeds/golden_retriever.tres"
 
@@ -99,6 +104,12 @@ func _ready() -> void:
 		var shell_meshes := ShellFurSetup.setup(dog_model, fur_shader, breed_fur_material)
 		for zone_id in shell_meshes:
 			dog_model.zone_meshes[zone_id] = shell_meshes[zone_id]
+
+	# Cache fur color for particles from breed material
+	if breed_fur_material:
+		var fc = breed_fur_material.get_shader_parameter("fur_color")
+		if fc is Color:
+			_cached_fur_color = fc
 
 	# Set breed data on dog model for guide overlay
 	if dog_model and _breed_data:
@@ -210,7 +221,7 @@ func _start_session() -> void:
 		# Entry fee is deducted by PreShowScreen before arriving here.
 
 		# Start timer
-		var time_limit := 120.0
+		var time_limit := 180.0
 		if _competition_data:
 			time_limit = _competition_data.time_limit_seconds
 		_timer_system.start_timer(time_limit)
@@ -267,7 +278,7 @@ func _setup_hud() -> void:
 	_hud.add_child(top_left)
 
 	_hud_timer_label = Label.new()
-	_hud_timer_label.text = "2:00"
+	_hud_timer_label.text = "3:00"
 	_hud_timer_label.add_theme_font_size_override("font_size", 36)
 	_hud_timer_label.add_theme_color_override("font_color", Color(0.173, 0.243, 0.314))
 	_hud_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -609,6 +620,29 @@ func _on_zone_hover_changed(zone_id: String) -> void:
 func _on_zone_grooming_tick(zone_id: String, amount: float) -> void:
 	if dog_model:
 		dog_model.set_groomed_amount(zone_id, amount)
+		_maybe_spawn_particles(zone_id)
+
+
+func _maybe_spawn_particles(zone_id: String) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	if _last_particle_time.has(zone_id) and now - _last_particle_time[zone_id] < PARTICLE_COOLDOWN:
+		return
+	_last_particle_time[zone_id] = now
+	_spawn_grooming_particles(zone_id)
+
+
+func _spawn_grooming_particles(zone_id: String) -> void:
+	if not dog_model:
+		return
+	# Locate the Area3D node for this zone to get a world-space spawn position
+	if not dog_model.zones.has(zone_id):
+		return
+	var zone_node: Node3D = dog_model.zones[zone_id]
+	var particles := GroomingParticles.new()
+	particles.set_fur_color(_cached_fur_color)
+	particles.global_position = zone_node.global_position
+	# Add to the DogScene parent so particles live in the 3D SubViewport
+	dog_model.get_parent().add_child(particles)
 
 
 func _on_zone_groomed(zone_id: String, _tool_data: Resource) -> void:

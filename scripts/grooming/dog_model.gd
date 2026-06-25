@@ -150,17 +150,22 @@ func _get_guide_color_for_zone(zone_id: String) -> Color:
 
 	# Default color based on zone type for demo purposes
 	var default_colors: Dictionary = {
-		"head": Color(0.1, 0.8, 0.1, 0.7),
+		"crown": Color(0.1, 0.8, 0.1, 0.7),
+		"muzzle": Color(0.2, 0.7, 0.2, 0.7),
 		"ears_left": Color(0.9, 0.5, 0.1, 0.7),
 		"ears_right": Color(0.9, 0.5, 0.1, 0.7),
 		"back": Color(0.1, 0.5, 0.9, 0.7),
 		"chest": Color(0.9, 0.9, 0.1, 0.7),
 		"belly": Color(0.9, 0.1, 0.1, 0.7),
-		"legs_front_left": Color(0.5, 0.1, 0.9, 0.7),
-		"legs_front_right": Color(0.5, 0.1, 0.9, 0.7),
-		"legs_rear_left": Color(0.9, 0.1, 0.9, 0.7),
-		"legs_rear_right": Color(0.9, 0.1, 0.9, 0.7),
+		"leg_front_left": Color(0.5, 0.1, 0.9, 0.7),
+		"leg_front_right": Color(0.5, 0.1, 0.9, 0.7),
+		"leg_rear_left": Color(0.9, 0.1, 0.9, 0.7),
+		"leg_rear_right": Color(0.9, 0.1, 0.9, 0.7),
 		"tail": Color(0.1, 0.9, 0.9, 0.7),
+		"paw_front_left": Color(0.6, 0.3, 0.8, 0.7),
+		"paw_front_right": Color(0.6, 0.3, 0.8, 0.7),
+		"paw_rear_left": Color(0.8, 0.3, 0.6, 0.7),
+		"paw_rear_right": Color(0.8, 0.3, 0.6, 0.7),
 	}
 	return default_colors.get(zone_id, Color(0.5, 0.5, 0.5, 0.7))
 

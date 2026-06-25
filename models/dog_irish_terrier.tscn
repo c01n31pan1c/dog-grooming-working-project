@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dog_irish_terrier_001"]
+[gd_scene load_steps=33 format=3 uid="uid://dog_irish_terrier_001"]
 
 [ext_resource type="Script" path="res://scripts/grooming/dog_model.gd" id="1"]
 [ext_resource type="Shader" path="res://shaders/shell_fur.gdshader" id="2"]
@@ -66,6 +66,16 @@ height = 0.36
 radius = 0.048
 height = 0.076
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_snout"]
+radius = 0.065
+height = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape_beard"]
+size = Vector3(0.08, 0.07, 0.1)
+
+[sub_resource type="SphereShape3D" id="SphereShape_paw"]
+radius = 0.048
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
 top_radius = 0.028
 bottom_radius = 0.048
@@ -120,16 +130,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 0.5)
 
 [node name="HeadMesh" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("SphereMesh_head")
-metadata/zone_id = "head"
+metadata/zone_id = "crown"
 
 [node name="HeadZone" type="Area3D" parent="Head"]
-metadata/zone_id = "head"
+metadata/zone_id = "crown"
 [node name="HeadShape" type="CollisionShape3D" parent="Head/HeadZone"]
 shape = SubResource("SphereShape_head")
 
 ;; Snout (strong, flat)
 [node name="SnoutMesh" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("CapsuleMesh_snout")
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -0.04, 0.2)
+metadata/zone_id = "muzzle"
+
+[node name="SnoutZone" type="Area3D" parent="Head"]
+metadata/zone_id = "muzzle"
+[node name="SnoutShape" type="CollisionShape3D" parent="Head/SnoutZone"]
+shape = SubResource("CapsuleShape_snout")
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -0.04, 0.2)
 
 ;; Nose
@@ -141,7 +158,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0.32)
 [node name="BeardMesh" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("BoxMesh_beard")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0.18)
-metadata/zone_id = "head"
+metadata/zone_id = "muzzle"
+
+[node name="BeardZone" type="Area3D" parent="Head"]
+metadata/zone_id = "muzzle"
+[node name="BeardShape" type="CollisionShape3D" parent="Head/BeardZone"]
+shape = SubResource("BoxShape_beard")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0.18)
 
 ;; Eyes
 [node name="EyeLeft" type="MeshInstance3D" parent="Head"]
@@ -188,16 +211,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, 0, 0.24)
 [node name="LegMesh" type="MeshInstance3D" parent="LegFrontLeft"]
 mesh = SubResource("CylinderMesh_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-metadata/zone_id = "legs_front_left"
+metadata/zone_id = "leg_front_left"
 
 [node name="LegZone" type="Area3D" parent="LegFrontLeft"]
-metadata/zone_id = "legs_front_left"
+metadata/zone_id = "leg_front_left"
 [node name="LegShape" type="CollisionShape3D" parent="LegFrontLeft/LegZone"]
 shape = SubResource("CylinderShape_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
 [node name="PawFL" type="MeshInstance3D" parent="LegFrontLeft"]
 mesh = SubResource("SphereMesh_paw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.02)
+metadata/zone_id = "paw_front_left"
+
+[node name="PawZoneFL" type="Area3D" parent="LegFrontLeft"]
+metadata/zone_id = "paw_front_left"
+[node name="PawShapeFL" type="CollisionShape3D" parent="LegFrontLeft/PawZoneFL"]
+shape = SubResource("SphereShape_paw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.02)
 
 [node name="LegFrontRight" type="Node3D" parent="."]
@@ -206,16 +236,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0, 0.24)
 [node name="LegMesh" type="MeshInstance3D" parent="LegFrontRight"]
 mesh = SubResource("CylinderMesh_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-metadata/zone_id = "legs_front_right"
+metadata/zone_id = "leg_front_right"
 
 [node name="LegZone" type="Area3D" parent="LegFrontRight"]
-metadata/zone_id = "legs_front_right"
+metadata/zone_id = "leg_front_right"
 [node name="LegShape" type="CollisionShape3D" parent="LegFrontRight/LegZone"]
 shape = SubResource("CylinderShape_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
 [node name="PawFR" type="MeshInstance3D" parent="LegFrontRight"]
 mesh = SubResource("SphereMesh_paw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.02)
+metadata/zone_id = "paw_front_right"
+
+[node name="PawZoneFR" type="Area3D" parent="LegFrontRight"]
+metadata/zone_id = "paw_front_right"
+[node name="PawShapeFR" type="CollisionShape3D" parent="LegFrontRight/PawZoneFR"]
+shape = SubResource("SphereShape_paw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.02)
 
 [node name="LegRearLeft" type="Node3D" parent="."]
@@ -224,16 +261,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, 0, -0.3)
 [node name="LegMesh" type="MeshInstance3D" parent="LegRearLeft"]
 mesh = SubResource("CylinderMesh_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-metadata/zone_id = "legs_rear_left"
+metadata/zone_id = "leg_rear_left"
 
 [node name="LegZone" type="Area3D" parent="LegRearLeft"]
-metadata/zone_id = "legs_rear_left"
+metadata/zone_id = "leg_rear_left"
 [node name="LegShape" type="CollisionShape3D" parent="LegRearLeft/LegZone"]
 shape = SubResource("CylinderShape_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
 [node name="PawRL" type="MeshInstance3D" parent="LegRearLeft"]
 mesh = SubResource("SphereMesh_paw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.02)
+metadata/zone_id = "paw_rear_left"
+
+[node name="PawZoneRL" type="Area3D" parent="LegRearLeft"]
+metadata/zone_id = "paw_rear_left"
+[node name="PawShapeRL" type="CollisionShape3D" parent="LegRearLeft/PawZoneRL"]
+shape = SubResource("SphereShape_paw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.02)
 
 [node name="LegRearRight" type="Node3D" parent="."]
@@ -242,16 +286,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0, -0.3)
 [node name="LegMesh" type="MeshInstance3D" parent="LegRearRight"]
 mesh = SubResource("CylinderMesh_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-metadata/zone_id = "legs_rear_right"
+metadata/zone_id = "leg_rear_right"
 
 [node name="LegZone" type="Area3D" parent="LegRearRight"]
-metadata/zone_id = "legs_rear_right"
+metadata/zone_id = "leg_rear_right"
 [node name="LegShape" type="CollisionShape3D" parent="LegRearRight/LegZone"]
 shape = SubResource("CylinderShape_leg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
 [node name="PawRR" type="MeshInstance3D" parent="LegRearRight"]
 mesh = SubResource("SphereMesh_paw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.02)
+metadata/zone_id = "paw_rear_right"
+
+[node name="PawZoneRR" type="Area3D" parent="LegRearRight"]
+metadata/zone_id = "paw_rear_right"
+[node name="PawShapeRR" type="CollisionShape3D" parent="LegRearRight/PawZoneRR"]
+shape = SubResource("SphereShape_paw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.02)
 
 ;; === TAIL (longer, carried high) ===

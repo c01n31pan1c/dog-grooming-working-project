@@ -32,10 +32,10 @@ const ZONE_COLLISION_LAYER: int = 1
 ## ---- Tool-zone compatibility maps ----
 
 ## Zones where nail trimmer is valid.
-const PAW_ZONES: Array[String] = ["paw_front_left", "paw_front_right", "paw_rear_left", "paw_rear_right", "paws"]
+const PAW_ZONES: Array[String] = ["paw_front_left", "paw_front_right", "paw_rear_left", "paw_rear_right"]
 
 ## Zones considered detail zones for scissors.
-const DETAIL_ZONES: Array[String] = ["face", "ears", "head", "muzzle", "eyebrows", "beard", "topknot", "tail_tip"]
+const DETAIL_ZONES: Array[String] = ["crown", "muzzle", "ears_left", "ears_right"]
 
 
 # -- Setup ------------------------------------------------------------------
@@ -216,7 +216,16 @@ func _apply_tool_effect(zone_id: String, tool_data: ToolData, quality: float) ->
 			# Medicine is a bonus action; doesn't mark groomed.
 			zone_state["medicine_applied"] = true
 
-		ToolData.ToolType.CLIPPER, ToolData.ToolType.SCISSORS, ToolData.ToolType.NAIL_TRIMMER:
+		ToolData.ToolType.SCISSORS:
+			# Scissors use incremental grooming: +0.25 per swipe (4 swipes to complete).
+			zone_state["groomed_amount"] = minf(1.0, zone_state.get("groomed_amount", 0.0) + 0.25 * quality)
+			zone_state["tool_used"] = tool_data
+			if quality > zone_state["quality"]:
+				zone_state["quality"] = quality
+			if zone_state["groomed_amount"] >= 1.0:
+				zone_state["groomed"] = true
+
+		ToolData.ToolType.CLIPPER, ToolData.ToolType.NAIL_TRIMMER:
 			# These are primary grooming tools that mark a zone done.
 			zone_state["groomed"] = true
 			zone_state["groomed_amount"] = 1.0
