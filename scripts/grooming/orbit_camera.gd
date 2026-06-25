@@ -98,12 +98,15 @@ func _input(event: InputEvent) -> void:
 				_prev_midpoint = ((points[0] as Vector2) + (points[1] as Vector2)) * 0.5
 				_initial_pinch_distance = (points[0] as Vector2).distance_to(points[1] as Vector2)
 				_initial_zoom_distance = _target_distance
+				get_viewport().set_input_as_handled()
 		else:
 			_touch_points.erase(st.index)
 
 	if event is InputEventScreenDrag:
 		var sd := event as InputEventScreenDrag
 		_touch_points[sd.index] = sd.position
+		if _touch_points.size() < 2:
+			return  # Only orbit on 2+ fingers
 		if _touch_points.size() == 2:
 			var points := _touch_points.values()
 			var midpoint := ((points[0] as Vector2) + (points[1] as Vector2)) * 0.5
@@ -116,6 +119,7 @@ func _input(event: InputEvent) -> void:
 			if _initial_pinch_distance > 0.0:
 				var zoom_ratio := _initial_pinch_distance / current_pinch
 				_target_distance = clampf(_initial_zoom_distance * zoom_ratio, min_distance, max_distance)
+			get_viewport().set_input_as_handled()
 
 
 func _process(delta: float) -> void:
