@@ -19,3 +19,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Signing keys
+*.keystore
+*.jks
