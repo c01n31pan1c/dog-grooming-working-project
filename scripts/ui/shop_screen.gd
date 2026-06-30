@@ -160,7 +160,7 @@ func _build_ui() -> void:
 	_back_button = DGCButton.new()
 	_back_button.text = "Back to Salon"
 	_back_button.variant = DGCButton.Variant.SECONDARY
-	_back_button.size = DGCButton.Size.MD
+	_back_button.button_size = DGCButton.Size.MD
 	_back_button.block = true
 	_back_button.pressed.connect(_on_back_pressed)
 	bottom_margin.add_child(_back_button)

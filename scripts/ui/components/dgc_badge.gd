@@ -38,6 +38,8 @@ func _build_ui() -> void:
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_label.add_theme_font_size_override("font_size", 20)
+	if DesignTokens.font_display_bold:
+		_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	add_child(_label)
 
 

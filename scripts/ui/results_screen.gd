@@ -66,6 +66,8 @@ func _build_ui() -> void:
 	trophy_label.text = "\U0001F3C6"
 	trophy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	trophy_label.add_theme_font_size_override("font_size", 64)
+	if DesignTokens.font_display_bold:
+		trophy_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	main_vbox.add_child(trophy_label)
 
 	# (b) Pulsing gold Badge: placement text
@@ -162,7 +164,7 @@ func _build_ui() -> void:
 	var salon_btn := DGCButton.new()
 	salon_btn.text = "Salon"
 	salon_btn.variant = DGCButton.Variant.SECONDARY
-	salon_btn.size = DGCButton.Size.MD
+	salon_btn.button_size = DGCButton.Size.MD
 	salon_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	salon_btn.pressed.connect(_on_salon_pressed)
 	button_row.add_child(salon_btn)
@@ -170,7 +172,7 @@ func _build_ui() -> void:
 	var next_btn := DGCButton.new()
 	next_btn.text = "Next Show"
 	next_btn.variant = DGCButton.Variant.PRIMARY
-	next_btn.size = DGCButton.Size.MD
+	next_btn.button_size = DGCButton.Size.MD
 	next_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	next_btn.pressed.connect(_on_next_show_pressed)
 	button_row.add_child(next_btn)

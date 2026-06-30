@@ -40,7 +40,7 @@ var _glyph_label: Label
 var _glyph_panel: PanelContainer
 var _name_label: Label
 var _group_label: Label
-var _difficulty_label: Label
+var _difficulty_label: Control
 var _new_badge: Label
 var _vbox: VBoxContainer
 var _is_hovered: bool = false
@@ -90,6 +90,8 @@ func _ready() -> void:
 	_glyph_label = Label.new()
 	_glyph_label.add_theme_font_size_override("font_size", 48)
 	_glyph_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if DesignTokens.font_display_bold:
+		_glyph_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	_glyph_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	glyph_center.add_child(_glyph_label)
 
@@ -188,6 +190,8 @@ func _update_difficulty_display() -> void:
 	rtl.scroll_active = false
 	rtl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rtl.add_theme_font_size_override("normal_font_size", 18)
+	if DesignTokens.font_display_bold:
+		rtl.add_theme_font_override("normal_font", DesignTokens.font_display_bold)
 
 	var filled = "\U0001F43E".repeat(difficulty)
 	var empty_count = maxi(0, 5 - difficulty)

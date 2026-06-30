@@ -18,6 +18,8 @@ var _start_button: DGCButton
 var _back_button: DGCIconButton
 var _fee_coin_balance: DGCCoinBalance
 var _judge_cards: Array[DGCJudgeCard] = []
+var _comp_name_label: Label
+var _tier_badge: DGCBadge
 
 
 func _ready() -> void:
@@ -112,22 +114,22 @@ func _build_ui() -> void:
 	comp_header.alignment = BoxContainer.ALIGNMENT_CENTER
 	content_vbox.add_child(comp_header)
 
-	var comp_name_label := Label.new()
-	comp_name_label.name = "CompNameLabel"
-	comp_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	comp_name_label.add_theme_font_size_override("font_size", 30)
-	comp_name_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+	_comp_name_label = Label.new()
+	_comp_name_label.name = "CompNameLabel"
+	_comp_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_comp_name_label.add_theme_font_size_override("font_size", 30)
+	_comp_name_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
 	if DesignTokens.font_display_extrabold:
-		comp_name_label.add_theme_font_override("font", DesignTokens.font_display_extrabold)
-	comp_header.add_child(comp_name_label)
+		_comp_name_label.add_theme_font_override("font", DesignTokens.font_display_extrabold)
+	comp_header.add_child(_comp_name_label)
 
 	var badge_center := CenterContainer.new()
 	comp_header.add_child(badge_center)
 
-	var tier_badge := DGCBadge.new()
-	tier_badge.name = "TierBadge"
-	tier_badge.tone = DGCBadge.Tone.BLUE
-	badge_center.add_child(tier_badge)
+	_tier_badge = DGCBadge.new()
+	_tier_badge.name = "TierBadge"
+	_tier_badge.tone = DGCBadge.Tone.BLUE
+	badge_center.add_child(_tier_badge)
 
 	# (b) Details Panel
 	_details_panel = DGCPanel.new()
@@ -176,7 +178,7 @@ func _build_ui() -> void:
 	_start_button = DGCButton.new()
 	_start_button.text = "Start Grooming"
 	_start_button.variant = DGCButton.Variant.PRIMARY
-	_start_button.size = DGCButton.Size.LG
+	_start_button.button_size = DGCButton.Size.LG
 	_start_button.block = true
 	_start_button.pressed.connect(_on_start_pressed)
 	button_margin.add_child(_start_button)
@@ -189,14 +191,12 @@ func _populate() -> void:
 		return
 
 	# Competition name
-	var comp_name_label := _scroll_container.get_node("../..").find_child("CompNameLabel", true, false) as Label
-	if comp_name_label:
-		comp_name_label.text = _competition_data.competition_name
+	if _comp_name_label:
+		_comp_name_label.text = _competition_data.competition_name
 
 	# Tier badge
-	var tier_badge := _scroll_container.get_node("../..").find_child("TierBadge", true, false) as DGCBadge
-	if tier_badge:
-		tier_badge.label_text = _competition_data.get_tier_name()
+	if _tier_badge:
+		_tier_badge.label_text = _competition_data.get_tier_name()
 
 	# Details panel content
 	_populate_details()
@@ -209,10 +209,8 @@ func _populate() -> void:
 
 
 func _populate_details() -> void:
-	# The DGCPanel auto-creates a ContentVBox. We need to add rows after _ready.
-	# Since DGCPanel._build_structure runs in its _ready, we wait a frame.
-	_details_panel.call_deferred("_populate_details_deferred")
-	# Actually we need to do this after the panel is ready
+	# The DGCPanel auto-creates a ContentVBox in its _ready.
+	# We need to wait for that before adding detail rows.
 	await _details_panel.ready
 	_add_details_content()
 

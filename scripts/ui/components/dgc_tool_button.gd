@@ -82,6 +82,8 @@ func _ready() -> void:
 	_glyph_label.text = glyph
 	_glyph_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_glyph_label.add_theme_font_size_override("font_size", 34)
+	if DesignTokens.font_display_bold:
+		_glyph_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	_glyph_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vbox.add_child(_glyph_label)
 

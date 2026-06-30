@@ -116,6 +116,7 @@ const PULSE_SCALE = 1.05
 # These will be loaded when fonts are available
 static var font_display: Font = null  # Baloo 2
 static var font_body: Font = null     # Nunito
+static var font_emoji: Font = null    # Noto Color Emoji (fallback for emoji glyphs)
 
 static var font_display_bold: Font = null      # Baloo 2 Bold (700)
 static var font_display_extrabold: Font = null  # Baloo 2 ExtraBold (800)
@@ -124,12 +125,21 @@ static var font_body_semibold: Font = null      # Nunito SemiBold (600)
 static var font_body_bold: Font = null           # Nunito Bold (700)
 static var font_body_extrabold: Font = null      # Nunito ExtraBold (800)
 
+static var _fonts_initialized := false
+
 func _ready():
 	_init_fonts()
 
 static func _init_fonts():
+	if _fonts_initialized:
+		return
+	_fonts_initialized = true
+
 	# Load font resources
 	var base_path = "res://resources/fonts/"
+
+	# Load emoji font first (used as fallback on all text fonts)
+	font_emoji = load(base_path + "NotoColorEmoji-Regular.ttf")
 
 	font_display_bold = load(base_path + "Baloo2-Bold.ttf")
 	font_display_extrabold = load(base_path + "Baloo2-ExtraBold.ttf")
@@ -137,6 +147,20 @@ static func _init_fonts():
 	font_body_semibold = load(base_path + "Nunito-SemiBold.ttf")
 	font_body_bold = load(base_path + "Nunito-Bold.ttf")
 	font_body_extrabold = load(base_path + "Nunito-ExtraBold.ttf")
+
+	# Add emoji font as fallback to all text fonts so emoji glyphs render
+	if font_emoji:
+		var all_fonts: Array[Font] = [
+			font_display_bold,
+			font_display_extrabold,
+			font_body_regular,
+			font_body_semibold,
+			font_body_bold,
+			font_body_extrabold,
+		]
+		for font in all_fonts:
+			if font:
+				font.fallbacks = [font_emoji]
 
 	# Default aliases
 	font_display = font_display_bold

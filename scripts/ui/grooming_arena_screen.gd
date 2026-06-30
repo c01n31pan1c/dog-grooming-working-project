@@ -446,7 +446,7 @@ func _setup_hud() -> void:
 	_hud_done_button.name = "ActionButton"
 	_hud_done_button.text = "Finish Early"
 	_hud_done_button.variant = DGCButton.Variant.PRIMARY
-	_hud_done_button.size = DGCButton.Size.MD
+	_hud_done_button.button_size = DGCButton.Size.MD
 	_hud_done_button.block = true
 	_hud_done_button.visible = false
 	_hud_done_button.pressed.connect(_finish_grooming)

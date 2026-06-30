@@ -205,7 +205,7 @@ size_flags_horizontal = 3
 text = "Compete"
 script = ExtResource("3_dgcbutton")
 variant = 0
-size = 1
+button_size = 1
 block = true
 
 [node name="FreeGroomButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
@@ -215,7 +215,7 @@ size_flags_horizontal = 3
 text = "Free Groom"
 script = ExtResource("3_dgcbutton")
 variant = 1
-size = 1
+button_size = 1
 block = true
 
 [node name="BreedpediaButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
@@ -225,7 +225,7 @@ size_flags_horizontal = 3
 text = "Breed-pedia"
 script = ExtResource("3_dgcbutton")
 variant = 1
-size = 1
+button_size = 1
 block = true
 
 [node name="ShopButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
@@ -235,5 +235,5 @@ size_flags_horizontal = 3
 text = "Shop"
 script = ExtResource("3_dgcbutton")
 variant = 1
-size = 1
+button_size = 1
 block = true

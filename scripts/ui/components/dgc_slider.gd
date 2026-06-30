@@ -98,6 +98,8 @@ func _style_slider() -> void:
 	fill_style.corner_radius_bottom_right = 6
 	fill_style.content_margin_top = 6
 	fill_style.content_margin_bottom = 6
+	_slider.add_theme_stylebox_override("grabber_area", fill_style)
+	_slider.add_theme_stylebox_override("grabber_area_highlight", fill_style)
 
 	# Grabber
 	var grabber_tex := _create_grabber_texture(Color("#ffd700"), 28)

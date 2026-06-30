@@ -225,6 +225,8 @@ func _build_detail_view() -> void:
 	_detail_glyph_label = Label.new()
 	_detail_glyph_label.add_theme_font_size_override("font_size", 96)
 	_detail_glyph_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if DesignTokens.font_display_bold:
+		_detail_glyph_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	glyph_center.add_child(_detail_glyph_label)
 
 	# --- Two badges: group (blue) + difficulty (mint) ---

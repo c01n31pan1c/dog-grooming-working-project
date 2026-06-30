@@ -12,9 +12,9 @@ enum Size { SM, MD, LG }
 		variant = v
 		_apply_style()
 
-@export var size: Size = Size.MD:
+@export var button_size: Size = Size.MD:
 	set(v):
-		size = v
+		button_size = v
 		_apply_style()
 
 @export var block: bool = false:
@@ -111,7 +111,7 @@ func _apply_style() -> void:
 	var pad_y := 24
 	var pad_x := 32
 	var min_h := 88
-	match size:
+	match button_size:
 		Size.SM:
 			font_size = 24
 			pad_y = 12

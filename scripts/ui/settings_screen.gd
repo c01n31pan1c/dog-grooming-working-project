@@ -104,7 +104,7 @@ func _build_ui() -> void:
 	_close_button = DGCButton.new()
 	_close_button.text = "Close"
 	_close_button.variant = DGCButton.Variant.PRIMARY
-	_close_button.size = DGCButton.Size.MD
+	_close_button.button_size = DGCButton.Size.MD
 	_close_button.block = true
 	_close_button.pressed.connect(_on_close_pressed)
 	bottom_margin.add_child(_close_button)

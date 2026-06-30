@@ -84,6 +84,8 @@ func _ready() -> void:
 	_glyph_label.text = glyph
 	_glyph_label.add_theme_font_size_override("font_size", 38)
 	_glyph_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if DesignTokens.font_display_bold:
+		_glyph_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	glyph_center.add_child(_glyph_label)
 
 	# Info VBox

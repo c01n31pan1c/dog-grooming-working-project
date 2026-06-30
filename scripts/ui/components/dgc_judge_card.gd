@@ -78,6 +78,8 @@ func _ready() -> void:
 	_avatar_label.text = glyph
 	_avatar_label.add_theme_font_size_override("font_size", 34)
 	_avatar_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if DesignTokens.font_display_bold:
+		_avatar_label.add_theme_font_override("font", DesignTokens.font_display_bold)
 	avatar_center.add_child(_avatar_label)
 
 	# Info VBox

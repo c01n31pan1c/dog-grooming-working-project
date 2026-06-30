@@ -6,5 +6,5 @@
 custom_minimum_size = Vector2(0, 88)
 script = ExtResource("1_script")
 variant = 0
-size = 1
+button_size = 1
 block = false
