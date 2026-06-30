@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgcbutton001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_button.gd" id="1_script"]
+
+[node name="DGCButton" type="Button"]
+custom_minimum_size = Vector2(0, 88)
+script = ExtResource("1_script")
+variant = 0
+size = 1
+block = false

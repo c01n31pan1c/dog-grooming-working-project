@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://salon_001"]
+[gd_scene load_steps=7 format=3 uid="uid://salon_001"]
 
 [ext_resource type="Script" path="res://scripts/ui/salon_screen.gd" id="1"]
 [ext_resource type="Theme" path="res://resources/ui_theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_button.gd" id="3_dgcbutton"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_icon_button.gd" id="4_dgciconbtn"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_coin_balance.gd" id="5_dgccoin"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_progress_bar.gd" id="6_dgcprogbar"]
 
 [node name="Salon" type="Node"]
 script = ExtResource("1")
@@ -22,135 +26,214 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.831, 0.914, 0.969, 1)
+color = Color(0.831, 0.914, 0.969, 0)
 
-[node name="MarginContainer" type="MarginContainer" parent="UI"]
+[node name="MainLayout" type="VBoxContainer" parent="UI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+theme_override_constants/separation = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
+[node name="ScreenHeader" type="PanelContainer" parent="UI/MainLayout"]
 layout_mode = 2
-theme_override_constants/separation = 20
 
-[node name="TitleBar" type="HBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+[node name="HeaderHBox" type="HBoxContainer" parent="UI/MainLayout/ScreenHeader"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BackButton" type="Button" parent="UI/MarginContainer/VBoxContainer/TitleBar"]
+[node name="BackButton" type="Button" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(100, 48)
-text = "Back"
-theme_override_font_sizes/font_size = 24
+script = ExtResource("4_dgciconbtn")
+variant = 1
+button_size = 48
+glyph = "‹"
 
-[node name="TitleLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/TitleBar"]
+[node name="HeaderTitle" type="Label" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "YOUR SALON"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 36
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
-[node name="TitleSpacer" type="Control" parent="UI/MarginContainer/VBoxContainer/TitleBar"]
+[node name="HeaderSpacer" type="Control" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(48, 0)
 
-[node name="BalancePanel" type="PanelContainer" parent="UI/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContentVBox" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+
+[node name="ContentMargin" type="MarginContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 0
+
+[node name="PanelsVBox" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="BalancePanel" type="PanelContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox"]
 layout_mode = 2
 
-[node name="BalanceLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/BalancePanel"]
+[node name="BalanceCenter" type="CenterContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/BalancePanel"]
+layout_mode = 2
+
+[node name="CoinBalance" type="HBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/BalancePanel/BalanceCenter"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "0 coins"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 32
-theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
+script = ExtResource("5_dgccoin")
+compact = false
 
-[node name="TierSection" type="PanelContainer" parent="UI/MarginContainer/VBoxContainer"]
+[node name="TierPanel" type="PanelContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox"]
 layout_mode = 2
 
-[node name="TierVBox" type="VBoxContainer" parent="UI/MarginContainer/VBoxContainer/TierSection"]
+[node name="TierVBox" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/TierPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 
-[node name="TierLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/TierSection/TierVBox"]
+[node name="TierLabel" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/TierPanel/TierVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Tier: Local Amateur"
+text = "Tier: Amateur"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
 
-[node name="TierProgressBar" type="ProgressBar" parent="UI/MarginContainer/VBoxContainer/TierSection/TierVBox"]
+[node name="TierProgressBar" type="Control" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/TierPanel/TierVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 36)
-min_value = 0.0
-max_value = 100.0
+script = ExtResource("6_dgcprogbar")
 value = 0.0
+max_value = 100.0
+tone = 0
+bar_height = 36
 
-[node name="ProgressDetail" type="Label" parent="UI/MarginContainer/VBoxContainer/TierSection/TierVBox"]
+[node name="ProgressHint" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/TierPanel/TierVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Wins: 0/5 | Coins earned: 0/500"
+text = "Win 2 more shows to reach Regional"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 24
-theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
-[node name="StatsPanel" type="PanelContainer" parent="UI/MarginContainer/VBoxContainer"]
+[node name="StatsPanel" type="PanelContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox"]
 layout_mode = 2
 
-[node name="StatsLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/StatsPanel"]
+[node name="StatsHBox" type="HBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="WinsColumn" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="WinsValue" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/WinsColumn"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Wins: 0 | Competitions: 0 | Breeds groomed: 0"
+text = "0"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 24
-theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 1)
 
-[node name="Spacer" type="Control" parent="UI/MarginContainer/VBoxContainer"]
+[node name="WinsLabel" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/WinsColumn"]
+layout_mode = 2
+text = "WINS"
+horizontal_alignment = 1
+
+[node name="ShowsColumn" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="ShowsValue" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/ShowsColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="ShowsLabel" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/ShowsColumn"]
+layout_mode = 2
+text = "SHOWS"
+horizontal_alignment = 1
+
+[node name="BreedsColumn" type="VBoxContainer" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="BreedsValue" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/BreedsColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="BreedsLabel" type="Label" parent="UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/BreedsColumn"]
+layout_mode = 2
+text = "BREEDS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UI/MainLayout/ScrollContainer/ContentVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ButtonsGrid" type="GridContainer" parent="UI/MarginContainer/VBoxContainer"]
+[node name="ActionGridMargin" type="MarginContainer" parent="UI/MainLayout"]
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="ActionGrid" type="GridContainer" parent="UI/MainLayout/ActionGridMargin"]
+layout_mode = 2
 columns = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
 
-[node name="CompeteButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+[node name="CompeteButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 88)
-text = "Enter Competition"
-theme_override_font_sizes/font_size = 28
+size_flags_horizontal = 3
+text = "Compete"
+script = ExtResource("3_dgcbutton")
+variant = 0
+size = 1
+block = true
 
-[node name="ShopButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+[node name="FreeGroomButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 88)
-text = "Shop"
-theme_override_font_sizes/font_size = 28
+size_flags_horizontal = 3
+text = "Free Groom"
+script = ExtResource("3_dgcbutton")
+variant = 1
+size = 1
+block = true
 
-[node name="BreedpediaButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+[node name="BreedpediaButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 88)
+size_flags_horizontal = 3
 text = "Breed-pedia"
-theme_override_font_sizes/font_size = 28
+script = ExtResource("3_dgcbutton")
+variant = 1
+size = 1
+block = true
 
-[node name="SettingsButton" type="Button" parent="UI/MarginContainer/VBoxContainer/ButtonsGrid"]
+[node name="ShopButton" type="Button" parent="UI/MainLayout/ActionGridMargin/ActionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(280, 88)
-text = "Settings"
-theme_override_font_sizes/font_size = 28
+size_flags_horizontal = 3
+text = "Shop"
+script = ExtResource("3_dgcbutton")
+variant = 1
+size = 1
+block = true

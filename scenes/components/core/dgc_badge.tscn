@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgcbadge001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_badge.gd" id="1_script"]
+
+[node name="DGCBadge" type="PanelContainer"]
+script = ExtResource("1_script")
+label_text = "NEW"
+tone = 0
+pulse = false

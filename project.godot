@@ -18,15 +18,17 @@ SceneManager="*res://scripts/core/scene_manager.gd"
 SaveManager="*res://scripts/data/save_manager.gd"
 SceneTransition="*res://scripts/ui/scene_transition.gd"
 UIAnimations="*res://scripts/ui/ui_animations.gd"
+DesignTokens="*res://scripts/ui/design_tokens.gd"
+AmbientBG="*res://scenes/ui/ambient_background.tscn"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=1080
+window/size/viewport_height=1920
 window/size/mode=0
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_height"
-window/handheld/orientation=1
+window/stretch/aspect="keep_width"
+window/handheld/orientation=0
 
 [input_devices]
 

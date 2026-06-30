@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgctabs001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_tabs.gd" id="1_script"]
+
+[node name="DGCTabs" type="HBoxContainer"]
+script = ExtResource("1_script")
+tabs = PackedStringArray("Tab 1", "Tab 2", "Tab 3")
+selected_index = 0

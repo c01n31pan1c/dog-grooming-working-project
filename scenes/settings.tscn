@@ -1,0 +1,169 @@
+[gd_scene load_steps=4 format=3 uid="uid://settings_001"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_standalone.gd" id="1"]
+[ext_resource type="Theme" path="res://resources/ui_theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_icon_button.gd" id="3_dgciconbtn"]
+
+[node name="Settings" type="Node"]
+script = ExtResource("1")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+theme = ExtResource("2")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.831, 0.914, 0.969, 0)
+
+[node name="MainLayout" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="ScreenHeader" type="PanelContainer" parent="UI/MainLayout"]
+layout_mode = 2
+
+[node name="HeaderHBox" type="HBoxContainer" parent="UI/MainLayout/ScreenHeader"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("3_dgciconbtn")
+variant = 1
+button_size = 48
+glyph = "‹"
+
+[node name="HeaderTitle" type="Label" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="HeaderSpacer" type="Control" parent="UI/MainLayout/ScreenHeader/HeaderHBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(48, 0)
+
+[node name="ContentMargin" type="MarginContainer" parent="UI/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="SettingsVBox" type="VBoxContainer" parent="UI/MainLayout/ContentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MasterRow" type="HBoxContainer" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/MasterRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+theme_override_font_sizes/font_size = 28
+text = "Master"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="UI/MainLayout/ContentMargin/SettingsVBox/MasterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 56)
+
+[node name="MasterValueLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/MasterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 26
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MusicRow" type="HBoxContainer" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/MusicRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+theme_override_font_sizes/font_size = 28
+text = "Music"
+
+[node name="MusicVolumeSlider" type="HSlider" parent="UI/MainLayout/ContentMargin/SettingsVBox/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 56)
+
+[node name="MusicValueLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 26
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SFXRow" type="HBoxContainer" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/SFXRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+theme_override_font_sizes/font_size = 28
+text = "SFX"
+
+[node name="SFXVolumeSlider" type="HSlider" parent="UI/MainLayout/ContentMargin/SettingsVBox/SFXRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 56)
+
+[node name="SFXValueLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox/SFXRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 26
+text = "100%"
+horizontal_alignment = 2
+
+[node name="Sep1" type="HSeparator" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+
+[node name="ControlsPlaceholder" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
+text = "Controls: coming soon"
+horizontal_alignment = 1
+
+[node name="Sep2" type="HSeparator" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+
+[node name="VersionLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
+text = "Version: 0.1.0"
+horizontal_alignment = 1
+
+[node name="CreditsLabel" type="Label" parent="UI/MainLayout/ContentMargin/SettingsVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
+text = "Credits: placeholder"
+horizontal_alignment = 1

@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://main_menu_001"]
+[gd_scene load_steps=5 format=3 uid="uid://main_menu_001"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu_screen.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/settings_screen.gd" id="2"]
+
 [ext_resource type="Theme" path="res://resources/ui_theme.tres" id="3"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_button.gd" id="4_dgcbutton"]
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_coin_balance.gd" id="5_dgccoin"]
 
 [node name="MainMenu" type="Node"]
 script = ExtResource("1")
@@ -23,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.831, 0.914, 0.969, 1)
+color = Color(0.831, 0.914, 0.969, 0)
 
 [node name="MainLayout" type="VBoxContainer" parent="UI"]
 layout_mode = 1
@@ -46,23 +48,14 @@ theme_override_constants/separation = 24
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
+theme_override_font_sizes/font_size = 22
 text = "Amateur"
 
-[node name="CoinIcon" type="Label" parent="UI/MainLayout/PlayerInfoBar/HBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(1.0, 0.843, 0.0, 1)
-text = "Coins:"
-
-[node name="CoinLabel" type="Label" parent="UI/MainLayout/PlayerInfoBar/HBox"]
+[node name="CoinBalance" type="HBoxContainer" parent="UI/MainLayout/PlayerInfoBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(80, 0)
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
-text = "0"
+script = ExtResource("5_dgccoin")
+compact = true
 
 [node name="TopSpacer" type="Control" parent="UI/MainLayout"]
 layout_mode = 2
@@ -74,23 +67,15 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 8
 
+[node name="PawEmoji" type="Label" parent="UI/MainLayout/TitleContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 56
+text = "🐾"
+horizontal_alignment = 1
+
 [node name="TitleWrapper" type="Control" parent="UI/MainLayout/TitleContainer"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 120)
-
-[node name="TitleLabel" type="Label" parent="UI/MainLayout/TitleContainer/TitleWrapper"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 52
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
-text = "Dog Grooming
-Championship"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="TitleShadow" type="Label" parent="UI/MainLayout/TitleContainer/TitleWrapper"]
 layout_mode = 1
@@ -99,18 +84,30 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 52
-theme_override_colors/font_color = Color(1.0, 0.878, 0.4, 0.35)
+position = Vector2(4, 4)
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1.0, 0.878, 0.4, 0.55)
 text = "Dog Grooming
 Championship"
 horizontal_alignment = 1
 vertical_alignment = 1
-position = Vector2(3, 3)
+
+[node name="TitleLabel" type="Label" parent="UI/MainLayout/TitleContainer/TitleWrapper"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "Dog Grooming
+Championship"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="UI/MainLayout/TitleContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.204, 0.286, 0.369, 0.7)
+theme_override_font_sizes/font_size = 22
 text = "Groom your way to glory!"
 horizontal_alignment = 1
 
@@ -121,190 +118,54 @@ size_flags_stretch_ratio = 1.0
 
 [node name="ButtonContainer" type="VBoxContainer" parent="UI/MainLayout"]
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
-[node name="PlayButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
+[node name="MarginLeft" type="MarginContainer" parent="UI/MainLayout/ButtonContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_right = 28
+
+[node name="ButtonVBox" type="VBoxContainer" parent="UI/MainLayout/ButtonContainer/MarginLeft"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PlayButton" type="Button" parent="UI/MainLayout/ButtonContainer/MarginLeft/ButtonVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 96)
-theme_override_font_sizes/font_size = 36
-text = "Play"
+size_flags_horizontal = 3
+script = ExtResource("4_dgcbutton")
+variant = 0
+size = 2
+block = true
 
-[node name="BreedpediaButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
+[node name="BreedpediaButton" type="Button" parent="UI/MainLayout/ButtonContainer/MarginLeft/ButtonVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 88)
-theme_override_font_sizes/font_size = 32
-text = "Breed-pedia"
+size_flags_horizontal = 3
+script = ExtResource("4_dgcbutton")
+variant = 1
+size = 1
+block = true
 
-[node name="SettingsButton" type="Button" parent="UI/MainLayout/ButtonContainer"]
+[node name="ShopButton" type="Button" parent="UI/MainLayout/ButtonContainer/MarginLeft/ButtonVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(420, 88)
-theme_override_font_sizes/font_size = 32
-text = "Settings"
+size_flags_horizontal = 3
+script = ExtResource("4_dgcbutton")
+variant = 1
+size = 1
+block = true
+
+[node name="SettingsButton" type="Button" parent="UI/MainLayout/ButtonContainer/MarginLeft/ButtonVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("4_dgcbutton")
+variant = 2
+size = 1
+block = true
 
 [node name="BottomSpacer" type="Control" parent="UI/MainLayout"]
 layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.5
+custom_minimum_size = Vector2(0, 40)
 
-[node name="SettingsOverlay" type="Control" parent="UI"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2")
-
-[node name="Dimmer" type="ColorRect" parent="UI/SettingsOverlay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.173, 0.243, 0.314, 0.5)
-
-[node name="SettingsPanel" type="PanelContainer" parent="UI/SettingsOverlay"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -250.0
-offset_right = 300.0
-offset_bottom = 250.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/SettingsOverlay/SettingsPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
-
-[node name="VBox" type="VBoxContainer" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="SettingsTitle" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-theme_override_colors/font_color = Color(0.239, 0.239, 0.361, 1)
-text = "Settings"
-horizontal_alignment = 1
-
-[node name="Sep1" type="HSeparator" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="MasterRow" type="HBoxContainer" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="MasterLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 28
-text = "Master"
-
-[node name="MasterVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 56)
-
-[node name="MasterValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MasterRow"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 26
-text = "100%"
-horizontal_alignment = 2
-
-[node name="MusicRow" type="HBoxContainer" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="MusicLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 28
-text = "Music"
-
-[node name="MusicVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 56)
-
-[node name="MusicValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/MusicRow"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 26
-text = "80%"
-horizontal_alignment = 2
-
-[node name="SFXRow" type="HBoxContainer" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="SFXLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
-theme_override_font_sizes/font_size = 28
-text = "SFX"
-
-[node name="SFXVolumeSlider" type="HSlider" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 56)
-
-[node name="SFXValueLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox/SFXRow"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(60, 0)
-theme_override_font_sizes/font_size = 26
-text = "100%"
-horizontal_alignment = 2
-
-[node name="Sep2" type="HSeparator" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="ControlsPlaceholder" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
-text = "Controls: coming soon"
-horizontal_alignment = 1
-
-[node name="Sep3" type="HSeparator" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="VersionLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
-text = "Version: 0.1.0"
-horizontal_alignment = 1
-
-[node name="CreditsLabel" type="Label" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.5, 0.55, 0.6, 1)
-text = "Credits: placeholder"
-horizontal_alignment = 1
-
-[node name="SettingsCloseButton" type="Button" parent="UI/SettingsOverlay/SettingsPanel/MarginContainer/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(0, 64)
-theme_override_font_sizes/font_size = 24
-text = "Close"

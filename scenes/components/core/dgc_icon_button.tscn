@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgciconbtn001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_icon_button.gd" id="1_script"]
+
+[node name="DGCIconButton" type="Button"]
+custom_minimum_size = Vector2(56, 56)
+script = ExtResource("1_script")
+variant = 1
+button_size = 56
+glyph = "‹"

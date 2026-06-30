@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dambientbg01"]
+
+[ext_resource type="Script" path="res://scripts/ui/ambient_background.gd" id="1_ambient"]
+
+[node name="AmbientBackground" type="CanvasLayer"]
+layer = -1
+script = ExtResource("1_ambient")
+walker_count = 2
+walker_speed = 1.0
+show_clouds = true
+show_lamp_post = true
+time_of_day = 0

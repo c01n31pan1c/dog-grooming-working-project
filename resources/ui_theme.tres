@@ -19,12 +19,12 @@ shadow_color = Color(0.784, 0.839, 0.894, 0.3)
 shadow_size = 4
 
 [sub_resource type="StyleBoxFlat" id="button_hover"]
-bg_color = Color(1.0, 0.843, 0.0, 1)
+bg_color = Color(1.0, 0.922, 0.549, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.9, 0.75, 0.0, 1)
+border_color = Color(0.902, 0.749, 0.0, 1)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
@@ -37,12 +37,12 @@ shadow_color = Color(0.784, 0.839, 0.894, 0.4)
 shadow_size = 6
 
 [sub_resource type="StyleBoxFlat" id="button_pressed"]
-bg_color = Color(0.9, 0.78, 0.0, 1)
+bg_color = Color(0.902, 0.78, 0.0, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.8, 0.7, 0.0, 1)
+border_color = Color(0.8, 0.702, 0.0, 1)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
@@ -69,7 +69,7 @@ content_margin_right = 32.0
 content_margin_bottom = 24.0
 
 [sub_resource type="StyleBoxFlat" id="panel_style"]
-bg_color = Color(0.941, 0.969, 1.0, 0.95)
+bg_color = Color(0.941, 0.969, 1.0, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -144,19 +144,19 @@ Button/colors/font_color = Color(0.173, 0.243, 0.314, 1)
 Button/colors/font_hover_color = Color(0.173, 0.243, 0.314, 1)
 Button/colors/font_pressed_color = Color(0.173, 0.243, 0.314, 0.8)
 Button/colors/font_disabled_color = Color(0.5, 0.55, 0.6, 1)
-Button/font_sizes/font_size = 32
+Button/font_sizes/font_size = 26
 Button/styles/normal = SubResource("button_normal")
 Button/styles/hover = SubResource("button_hover")
 Button/styles/pressed = SubResource("button_pressed")
 Button/styles/disabled = SubResource("button_disabled")
 Label/colors/font_color = Color(0.173, 0.243, 0.314, 1)
-Label/font_sizes/font_size = 32
+Label/font_sizes/font_size = 26
 PanelContainer/styles/panel = SubResource("panel_style")
 HSlider/styles/slider = SubResource("hslider_style")
 HSlider/styles/grabber_area = SubResource("hslider_fill")
 ProgressBar/styles/background = SubResource("progress_bg")
 ProgressBar/styles/fill = SubResource("progress_fill")
-ProgressBar/font_sizes/font_size = 24
+ProgressBar/font_sizes/font_size = 20
 TabContainer/styles/tab_selected = SubResource("tab_selected")
 TabContainer/styles/tab_unselected = SubResource("tab_unselected")
 HSeparator/styles/separator = SubResource("separator_style")

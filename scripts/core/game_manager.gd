@@ -12,6 +12,7 @@ enum GameState {
 	PRE_SHOW,
 	BREED_PEDIA,
 	SHOP,
+	SETTINGS,
 	LOADING,
 }
 
@@ -27,10 +28,11 @@ var state_scene_map: Dictionary = {
 	GameState.SALON: "res://scenes/salon.tscn",
 	GameState.GROOMING: "res://scenes/grooming_arena.tscn",
 	GameState.COMPETITION: "res://scenes/competition_select.tscn",
-	GameState.COMPETITION_RESULTS: "res://scenes/competition.tscn",
+	GameState.COMPETITION_RESULTS: "res://scenes/results.tscn",
 	GameState.PRE_SHOW: "res://scenes/pre_show.tscn",
 	GameState.BREED_PEDIA: "res://scenes/breed_pedia.tscn",
 	GameState.SHOP: "res://scenes/shop.tscn",
+	GameState.SETTINGS: "res://scenes/settings.tscn",
 }
 
 ## Transition data passed to the target scene (e.g., which breed to groom).

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgcprogbar001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/dgc_progress_bar.gd" id="1_script"]
+
+[node name="DGCProgressBar" type="Control"]
+custom_minimum_size = Vector2(0, 36)
+script = ExtResource("1_script")
+value = 50.0
+max_value = 100.0
+label_text = ""
+tone = 0
+bar_height = 36

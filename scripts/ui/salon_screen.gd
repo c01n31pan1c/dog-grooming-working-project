@@ -1,21 +1,28 @@
 ## SalonScreen — Hub screen between competitions.
 ## Shows tier progress, balance, quick stats, and navigation buttons.
+## Uses DGC design system components for consistent styling.
 extends Node
 
 var _currency_manager: CurrencyManager
 var _progression_manager: ProgressionManager
 
-@onready var _balance_label: Label = %BalanceLabel
+@onready var _coin_balance: DGCCoinBalance = %CoinBalance
 @onready var _tier_label: Label = %TierLabel
-@onready var _progress_bar: ProgressBar = %TierProgressBar
-@onready var _progress_detail: Label = %ProgressDetail
-@onready var _stats_label: Label = %StatsLabel
+@onready var _progress_bar: DGCProgressBar = %TierProgressBar
+@onready var _progress_hint: Label = %ProgressHint
+@onready var _wins_value: Label = %WinsValue
+@onready var _shows_value: Label = %ShowsValue
+@onready var _breeds_value: Label = %BreedsValue
+@onready var _header_title: Label = %HeaderTitle
 
 @onready var _compete_button: Button = %CompeteButton
+@onready var _free_groom_button: Button = %FreeGroomButton
 @onready var _shop_button: Button = %ShopButton
 @onready var _breedpedia_button: Button = %BreedpediaButton
-@onready var _settings_button: Button = %SettingsButton
 @onready var _back_button: Button = %BackButton
+
+@onready var _screen_header: PanelContainer = $UI/MainLayout/ScreenHeader
+@onready var _scroll_container: ScrollContainer = $UI/MainLayout/ScrollContainer
 
 
 func _ready() -> void:
@@ -30,66 +37,145 @@ func _ready() -> void:
 	add_child(_progression_manager)
 
 	_compete_button.pressed.connect(_on_compete_pressed)
+	_free_groom_button.pressed.connect(_on_free_groom_pressed)
 	_shop_button.pressed.connect(_on_shop_pressed)
 	_breedpedia_button.pressed.connect(_on_breedpedia_pressed)
-	_settings_button.pressed.connect(_on_settings_pressed)
 	_back_button.pressed.connect(_on_back_pressed)
-
-	# Wire up button press juice
-	UIAnimations.setup_button_juice(_compete_button)
-	UIAnimations.setup_button_juice(_shop_button)
-	UIAnimations.setup_button_juice(_breedpedia_button)
-	UIAnimations.setup_button_juice(_settings_button)
-	UIAnimations.setup_button_juice(_back_button)
 
 	EventBus.currency_changed.connect(_on_currency_changed)
 	EventBus.tier_advanced.connect(_on_tier_advanced)
 
+	_style_header()
+	_style_panels()
 	_refresh_display()
 	_play_entrance_animations()
 
 
+func _style_header() -> void:
+	var header_style := StyleBoxFlat.new()
+	header_style.bg_color = DesignTokens.BLUE_PANEL
+	header_style.border_width_bottom = DesignTokens.BORDER_THIN
+	header_style.border_color = DesignTokens.BLUE_LINE
+	header_style.content_margin_left = 18
+	header_style.content_margin_right = 18
+	header_style.content_margin_top = 14
+	header_style.content_margin_bottom = 14
+	_screen_header.add_theme_stylebox_override("panel", header_style)
+
+	if DesignTokens.font_display_bold:
+		_header_title.add_theme_font_override("font", DesignTokens.font_display_bold)
+	_header_title.add_theme_font_size_override("font_size", 28)
+	_header_title.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+
+
+func _style_panels() -> void:
+	var balance_panel: PanelContainer = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/BalancePanel
+	_apply_panel_style(balance_panel)
+
+	var tier_panel: PanelContainer = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/TierPanel
+	_apply_panel_style(tier_panel)
+
+	if DesignTokens.font_display_bold:
+		_tier_label.add_theme_font_override("font", DesignTokens.font_display_bold)
+	_tier_label.add_theme_font_size_override("font_size", 24)
+	_tier_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+
+	if DesignTokens.font_body_semibold:
+		_progress_hint.add_theme_font_override("font", DesignTokens.font_body_semibold)
+	_progress_hint.add_theme_font_size_override("font_size", 16)
+	_progress_hint.add_theme_color_override("font_color", DesignTokens.INK_SLATE)
+
+	var stats_panel: PanelContainer = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel
+	_apply_panel_style(stats_panel)
+
+	for val_label in [_wins_value, _shows_value, _breeds_value]:
+		if DesignTokens.font_display_extrabold:
+			val_label.add_theme_font_override("font", DesignTokens.font_display_extrabold)
+		val_label.add_theme_font_size_override("font_size", 32)
+		val_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+
+	var wins_label: Label = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/WinsColumn/WinsLabel
+	var shows_label: Label = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/ShowsColumn/ShowsLabel
+	var breeds_label: Label = $UI/MainLayout/ScrollContainer/ContentVBox/ContentMargin/PanelsVBox/StatsPanel/StatsHBox/BreedsColumn/BreedsLabel
+	for cat_label in [wins_label, shows_label, breeds_label]:
+		if DesignTokens.font_body_bold:
+			cat_label.add_theme_font_override("font", DesignTokens.font_body_bold)
+		cat_label.add_theme_font_size_override("font_size", 14)
+		cat_label.add_theme_color_override("font_color", DesignTokens.INK_MUTED)
+
+
+func _apply_panel_style(panel: PanelContainer) -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = DesignTokens.BLUE_PANEL
+	style.border_width_bottom = DesignTokens.BORDER_THIN
+	style.border_width_top = DesignTokens.BORDER_THIN
+	style.border_width_left = DesignTokens.BORDER_THIN
+	style.border_width_right = DesignTokens.BORDER_THIN
+	style.border_color = DesignTokens.BLUE_LINE
+	style.corner_radius_top_left = DesignTokens.RADIUS_PANEL
+	style.corner_radius_top_right = DesignTokens.RADIUS_PANEL
+	style.corner_radius_bottom_left = DesignTokens.RADIUS_PANEL
+	style.corner_radius_bottom_right = DesignTokens.RADIUS_PANEL
+	style.anti_aliasing = true
+	style.shadow_color = Color(0, 0, 0, 0.06)
+	style.shadow_size = 6
+	style.shadow_offset = Vector2(0, 3)
+	style.content_margin_top = DesignTokens.PAD_PANEL
+	style.content_margin_bottom = DesignTokens.PAD_PANEL
+	style.content_margin_left = DesignTokens.PAD_PANEL
+	style.content_margin_right = DesignTokens.PAD_PANEL
+	panel.add_theme_stylebox_override("panel", style)
+
+
 func _play_entrance_animations() -> void:
-	# Balance and tier labels slide in from left
-	UIAnimations.slide_in_from_left(_balance_label, 200.0, 0.4)
-	UIAnimations.slide_in_from_left(_tier_label, 200.0, 0.4, 0.05)
+	_screen_header.modulate.a = 0.0
+	var header_tween := _screen_header.create_tween()
+	header_tween.tween_property(_screen_header, "modulate:a", 1.0, 0.4) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
-	# Stats slide in from right
-	UIAnimations.slide_in_from_right(_stats_label, 200.0, 0.4, 0.1)
+	_scroll_container.modulate.a = 0.0
+	var content_tween := _scroll_container.create_tween()
+	content_tween.tween_interval(0.15)
+	content_tween.tween_property(_scroll_container, "modulate:a", 1.0, 0.4) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
-	# Buttons slide up staggered
-	var buttons: Array[Button] = [_compete_button, _shop_button, _breedpedia_button, _settings_button]
+	var buttons: Array[Button] = [_compete_button, _free_groom_button, _breedpedia_button, _shop_button]
 	for i in buttons.size():
-		UIAnimations.fade_slide_up(buttons[i], 30.0, 0.3, 0.2 + i * 0.08)
-
-	# Tier progress bar fills from 0 to current value
-	var target_val := _progress_bar.value
-	_progress_bar.value = 0.0
-	UIAnimations.smooth_progress(_progress_bar, target_val, 0.8)
+		var btn := buttons[i]
+		btn.modulate.a = 0.0
+		var tween := btn.create_tween()
+		tween.tween_interval(0.25 + i * 0.08)
+		tween.tween_property(btn, "modulate:a", 1.0, 0.3) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
 func _refresh_display() -> void:
-	_balance_label.text = "%d coins" % _currency_manager.get_balance()
+	_coin_balance.amount = _currency_manager.get_balance()
 
 	var tier: int = _progression_manager.get_current_tier()
-	_tier_label.text = _progression_manager.get_tier_name(tier)
+	_tier_label.text = "Tier: %s" % _progression_manager.get_tier_name(tier)
 
 	var progress: Dictionary = _progression_manager.get_advancement_progress()
 	if progress.get("at_max", false):
 		_progress_bar.value = 100.0
-		_progress_detail.text = "Maximum tier reached!"
+		_progress_bar.label_text = "Maximum tier reached!"
+		_progress_hint.text = "You've reached the top!"
 	else:
 		_progress_bar.value = progress["progress_pct"] * 100.0
-		_progress_detail.text = "Wins: %d/%d | Coins earned: %d/%d" % [
+		_progress_bar.label_text = "Wins %d/%d · %d/%d coins" % [
 			progress["wins_current"], progress["wins_required"],
 			progress["coins_current"], progress["coins_required"],
 		]
+		var wins_needed: int = progress["wins_required"] - progress["wins_current"]
+		var next_tier_name: String = _progression_manager.get_tier_name(tier + 1) if tier + 1 < 5 else ""
+		if not next_tier_name.is_empty():
+			_progress_hint.text = "Win %d more shows to reach %s" % [wins_needed, next_tier_name]
+		else:
+			_progress_hint.text = ""
 
-	_stats_label.text = "Wins: %d | Competitions: %d | Breeds groomed: %d" % [
-		_progression_manager.get_total_wins(),
-		_progression_manager.get_competitions_completed(),
-		_progression_manager.get_breeds_groomed_count(),
-	]
+	_wins_value.text = str(_progression_manager.get_total_wins())
+	_shows_value.text = str(_progression_manager.get_competitions_completed())
+	_breeds_value.text = str(_progression_manager.get_breeds_groomed_count())
 
 
 func _on_currency_changed(_new_amount: int, _delta: int) -> void:
@@ -104,18 +190,16 @@ func _on_compete_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.COMPETITION)
 
 
+func _on_free_groom_pressed() -> void:
+	GameManager.change_state(GameManager.GameState.GROOMING, {"mode": "free_groom"})
+
+
 func _on_shop_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.SHOP)
 
 
 func _on_breedpedia_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.BREED_PEDIA, {"origin": GameManager.GameState.SALON})
-
-
-func _on_settings_pressed() -> void:
-	# Settings is handled as an overlay on the main menu.
-	# From salon, navigate to main menu for now.
-	GameManager.change_state(GameManager.GameState.MAIN_MENU)
 
 
 func _on_back_pressed() -> void:

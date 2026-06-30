@@ -1,18 +1,8 @@
-## PreShowScreen — Intermediate screen between competition select and grooming arena.
-## Displays competition details, breed info, and allows players to spend coins
-## to reveal judge preferences before committing to groom.
+## PreShowScreen -- Pre-show briefing screen using DGC design components.
+## Displays competition details, judges, and allows reveal + start grooming.
+## Layout: ScreenHeader | Scrollable content (name, badge, details panel,
+## judge panel with DGCJudgeCard, hint text) | Start Grooming button.
 extends Control
-
-## Colors — pastel palette
-const COLOR_BG := Color(0.831, 0.914, 0.969, 1.0)          # Light blue #D4E9F7
-const COLOR_PANEL := Color(0.941, 0.969, 1.0, 0.95)         # White-blue #F0F7FF
-const COLOR_TEXT := Color(0.173, 0.243, 0.314, 1.0)         # Navy #2C3E50
-const COLOR_YELLOW := Color(1.0, 0.878, 0.4, 1.0)           # Pastel yellow #FFE066
-const COLOR_YELLOW_BORDER := Color(1.0, 0.843, 0.0, 1.0)    # Stronger yellow
-const COLOR_MINT := Color(0.71, 0.918, 0.843, 1.0)          # Mint green #B5EAD7
-const COLOR_CORAL := Color(1.0, 0.549, 0.486, 1.0)          # Coral for warnings
-const COLOR_HIDDEN := Color(0.6, 0.65, 0.7, 1.0)            # Muted for hidden info
-const COLOR_SEPARATOR := Color(0.784, 0.839, 0.894, 0.5)
 
 ## Competition data loaded from transition context.
 var _competition_data: CompetitionData = null
@@ -21,20 +11,13 @@ var _competition_data: CompetitionData = null
 var _revealed_judges: Array[int] = []
 
 ## UI references built in _ready.
-var _header_name_label: Label
-var _header_tier_label: Label
-var _header_breed_label: Label
-var _breed_info_panel: PanelContainer
-var _time_label: Label
-var _fee_label: Label
-var _balance_label: Label
+var _scroll_container: ScrollContainer
+var _details_panel: DGCPanel
 var _judge_container: VBoxContainer
-var _start_button: Button
-var _back_button: Button
-var _insufficient_label: Label
-
-## Per-judge UI elements for updating after reveal.
-var _judge_cards: Array[Dictionary] = []
+var _start_button: DGCButton
+var _back_button: DGCIconButton
+var _fee_coin_balance: DGCCoinBalance
+var _judge_cards: Array[DGCJudgeCard] = []
 
 
 func _ready() -> void:
@@ -50,124 +33,153 @@ func _ready() -> void:
 		GameManager.change_state(GameManager.GameState.COMPETITION)
 		return
 
-	# Listen for currency changes
-	EventBus.currency_changed.connect(_on_currency_changed)
-
 	_build_ui()
 	_populate()
 
 
-## ---- UI Construction (programmatic, matching codebase style) ----
+## ---- UI Construction ----
 
 func _build_ui() -> void:
 	# Full-screen background
 	var bg := ColorRect.new()
-	bg.color = COLOR_BG
+	bg.color = DesignTokens.BLUE_SKY
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
-	# Main scroll container
-	var scroll := ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scroll.offset_left = 40.0
-	scroll.offset_right = -40.0
-	scroll.offset_top = 20.0
-	scroll.offset_bottom = -20.0
-	add_child(scroll)
+	# Root VBox fills entire screen
+	var root_vbox := VBoxContainer.new()
+	root_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root_vbox.add_theme_constant_override("separation", 0)
+	add_child(root_vbox)
 
-	var main_vbox := VBoxContainer.new()
-	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	main_vbox.add_theme_constant_override("separation", 16)
-	scroll.add_child(main_vbox)
+	# --- ScreenHeader: back button + "PRE-SHOW" title + spacer ---
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", DesignTokens.SPACE[4])
+	header.custom_minimum_size = Vector2(0, DesignTokens.HIT_LG)
+	var header_margin := MarginContainer.new()
+	header_margin.add_theme_constant_override("margin_left", DesignTokens.PAD_SCREEN_SM)
+	header_margin.add_theme_constant_override("margin_right", DesignTokens.PAD_SCREEN_SM)
+	header_margin.add_theme_constant_override("margin_top", DesignTokens.SPACE[3])
+	header_margin.add_theme_constant_override("margin_bottom", 0)
+	header_margin.add_child(header)
+	root_vbox.add_child(header_margin)
 
-	# --- Header ---
-	_header_name_label = _make_label("", 36, COLOR_TEXT)
-	_header_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	main_vbox.add_child(_header_name_label)
+	_back_button = DGCIconButton.new()
+	_back_button.glyph = "\u2039"
+	_back_button.variant = DGCIconButton.Variant.GHOST
+	_back_button.button_size = DesignTokens.HIT_MD
+	_back_button.pressed.connect(_on_back_pressed)
+	header.add_child(_back_button)
 
-	var header_row := HBoxContainer.new()
-	header_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	header_row.add_theme_constant_override("separation", 24)
-	main_vbox.add_child(header_row)
+	var title_label := Label.new()
+	title_label.text = "PRE-SHOW"
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", DesignTokens.FS_H1)
+	title_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+	if DesignTokens.font_display_extrabold:
+		title_label.add_theme_font_override("font", DesignTokens.font_display_extrabold)
+	header.add_child(title_label)
 
-	_header_tier_label = _make_label("", 28, COLOR_MINT)
-	header_row.add_child(_header_tier_label)
+	# Spacer to balance back button
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(DesignTokens.HIT_MD, 0)
+	header.add_child(spacer)
 
-	_header_breed_label = _make_label("", 28, COLOR_TEXT)
-	header_row.add_child(_header_breed_label)
+	# --- Scrollable content area ---
+	_scroll_container = ScrollContainer.new()
+	_scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root_vbox.add_child(_scroll_container)
 
-	main_vbox.add_child(_make_separator())
+	var content_margin := MarginContainer.new()
+	content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_margin.add_theme_constant_override("margin_left", DesignTokens.PAD_SCREEN_SM + 2)
+	content_margin.add_theme_constant_override("margin_right", DesignTokens.PAD_SCREEN_SM + 2)
+	content_margin.add_theme_constant_override("margin_top", DesignTokens.SPACE[4])
+	content_margin.add_theme_constant_override("margin_bottom", DesignTokens.SPACE[4])
+	_scroll_container.add_child(content_margin)
 
-	# --- Breed info card ---
-	_breed_info_panel = _make_panel()
-	main_vbox.add_child(_breed_info_panel)
+	var content_vbox := VBoxContainer.new()
+	content_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_vbox.add_theme_constant_override("separation", DesignTokens.SPACE[4])
+	content_margin.add_child(content_vbox)
 
-	# --- Time and fee row ---
-	var time_fee_row := HBoxContainer.new()
-	time_fee_row.add_theme_constant_override("separation", 40)
-	time_fee_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	main_vbox.add_child(time_fee_row)
+	# (a) Competition header -- centered name + tier badge
+	var comp_header := VBoxContainer.new()
+	comp_header.add_theme_constant_override("separation", DesignTokens.SPACE[2])
+	comp_header.alignment = BoxContainer.ALIGNMENT_CENTER
+	content_vbox.add_child(comp_header)
 
-	_time_label = _make_label("", 32, COLOR_TEXT)
-	time_fee_row.add_child(_time_label)
+	var comp_name_label := Label.new()
+	comp_name_label.name = "CompNameLabel"
+	comp_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	comp_name_label.add_theme_font_size_override("font_size", 30)
+	comp_name_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+	if DesignTokens.font_display_extrabold:
+		comp_name_label.add_theme_font_override("font", DesignTokens.font_display_extrabold)
+	comp_header.add_child(comp_name_label)
 
-	_fee_label = _make_label("", 32, COLOR_TEXT)
-	time_fee_row.add_child(_fee_label)
+	var badge_center := CenterContainer.new()
+	comp_header.add_child(badge_center)
 
-	_balance_label = _make_label("", 26, COLOR_HIDDEN)
-	_balance_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	main_vbox.add_child(_balance_label)
+	var tier_badge := DGCBadge.new()
+	tier_badge.name = "TierBadge"
+	tier_badge.tone = DGCBadge.Tone.BLUE
+	badge_center.add_child(tier_badge)
 
-	main_vbox.add_child(_make_separator())
+	# (b) Details Panel
+	_details_panel = DGCPanel.new()
+	_details_panel.name = "DetailsPanel"
+	content_vbox.add_child(_details_panel)
 
-	# --- Judge panel header ---
-	var judge_header := _make_label("Judge Panel", 28, COLOR_TEXT)
-	judge_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	main_vbox.add_child(judge_header)
+	# (c) Judge Panel section
+	var judge_section := VBoxContainer.new()
+	judge_section.add_theme_constant_override("separation", DesignTokens.SPACE[3])
+	content_vbox.add_child(judge_section)
+
+	var judge_heading := Label.new()
+	judge_heading.text = "Judge Panel"
+	judge_heading.add_theme_font_size_override("font_size", 22)
+	judge_heading.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+	if DesignTokens.font_display_bold:
+		judge_heading.add_theme_font_override("font", DesignTokens.font_display_bold)
+	judge_section.add_child(judge_heading)
 
 	_judge_container = VBoxContainer.new()
-	_judge_container.add_theme_constant_override("separation", 12)
-	main_vbox.add_child(_judge_container)
+	_judge_container.add_theme_constant_override("separation", DesignTokens.SPACE[3])
+	judge_section.add_child(_judge_container)
 
-	main_vbox.add_child(_make_separator())
+	var hint_label := Label.new()
+	hint_label.text = "Reveal a judge's bias to groom for their taste."
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.add_theme_font_size_override("font_size", DesignTokens.FS_SMALL - 6)
+	hint_label.add_theme_color_override("font_color", DesignTokens.INK_MUTED)
+	if DesignTokens.font_body_semibold:
+		hint_label.add_theme_font_override("font", DesignTokens.font_body_semibold)
+	judge_section.add_child(hint_label)
 
-	# --- Insufficient funds warning ---
-	_insufficient_label = _make_label("", 26, COLOR_CORAL)
-	_insufficient_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_insufficient_label.visible = false
-	main_vbox.add_child(_insufficient_label)
+	# Bottom spacer in scroll area
+	var bottom_spacer := Control.new()
+	bottom_spacer.custom_minimum_size = Vector2(0, DesignTokens.SPACE[3])
+	content_vbox.add_child(bottom_spacer)
 
-	# --- Bottom buttons ---
-	var button_row := HBoxContainer.new()
-	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	button_row.add_theme_constant_override("separation", 32)
-	main_vbox.add_child(button_row)
+	# --- Bottom: Start Grooming button ---
+	var button_margin := MarginContainer.new()
+	button_margin.add_theme_constant_override("margin_left", DesignTokens.PAD_SCREEN_SM + 2)
+	button_margin.add_theme_constant_override("margin_right", DesignTokens.PAD_SCREEN_SM + 2)
+	button_margin.add_theme_constant_override("margin_top", 0)
+	button_margin.add_theme_constant_override("margin_bottom", DesignTokens.PAD_SCREEN_LG - 12)
+	root_vbox.add_child(button_margin)
 
-	_back_button = _make_button("Back", 24)
-	_back_button.custom_minimum_size = Vector2(180, 70)
-	_back_button.pressed.connect(_on_back_pressed)
-	# Style back button more subtly
-	var back_style := StyleBoxFlat.new()
-	back_style.bg_color = COLOR_PANEL
-	back_style.border_color = COLOR_SEPARATOR
-	back_style.set_border_width_all(2)
-	back_style.set_corner_radius_all(24)
-	back_style.content_margin_left = 24.0
-	back_style.content_margin_right = 24.0
-	back_style.content_margin_top = 12.0
-	back_style.content_margin_bottom = 12.0
-	_back_button.add_theme_stylebox_override("normal", back_style)
-	button_row.add_child(_back_button)
-
-	_start_button = _make_button("Start Grooming", 28)
-	_start_button.custom_minimum_size = Vector2(300, 80)
+	_start_button = DGCButton.new()
+	_start_button.text = "Start Grooming"
+	_start_button.variant = DGCButton.Variant.PRIMARY
+	_start_button.size = DGCButton.Size.LG
+	_start_button.block = true
 	_start_button.pressed.connect(_on_start_pressed)
-	button_row.add_child(_start_button)
-
-	# Bottom spacer
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
-	main_vbox.add_child(spacer)
+	button_margin.add_child(_start_button)
 
 
 ## ---- Populate with competition data ----
@@ -176,92 +188,111 @@ func _populate() -> void:
 	if _competition_data == null:
 		return
 
-	# Header
-	_header_name_label.text = _competition_data.competition_name
-	_header_tier_label.text = _competition_data.get_tier_name()
-	var breed_name: String = _competition_data.breed.breed_name if _competition_data.breed else "TBD"
-	_header_breed_label.text = breed_name
+	# Competition name
+	var comp_name_label := _scroll_container.get_node("../..").find_child("CompNameLabel", true, false) as Label
+	if comp_name_label:
+		comp_name_label.text = _competition_data.competition_name
 
-	# Breed info card
-	_populate_breed_card()
+	# Tier badge
+	var tier_badge := _scroll_container.get_node("../..").find_child("TierBadge", true, false) as DGCBadge
+	if tier_badge:
+		tier_badge.label_text = _competition_data.get_tier_name()
 
-	# Time
-	var minutes := int(_competition_data.time_limit_seconds) / 60
-	var seconds := int(_competition_data.time_limit_seconds) % 60
-	_time_label.text = "Time: %d:%02d" % [minutes, seconds]
-
-	# Fee
-	if _competition_data.entry_fee > 0:
-		_fee_label.text = "Entry Fee: %d coins" % _competition_data.entry_fee
-	else:
-		_fee_label.text = "Entry Fee: FREE"
-
-	# Balance
-	_update_balance_display()
+	# Details panel content
+	_populate_details()
 
 	# Judges
 	_populate_judges()
 
-	# Check affordability for start button
+	# Start button affordability
 	_update_start_button()
 
 
-func _populate_breed_card() -> void:
-	# Clear existing content
-	for child in _breed_info_panel.get_children():
-		child.queue_free()
+func _populate_details() -> void:
+	# The DGCPanel auto-creates a ContentVBox. We need to add rows after _ready.
+	# Since DGCPanel._build_structure runs in its _ready, we wait a frame.
+	_details_panel.call_deferred("_populate_details_deferred")
+	# Actually we need to do this after the panel is ready
+	await _details_panel.ready
+	_add_details_content()
 
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
-	_breed_info_panel.add_child(vbox)
 
-	if _competition_data.breed == null:
-		var tbd := _make_label("Breed info not available", 20, COLOR_HIDDEN)
-		vbox.add_child(tbd)
-		return
+func _add_details_content() -> void:
+	var content_vbox: VBoxContainer = null
+	# DGCPanel wraps children in ContentVBox
+	for child in _details_panel.get_children():
+		if child is VBoxContainer:
+			content_vbox = child as VBoxContainer
+			break
 
-	var breed: BreedData = _competition_data.breed
+	if content_vbox == null:
+		content_vbox = VBoxContainer.new()
+		_details_panel.add_child(content_vbox)
 
-	var name_label := _make_label(breed.breed_name, 30, COLOR_TEXT)
-	vbox.add_child(name_label)
+	content_vbox.add_theme_constant_override("separation", DesignTokens.SPACE[2])
 
-	# Group and difficulty
-	var info_row := HBoxContainer.new()
-	info_row.add_theme_constant_override("separation", 20)
-	vbox.add_child(info_row)
+	var breed_name: String = _competition_data.breed.breed_name if _competition_data.breed else "TBD"
 
-	if breed.get("breed_group") != null and breed.breed_group != "":
-		var group_label := _make_label("Group: %s" % breed.breed_group, 24, COLOR_HIDDEN)
-		info_row.add_child(group_label)
+	# Breed row
+	var breed_row := _make_detail_row("Breed", breed_name)
+	content_vbox.add_child(breed_row)
 
-	# Difficulty stars
-	if breed.get("difficulty_tier") != null:
-		var diff: int = breed.difficulty_tier if breed.difficulty_tier is int else int(breed.difficulty_tier)
-		var stars := ""
-		for i in range(diff):
-			stars += "★"
-		for i in range(5 - diff):
-			stars += "☆"
-		var diff_label := _make_label("Difficulty: %s" % stars, 24, COLOR_TEXT)
-		info_row.add_child(diff_label)
+	# Time limit row
+	var time_str := "%ds" % int(_competition_data.time_limit_seconds)
+	var time_row := _make_detail_row("Time limit", time_str)
+	content_vbox.add_child(time_row)
 
-	# Grooming facts / preview
-	if breed.get("grooming_facts") != null and breed.grooming_facts is Array:
-		var facts: Array = breed.grooming_facts
-		var count := mini(facts.size(), 2)
-		for i in range(count):
-			var fact_label := _make_label("• %s" % str(facts[i]), 24, COLOR_HIDDEN)
-			fact_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			vbox.add_child(fact_label)
-	elif breed.get("description") != null and breed.description != "":
-		var desc_label := _make_label(breed.description, 24, COLOR_HIDDEN)
-		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vbox.add_child(desc_label)
+	# Entry fee row (with CoinBalance compact)
+	var fee_row := HBoxContainer.new()
+	fee_row.add_theme_constant_override("separation", 0)
 
-	# Zone count
-	if breed.grooming_zones.size() > 0:
-		var zones_label := _make_label("%d grooming zones" % breed.grooming_zones.size(), 24, COLOR_MINT)
-		vbox.add_child(zones_label)
+	var fee_key := Label.new()
+	fee_key.text = "Entry fee"
+	fee_key.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fee_key.add_theme_font_size_override("font_size", DesignTokens.FS_BODY - 8)
+	fee_key.add_theme_color_override("font_color", DesignTokens.INK_SLATE)
+	if DesignTokens.font_body_bold:
+		fee_key.add_theme_font_override("font", DesignTokens.font_body_bold)
+	fee_row.add_child(fee_key)
+
+	if _competition_data.entry_fee > 0:
+		_fee_coin_balance = DGCCoinBalance.new()
+		_fee_coin_balance.amount = _competition_data.entry_fee
+		_fee_coin_balance.compact = true
+		fee_row.add_child(_fee_coin_balance)
+	else:
+		var free_label := Label.new()
+		free_label.text = "FREE"
+		free_label.add_theme_font_size_override("font_size", DesignTokens.FS_BODY - 8)
+		free_label.add_theme_color_override("font_color", DesignTokens.MINT)
+		if DesignTokens.font_body_extrabold:
+			free_label.add_theme_font_override("font", DesignTokens.font_body_extrabold)
+		fee_row.add_child(free_label)
+
+	content_vbox.add_child(fee_row)
+
+
+func _make_detail_row(key: String, value: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+
+	var key_label := Label.new()
+	key_label.text = key
+	key_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	key_label.add_theme_font_size_override("font_size", DesignTokens.FS_BODY - 8)
+	key_label.add_theme_color_override("font_color", DesignTokens.INK_SLATE)
+	if DesignTokens.font_body_bold:
+		key_label.add_theme_font_override("font", DesignTokens.font_body_bold)
+	row.add_child(key_label)
+
+	var val_label := Label.new()
+	val_label.text = value
+	val_label.add_theme_font_size_override("font_size", DesignTokens.FS_BODY - 8)
+	val_label.add_theme_color_override("font_color", DesignTokens.INK_TITLE)
+	if DesignTokens.font_body_extrabold:
+		val_label.add_theme_font_override("font", DesignTokens.font_body_extrabold)
+	row.add_child(val_label)
+
+	return row
 
 
 func _populate_judges() -> void:
@@ -272,101 +303,21 @@ func _populate_judges() -> void:
 
 	for i in range(_competition_data.judges.size()):
 		var judge: JudgeData = _competition_data.judges[i]
-		var card := _build_judge_card(i, judge)
+		var card := DGCJudgeCard.new()
+		card.judge_name = judge.judge_name
+		card.reveal_cost = judge.reveal_cost
+
+		var is_revealed := i in _revealed_judges
+		if is_revealed:
+			card.revealed = true
+			card.preference = judge.preferred_style
+
+		# Connect reveal signal
+		var judge_index := i
+		card.reveal_pressed.connect(_on_reveal_pressed.bind(judge_index))
+
 		_judge_container.add_child(card)
-
-
-func _build_judge_card(index: int, judge: JudgeData) -> PanelContainer:
-	var panel := _make_panel()
-	var is_revealed := index in _revealed_judges
-
-	if is_revealed:
-		var style := StyleBoxFlat.new()
-		style.bg_color = Color(COLOR_MINT.r, COLOR_MINT.g, COLOR_MINT.b, 0.25)
-		style.border_color = COLOR_MINT
-		style.set_border_width_all(2)
-		style.set_corner_radius_all(16)
-		style.content_margin_left = 16.0
-		style.content_margin_right = 16.0
-		style.content_margin_top = 16.0
-		style.content_margin_bottom = 16.0
-		panel.add_theme_stylebox_override("panel", style)
-
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 16)
-	panel.add_child(hbox)
-
-	# Left side: judge info
-	var info_vbox := VBoxContainer.new()
-	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info_vbox.add_theme_constant_override("separation", 4)
-	hbox.add_child(info_vbox)
-
-	# Judge name
-	var name_label := _make_label(judge.judge_name, 28, COLOR_TEXT)
-	info_vbox.add_child(name_label)
-
-	# Personality hint (one-liner derived from preferred_style + strictness)
-	var hint := _get_personality_hint(judge)
-	var hint_label := _make_label(hint, 24, COLOR_HIDDEN)
-	info_vbox.add_child(hint_label)
-
-	# Preferences area
-	var prefs_label: Label
-	if is_revealed:
-		# Show scoring weights
-		var accuracy_pct := int(judge.scoring_weights.get("accuracy", 0.0) * 100)
-		var time_pct := int(judge.scoring_weights.get("time", 0.0) * 100)
-		var style_pct := int(judge.scoring_weights.get("style", 0.0) * 100)
-		prefs_label = _make_label(
-			"Accuracy: %d%%  |  Time: %d%%  |  Style: %d%%" % [accuracy_pct, time_pct, style_pct],
-			24, COLOR_MINT
-		)
-		info_vbox.add_child(prefs_label)
-
-		var style_label := _make_label("Preferred Style: %s" % judge.preferred_style, 24, COLOR_MINT)
-		info_vbox.add_child(style_label)
-	else:
-		prefs_label = _make_label("Preferences: Hidden", 24, COLOR_HIDDEN)
-		info_vbox.add_child(prefs_label)
-
-	# Right side: reveal button (or revealed badge)
-	var right_vbox := VBoxContainer.new()
-	right_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_child(right_vbox)
-
-	if is_revealed:
-		var revealed_badge := _make_label("Revealed ✓", 24, COLOR_MINT)
-		revealed_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		right_vbox.add_child(revealed_badge)
-	else:
-		var reveal_btn := _make_button("Reveal - %d coins" % judge.reveal_cost, 24)
-		reveal_btn.custom_minimum_size = Vector2(220, 64)
-		var coins: int = SaveManager.data.get("currency", 0)
-		reveal_btn.disabled = coins < judge.reveal_cost
-		reveal_btn.pressed.connect(_on_reveal_pressed.bind(index))
-		right_vbox.add_child(reveal_btn)
-
-	# Store references for later updates
-	_judge_cards.append({
-		"panel": panel,
-		"index": index,
-	})
-
-	return panel
-
-
-func _get_personality_hint(judge: JudgeData) -> String:
-	# Build a short one-liner hint from style and strictness
-	var strictness_word: String
-	if judge.strictness_level >= 0.7:
-		strictness_word = "Strict"
-	elif judge.strictness_level >= 0.4:
-		strictness_word = "Fair"
-	else:
-		strictness_word = "Lenient"
-
-	return "%s & %s" % [judge.preferred_style, strictness_word]
+		_judge_cards.append(card)
 
 
 ## ---- Actions ----
@@ -379,8 +330,6 @@ func _on_reveal_pressed(judge_index: int) -> void:
 	var coins: int = SaveManager.data.get("currency", 0)
 
 	if coins < judge.reveal_cost:
-		_insufficient_label.text = "Not enough coins to reveal %s" % judge.judge_name
-		_insufficient_label.visible = true
 		return
 
 	# Deduct coins
@@ -391,13 +340,12 @@ func _on_reveal_pressed(judge_index: int) -> void:
 	# Track reveal
 	_revealed_judges.append(judge_index)
 
-	# Rebuild judge cards to reflect new state
-	_populate_judges()
-	_update_balance_display()
-	_update_start_button()
+	# Update the specific card
+	if judge_index < _judge_cards.size():
+		_judge_cards[judge_index].revealed = true
+		_judge_cards[judge_index].preference = judge.preferred_style
 
-	# Hide warning if it was showing
-	_insufficient_label.visible = false
+	_update_start_button()
 
 
 func _on_start_pressed() -> void:
@@ -406,8 +354,6 @@ func _on_start_pressed() -> void:
 
 	var coins: int = SaveManager.data.get("currency", 0)
 	if coins < _competition_data.entry_fee:
-		_insufficient_label.text = "Not enough coins to enter!"
-		_insufficient_label.visible = true
 		return
 
 	# Deduct entry fee
@@ -428,93 +374,9 @@ func _on_back_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.COMPETITION)
 
 
-func _on_currency_changed(_new_amount: int, _delta: int) -> void:
-	_update_balance_display()
-	_update_start_button()
-
-
 ## ---- Helpers ----
-
-func _update_balance_display() -> void:
-	var coins: int = SaveManager.data.get("currency", 0)
-	_balance_label.text = "Your balance: %d coins" % coins
-
 
 func _update_start_button() -> void:
 	var coins: int = SaveManager.data.get("currency", 0)
 	var can_afford := coins >= _competition_data.entry_fee
 	_start_button.disabled = not can_afford
-	if not can_afford:
-		_insufficient_label.text = "Need %d more coins to enter" % (_competition_data.entry_fee - coins)
-		_insufficient_label.visible = true
-	else:
-		_insufficient_label.visible = false
-
-
-func _make_label(text: String, size: int, color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.add_theme_font_size_override("font_size", size)
-	label.add_theme_color_override("font_color", color)
-	return label
-
-
-func _make_button(text: String, font_size: int = 24) -> Button:
-	var btn := Button.new()
-	btn.text = text
-	btn.add_theme_font_size_override("font_size", font_size)
-	# Yellow pastel button style
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = COLOR_YELLOW
-	normal.border_color = COLOR_YELLOW_BORDER
-	normal.set_border_width_all(2)
-	normal.set_corner_radius_all(24)
-	normal.content_margin_left = 24.0
-	normal.content_margin_right = 24.0
-	normal.content_margin_top = 12.0
-	normal.content_margin_bottom = 12.0
-	btn.add_theme_stylebox_override("normal", normal)
-
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = COLOR_YELLOW_BORDER
-	btn.add_theme_stylebox_override("hover", hover)
-
-	var pressed := normal.duplicate() as StyleBoxFlat
-	pressed.bg_color = Color(0.9, 0.78, 0.0, 1)
-	btn.add_theme_stylebox_override("pressed", pressed)
-
-	var disabled := normal.duplicate() as StyleBoxFlat
-	disabled.bg_color = Color(0.784, 0.839, 0.894, 0.5)
-	disabled.border_color = Color(0.784, 0.839, 0.894, 0.3)
-	btn.add_theme_stylebox_override("disabled", disabled)
-
-	btn.add_theme_color_override("font_color", COLOR_TEXT)
-	btn.add_theme_color_override("font_disabled_color", Color(0.5, 0.55, 0.6, 1))
-	return btn
-
-
-func _make_panel() -> PanelContainer:
-	var panel := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = COLOR_PANEL
-	style.border_color = COLOR_SEPARATOR
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(16)
-	style.content_margin_left = 16.0
-	style.content_margin_right = 16.0
-	style.content_margin_top = 16.0
-	style.content_margin_bottom = 16.0
-	style.shadow_color = Color(0.784, 0.839, 0.894, 0.2)
-	style.shadow_size = 4
-	panel.add_theme_stylebox_override("panel", style)
-	return panel
-
-
-func _make_separator() -> HSeparator:
-	var sep := HSeparator.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = COLOR_SEPARATOR
-	style.content_margin_top = 1.0
-	style.content_margin_bottom = 1.0
-	sep.add_theme_stylebox_override("separator", style)
-	return sep
